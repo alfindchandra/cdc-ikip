@@ -14,17 +14,29 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\CatatanController;
 use App\Http\Controllers\PengaturanController;
+use App\Http\Controllers\WelcomeController;
 
 // Guest routes
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+Route::get('/lowongan', function() {
+    return view('lowongan.index');
+})->name('lowongan.index');
+
+Route::get('/lowongan/{id}', function($id) {
+    return view('lowongan.show', compact('id'));
+})->name('lowongan.show');
+
+Route::get('/pelatihan/{id}', function($id) {
+    return view('pelatihan.show', compact('id'));
+})->name('pelatihan.show');
+
 Route::middleware('guest')->group(function () {
-    Route::get('/', function () {
-        return view('welcome');
-    });
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 });
+
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
