@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('pkl', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('siswa_id')->constrained('siswa')->onDelete('cascade');
+            $table->foreignId('perusahaan_id')->constrained('perusahaan')->onDelete('cascade');
+            $table->string('pembimbing_sekolah')->nullable();
+            $table->string('pembimbing_industri')->nullable();
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai');
+            $table->string('posisi', 100)->nullable();
+            $table->string('divisi', 100)->nullable();
+            $table->enum('status', ['pengajuan', 'diterima', 'ditolak', 'berlangsung', 'selesai'])->default('pengajuan');
+            $table->decimal('nilai_akhir', 5, 2)->nullable();
+            $table->string('sertifikat')->nullable();
+            $table->string('laporan_pkl')->nullable();
+            $table->text('catatan')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('pkl');
+    }
+};

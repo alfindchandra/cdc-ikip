@@ -1,0 +1,149 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\PerusahaanController;
+use App\Http\Controllers\PklController;
+use App\Http\Controllers\LowonganKerjaController;
+use App\Http\Controllers\LamaranController;
+use App\Http\Controllers\PelatihanController;
+use App\Http\Controllers\KerjasamaIndustriController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\CatatanController;
+use App\Http\Controllers\PengaturanController;
+
+// Guest routes
+Route::middleware('guest')->group(function () {
+    Route::get('/', function () {
+        return view('welcome');
+    });
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+// Authenticated routes
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Profile
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+    
+    // Notifikasi
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
+    Route::post('/notifikasi/{notifikasi}/read', [NotifikasiController::class, 'markAsRead'])->name('notifikasi.read');
+    Route::post('/notifikasi/read-all', [NotifikasiController::class, 'markAllAsRead'])->name('notifikasi.read-all');
+    
+    // Catatan
+    Route::resource('catatan', CatatanController::class);
+    Route::post('/catatan/{catatan}/pin', [CatatanController::class, 'togglePin'])->name('catatan.pin');
+    
+    // Admin routes
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        // Data Siswa
+        Route::resource('siswa', SiswaController::class);
+        Route::post('siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
+        Route::get('siswa/export', [SiswaController::class, 'export'])->name('siswa.export');
+        
+        // Data Perusahaan
+        Route::resource('perusahaan', PerusahaanController::class);
+        Route::post('perusahaan/{perusahaan}/status', [PerusahaanController::class, 'updateStatus'])->name('perusahaan.status');
+        
+        // PKL Management
+        Route::resource('pkl', PklController::class);
+        Route::post('pkl/{pkl}/status', [PklController::class, 'updateStatus'])->name('pkl.status');
+        Route::post('pkl/{pkl}/nilai', [PklController::class, 'inputNilai'])->name('pkl.nilai');
+        Route::get('pkl/{pkl}/jurnal', [PklController::class, 'showJurnal'])->name('pkl.jurnal');
+        Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
+        
+        // Lowongan Kerja (Admin can view all)
+        Route::get('lowongan', [LowonganKerjaController::class, 'adminIndex'])->name('lowongan.index');
+        Route::post('lowongan/{lowongan}/status', [LowonganKerjaController::class, 'updateStatus'])->name('lowongan.status');
+        
+        // Lamaran (Admin can view all)
+        Route::get('lamaran', [LamaranController::class, 'adminIndex'])->name('lamaran.index');
+        
+        // Pelatihan
+        Route::resource('pelatihan', PelatihanController::class);
+        Route::post('pelatihan/{pelatihan}/publish', [PelatihanController::class, 'publish'])->name('pelatihan.publish');
+        Route::get('pelatihan/{pelatihan}/peserta', [PelatihanController::class, 'peserta'])->name('pelatihan.peserta');
+        Route::post('pelatihan/peserta/{peserta}/status', [PelatihanController::class, 'updateStatusPeserta'])->name('pelatihan.peserta.status');
+        Route::post('pelatihan/peserta/{peserta}/nilai', [PelatihanController::class, 'inputNilai'])->name('pelatihan.peserta.nilai');
+        
+        // Kerjasama Industri
+        Route::resource('kerjasama', KerjasamaIndustriController::class);
+        Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
+        
+        // Laporan & Arsip
+        Route::resource('laporan', LaporanController::class);
+        Route::get('laporan/{laporan}/download', [LaporanController::class, 'download'])->name('laporan.download');
+        Route::post('laporan/{laporan}/publish', [LaporanController::class, 'publish'])->name('laporan.publish');
+        
+        // Pengaturan
+        Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
+        Route::put('pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');
+    });
+    
+    // Siswa routes
+    Route::middleware('role:siswa')->prefix('siswa')->name('siswa.')->group(function () {
+        // PKL
+        Route::get('pkl', [PklController::class, 'siswaPkl'])->name('pkl.index');
+        Route::post('pkl/daftar', [PklController::class, 'daftar'])->name('pkl.daftar');
+        Route::get('pkl/{pkl}', [PklController::class, 'show'])->name('pkl.show');
+        Route::post('pkl/{pkl}/jurnal', [PklController::class, 'addJurnal'])->name('pkl.jurnal.add');
+        Route::put('pkl/jurnal/{jurnal}', [PklController::class, 'updateJurnal'])->name('pkl.jurnal.update');
+        Route::delete('pkl/jurnal/{jurnal}', [PklController::class, 'deleteJurnal'])->name('pkl.jurnal.delete');
+        Route::post('pkl/{pkl}/upload-laporan', [PklController::class, 'uploadLaporan'])->name('pkl.laporan');
+        
+        // Lowongan Kerja
+        Route::get('lowongan', [LowonganKerjaController::class, 'index'])->name('lowongan.index');
+        Route::get('lowongan/{lowongan}', [LowonganKerjaController::class, 'show'])->name('lowongan.show');
+        
+        // Lamaran
+        Route::get('lamaran', [LamaranController::class, 'index'])->name('lamaran.index');
+        Route::post('lamaran', [LamaranController::class, 'store'])->name('lamaran.store');
+        Route::get('lamaran/{lamaran}', [LamaranController::class, 'show'])->name('lamaran.show');
+        Route::delete('lamaran/{lamaran}', [LamaranController::class, 'destroy'])->name('lamaran.destroy');
+        
+        // Pelatihan
+        Route::get('pelatihan', [PelatihanController::class, 'siswaPelatihan'])->name('pelatihan.index');
+        Route::get('pelatihan/{pelatihan}', [PelatihanController::class, 'show'])->name('pelatihan.show');
+        Route::post('pelatihan/{pelatihan}/daftar', [PelatihanController::class, 'daftar'])->name('pelatihan.daftar');
+        Route::delete('pelatihan/{pelatihan}/batal', [PelatihanController::class, 'batalDaftar'])->name('pelatihan.batal');
+    });
+    
+    // Perusahaan routes
+    Route::middleware('role:perusahaan')->prefix('perusahaan')->name('perusahaan.')->group(function () {
+        // Profile Perusahaan
+        Route::get('profile', [PerusahaanController::class, 'profileEdit'])->name('profile.edit');
+        Route::put('profile', [PerusahaanController::class, 'profileUpdate'])->name('profile.update');
+        
+        // Lowongan Kerja
+        Route::resource('lowongan', LowonganKerjaController::class)->except(['index']);
+        Route::get('lowongan', [LowonganKerjaController::class, 'perusahaanIndex'])->name('lowongan.index');
+        Route::post('lowongan/{lowongan}/toggle-status', [LowonganKerjaController::class, 'toggleStatus'])->name('lowongan.toggle');
+        
+        // Lamaran
+        Route::get('lamaran', [LamaranController::class, 'perusahaanIndex'])->name('lamaran.index');
+        Route::get('lamaran/{lamaran}', [LamaranController::class, 'show'])->name('lamaran.show');
+        Route::post('lamaran/{lamaran}/status', [LamaranController::class, 'updateStatus'])->name('lamaran.status');
+        
+        // PKL
+        Route::get('pkl', [PklController::class, 'perusahaanPkl'])->name('pkl.index');
+        Route::get('pkl/{pkl}', [PklController::class, 'show'])->name('pkl.show');
+        Route::post('pkl/{pkl}/terima', [PklController::class, 'terimaPkl'])->name('pkl.terima');
+        Route::post('pkl/{pkl}/tolak', [PklController::class, 'tolakPkl'])->name('pkl.tolak');
+        Route::get('pkl/{pkl}/jurnal', [PklController::class, 'showJurnal'])->name('pkl.jurnal');
+        Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
+        
+        // Kerjasama
+        Route::get('kerjasama', [KerjasamaIndustriController::class, 'perusahaanIndex'])->name('kerjasama.index');
+        Route::get('kerjasama/{kerjasama}', [KerjasamaIndustriController::class, 'show'])->name('kerjasama.show');
+    });
+});
