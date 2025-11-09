@@ -1,7 +1,17 @@
 <?php
 
 return [
+    'ikip' => 'IKIP PGRI Bojonegoro',
 
+    'fakultas1' => 'Fakultas Pendidikan Bahasa dan Seni',
+    'fakultas2' => 'Fakultas Pendidikan Ilmu Pengetahuan Sosial',
+    'fakultas3' => 'Fakultas Pendidikan Matematika dan Ilmu Pengetahuan Alam',
+    'program_studi1' => 'Program Studi Pendidikan Bahasa dan Sastra Indonesisa',
+    'program_studi2' => 'Program Studi Pendidikan Bahasa Inggris',
+    'program_studi3' => 'Program Studi Pendidikan Ekonomi',
+    'program_studi4' => 'Program Studi Pendidikan Pancasila dan Kewarganegaraan',
+    'program_studi5' => 'Program Studi Pendidikan Matematika',
+    'program_studi3' => 'Program Studi Pendidikan Teknologi Informasi',
     /*
     |--------------------------------------------------------------------------
     | Application Name

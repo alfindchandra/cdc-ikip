@@ -44,8 +44,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Profile
-    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/profile', [PengaturanController::class, 'profile'])->name('profile');
+    Route::get('/profile/edit', [PengaturanController::class, 'profileEdit'])->name('profile.edit');
+    Route::put('/profile', [PengaturanController::class, 'updateProfile'])->name('profile.update');
+    
     
     // Notifikasi
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
@@ -77,7 +79,8 @@ Route::middleware('auth')->group(function () {
         // Lowongan Kerja (Admin can view all)
         Route::get('lowongan', [LowonganKerjaController::class, 'adminIndex'])->name('lowongan.index');
         Route::post('lowongan/{lowongan}/status', [LowonganKerjaController::class, 'updateStatus'])->name('lowongan.status');
-        
+        Route::get('lowongan/{lowongan}', [LowonganKerjaController::class, 'show'])->name('lowongan.show');
+        Route::get('lowongan/show/{lowongan}', [LowonganKerjaController::class, 'adminShow'])->name('lowongan.adminShow');
         // Lamaran (Admin can view all)
         Route::get('lamaran', [LamaranController::class, 'adminIndex'])->name('lamaran.index');
         
@@ -134,7 +137,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:perusahaan')->prefix('perusahaan')->name('perusahaan.')->group(function () {
         // Profile Perusahaan
         Route::get('profile', [PerusahaanController::class, 'profileEdit'])->name('profile.edit');
-        Route::put('profile', [PerusahaanController::class, 'profileUpdate'])->name('profile.update');
+        Route::put('profile', [PengaturanController::class, 'updateProfilePerusahaan'])->name('profile.update');
         
         // Lowongan Kerja
         Route::resource('lowongan', LowonganKerjaController::class)->except(['index']);

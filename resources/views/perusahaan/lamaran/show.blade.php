@@ -25,10 +25,10 @@
                         </div>
                         <div class="flex-1">
                             <h2 class="text-2xl font-bold text-gray-900 mb-1">{{ $lamaran->siswa->user->name }}</h2>
-                            <p class="text-gray-600 mb-2">NIS: {{ $lamaran->siswa->nis }}</p>
+                            <p class="text-gray-600 mb-2">NIM: {{ $lamaran->siswa->nim }}</p>
                             <div class="flex flex-wrap gap-2">
-                                <span class="badge badge-primary">{{ $lamaran->siswa->kelas }}</span>
-                                <span class="badge badge-info">{{ $lamaran->siswa->jurusan }}</span>
+                                <span class="badge badge-primary">{{ $lamaran->siswa->fakultas }}</span>
+                                <span class="badge badge-info">{{ $lamaran->siswa->program_studi }}</span>
                             </div>
                         </div>
                     </div>

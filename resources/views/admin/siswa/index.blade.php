@@ -14,23 +14,23 @@
                     <input type="text" 
                            name="search" 
                            value="{{ request('search') }}"
-                           placeholder="Cari NIS, NISN, atau Nama..." 
+                           placeholder="Cari, NISN, atau Nama..." 
                            class="form-input">
                 </div>
                 <div>
-                    <select name="kelas" class="form-select">
-                        <option value="">Semua Kelas</option>
-                        <option value="X" {{ request('kelas') == 'X' ? 'selected' : '' }}>Kelas X</option>
-                        <option value="XI" {{ request('kelas') == 'XI' ? 'selected' : '' }}>Kelas XI</option>
-                        <option value="XII" {{ request('kelas') == 'XII' ? 'selected' : '' }}>Kelas XII</option>
+                    <select name="fakultas" class="form-select">
+                        <option value="">Semua fakultas</option>
+                        <option value="X" {{ request('fakultas') == 'X' ? 'selected' : '' }}>fakultas X</option>
+                        <option value="XI" {{ request('fakultas') == 'XI' ? 'selected' : '' }}>fakultas XI</option>
+                        <option value="XII" {{ request('fakultas') == 'XII' ? 'selected' : '' }}>fakultas XII</option>
                     </select>
                 </div>
                 <div>
-                    <select name="jurusan" class="form-select">
-                        <option value="">Semua Jurusan</option>
-                        <option value="Rekayasa Perangkat Lunak" {{ request('jurusan') == 'Rekayasa Perangkat Lunak' ? 'selected' : '' }}>RPL</option>
-                        <option value="Teknik Komputer dan Jaringan" {{ request('jurusan') == 'Teknik Komputer dan Jaringan' ? 'selected' : '' }}>TKJ</option>
-                        <option value="Multimedia" {{ request('jurusan') == 'Multimedia' ? 'selected' : '' }}>MM</option>
+                    <select name="program_studi" class="form-select">
+                        <option value="">Semua program_studi</option>
+                        <option value="Rekayasa Perangkat Lunak" {{ request('program_studi') == 'Rekayasa Perangkat Lunak' ? 'selected' : '' }}>RPL</option>
+                        <option value="Teknik Komputer dan Jaringan" {{ request('program_studi') == 'Teknik Komputer dan Jaringan' ? 'selected' : '' }}>TKJ</option>
+                        <option value="Multimedia" {{ request('program_studi') == 'Multimedia' ? 'selected' : '' }}>MM</option>
                     </select>
                 </div>
                 <div class="flex space-x-2">
@@ -77,8 +77,8 @@
                     <tr>
                         <th>NIS</th>
                         <th>Nama</th>
-                        <th>Kelas</th>
-                        <th>Jurusan</th>
+                        <th>fakultas</th>
+                        <th>program_studi</th>
                         <th>No. Telp</th>
                         <th>Status</th>
                         <th>Aksi</th>
@@ -99,8 +99,8 @@
                                 </div>
                             </div>
                         </td>
-                        <td>{{ $s->kelas }}</td>
-                        <td>{{ Str::limit($s->jurusan, 20) }}</td>
+                        <td>{{ $s->fakultas }}</td>
+                        <td>{{ Str::limit($s->program_studi, 20) }}</td>
                         <td>{{ $s->no_telp }}</td>
                         <td>
                             <span class="badge 

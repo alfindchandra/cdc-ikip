@@ -142,13 +142,14 @@
             <div class="grid md:grid-cols-7 gap-6">  
                 @forelse($perusahaanMitra as $perusahaan)
                 <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
-                    @if($perusahaan->logo)
-                    <img src="{{ asset('storage/' . $perusahaan->logo) }}" alt="{{ $perusahaan->nama_perusahaan }}" class="w-full h-48 object-cover">
+                    @if(optional($user)->avatar)
+                        <img src="{{ Storage::url($user->avatar) }}" alt="{{ $perusahaan->nama_perusahaan }}" class="w-full h-48 object-cover">
                     @else
-                    <div class="w-full h-20 gradient-secondary flex items-center justify-center">
-                        <i class="fas fa-building text-white text-5xl"></i>
-                    </div>
+                        <div class="w-full h-20 gradient-secondary flex items-center justify-center">
+                            <i class="fas fa-building text-white text-5xl"></i>
+                        </div>
                     @endif
+
                     
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
@@ -171,7 +172,6 @@
 
         </section>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-4 gap-8 mb-8">
@@ -181,8 +181,7 @@
                             <i class="fas fa-graduation-cap text-white"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold">BKK SMK</h3>
-                            <p class="text-xs text-gray-400">Bursa Kerja Khusus</p>
+                            <h3 class="text-lg font-bold">{{ config('app.ikip') }}</h3>
                         </div>
                     </div>
                     <p class="text-sm text-gray-400 mb-4">
@@ -231,20 +230,17 @@
                     <ul class="space-y-3 text-sm text-gray-400">
                         <li class="flex items-start">
                             <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
-                            <span>Jl. Pendidikan No. 123, Jakarta Selatan 12345</span>
+                            <span>Jl. Panglima Polim No. 46 Bojonegoro</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone mr-3"></i>
-                            <span>(021) 1234-5678</span>
+                            <span>0353 886170</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-envelope mr-3"></i>
-                            <span>info@bkksmk.sch.id</span>
+                            <span>admin@ikippgribojonegoro.ac.id</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-clock mr-3"></i>
-                            <span>Senin - Jumat, 08:00 - 16:00</span>
-                        </li>
+                        
                     </ul>
                 </div>
             </div>
@@ -252,7 +248,7 @@
             <div class="border-t border-gray-800 pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <p class="text-sm text-gray-400 mb-4 md:mb-0">
-                        © 2024 BKK SMK. All rights reserved.
+                        © 2024 CDC {{ config('app.ikip') }}. All rights reserved.
                     </p>
                     <div class="flex space-x-6 text-sm text-gray-400">
                         <a href="#" class="hover:text-white transition">Privacy Policy</a>

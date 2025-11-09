@@ -6,7 +6,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Welcome Card -->
-    <div class="card bg-gradient-to-r from-purple-600 to-purple-800 text-white">
+    <div class="card bg-gradient-to-r from-purple-600 to-purple-800 text-white p-4 md:p-6 lg:p-8 rounded-3xl">
         <div class="card-body">
             <div class="flex items-center justify-between">
                 <div>
@@ -23,8 +23,8 @@
                     </div>
                 </div>
                 <div class="hidden md:block">
-                    @if(auth()->user()->perusahaan->logo)
-                    <img src="{{ Storage::url(auth()->user()->perusahaan->logo) }}" alt="Logo" class="w-24 h-24 rounded-lg object-cover border-4 border-white shadow-lg">
+                    @if(auth()->user()->avatar)
+                    <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="Logo" class="w-24 h-24 rounded-lg object-cover border-4 border-white shadow-lg">
                     @else
                     <div class="w-24 h-24 bg-white rounded-lg flex items-center justify-center">
                         <span class="text-purple-600 text-4xl font-bold">{{ substr(auth()->user()->perusahaan->nama_perusahaan, 0, 1) }}</span>

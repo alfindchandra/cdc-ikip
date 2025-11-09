@@ -44,15 +44,11 @@
                 <h4 class="text-md font-semibold text-gray-900 mb-4">Data Pribadi</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="nis" class="form-label">NIS *</label>
-                        <input type="text" id="nis" name="nis" value="{{ old('nis', $siswa->nis) }}" class="form-input" required>
-                        @error('nis')<p class="form-error">{{ $message }}</p>@enderror
+                        <label for="nim" class="form-label">NIM *</label>
+                        <input type="text" id="nim" name="nim" value="{{ old('nim', $siswa->nim) }}" class="form-input" required>
+                        @error('nim')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
-                    <div>
-                        <label for="nisn" class="form-label">NISN</label>
-                        <input type="text" id="nisn" name="nisn" value="{{ old('nisn', $siswa->nisn) }}" class="form-input">
-                        @error('nisn')<p class="form-error">{{ $message }}</p>@enderror
-                    </div>
+                   
                     <div>
                         <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
                         <input type="text" id="tempat_lahir" name="tempat_lahir" value="{{ old('tempat_lahir', $siswa->tempat_lahir) }}" class="form-input">
@@ -100,21 +96,21 @@
                 <h4 class="text-md font-semibold text-gray-900 mb-4">Data Akademik</h4>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label for="kelas" class="form-label">Kelas</label>
-                        <select id="kelas" name="kelas" class="form-select">
+                        <label for="fakultas" class="form-label">fakultas</label>
+                        <select id="fakultas" name="fakultas" class="form-select">
                             <option value="">Pilih</option>
-                            <option value="X" {{ old('kelas', $siswa->kelas) == 'X' ? 'selected' : '' }}>X</option>
-                            <option value="XI" {{ old('kelas', $siswa->kelas) == 'XI' ? 'selected' : '' }}>XI</option>
-                            <option value="XII" {{ old('kelas', $siswa->kelas) == 'XII' ? 'selected' : '' }}>XII</option>
+                            <option value="X" {{ old('fakultas', $siswa->fakultas) == 'X' ? 'selected' : '' }}>X</option>
+                            <option value="XI" {{ old('fakultas', $siswa->fakultas) == 'XI' ? 'selected' : '' }}>XI</option>
+                            <option value="XII" {{ old('fakultas', $siswa->fakultas) == 'XII' ? 'selected' : '' }}>XII</option>
                         </select>
                     </div>
                     <div>
-                        <label for="jurusan" class="form-label">Jurusan</label>
-                        <select id="jurusan" name="jurusan" class="form-select">
+                        <label for="program_studi" class="form-label">program_studi</label>
+                        <select id="program_studi" name="program_studi" class="form-select">
                             <option value="">Pilih</option>
-                            <option value="Rekayasa Perangkat Lunak" {{ old('jurusan', $siswa->jurusan) == 'Rekayasa Perangkat Lunak' ? 'selected' : '' }}>RPL</option>
-                            <option value="Teknik Komputer dan Jaringan" {{ old('jurusan', $siswa->jurusan) == 'Teknik Komputer dan Jaringan' ? 'selected' : '' }}>TKJ</option>
-                            <option value="Multimedia" {{ old('jurusan', $siswa->jurusan) == 'Multimedia' ? 'selected' : '' }}>Multimedia</option>
+                            <option value="Rekayasa Perangkat Lunak" {{ old('program_studi', $siswa->program_studi) == 'Rekayasa Perangkat Lunak' ? 'selected' : '' }}>RPL</option>
+                            <option value="Teknik Komputer dan Jaringan" {{ old('program_studi', $siswa->program_studi) == 'Teknik Komputer dan Jaringan' ? 'selected' : '' }}>TKJ</option>
+                            <option value="Multimedia" {{ old('program_studi', $siswa->program_studi) == 'Multimedia' ? 'selected' : '' }}>Multimedia</option>
                         </select>
                     </div>
                     <div>

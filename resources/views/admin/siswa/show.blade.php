@@ -18,8 +18,8 @@
                         <h2 class="text-2xl font-bold text-gray-900">{{ $siswa->user->name }}</h2>
                         <p class="text-gray-600">NIS: {{ $siswa->nis }}</p>
                         <div class="flex items-center space-x-3 mt-2">
-                            <span class="badge badge-primary">{{ $siswa->kelas }}</span>
-                            <span class="badge badge-info">{{ $siswa->jurusan }}</span>
+                            <span class="badge badge-primary">{{ $siswa->fakultas }}</span>
+                            <span class="badge badge-info">{{ $siswa->program_studi }}</span>
                             <span class="badge badge-{{ $siswa->status == 'aktif' ? 'success' : 'gray' }}">
                                 {{ ucfirst($siswa->status) }}
                             </span>

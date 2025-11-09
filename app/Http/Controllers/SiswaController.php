@@ -16,20 +16,19 @@ class SiswaController extends Controller
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('nis', 'like', "%$search%")
-                  ->orWhere('nisn', 'like', "%$search%")
+                $q->where('nim', 'like', "%$search%")
                   ->orWhereHas('user', function($q2) use ($search) {
                       $q2->where('name', 'like', "%$search%");
                   });
             });
         }
 
-        if ($request->has('kelas')) {
-            $query->where('kelas', $request->kelas);
+        if ($request->has('fakultas')) {
+            $query->where('fakultas', $request->fakultas);
         }
 
-        if ($request->has('jurusan')) {
-            $query->where('jurusan', $request->jurusan);
+        if ($request->has('program_studi')) {
+            $query->where('program_studi', $request->program_studi);
         }
 
         if ($request->has('status')) {
@@ -52,16 +51,15 @@ class SiswaController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
-            'nis' => 'required|unique:siswa,nis',
-            'nisn' => 'nullable|unique:siswa,nisn',
+            'nim' => 'required|unique:siswa,nim',
             'tempat_lahir' => 'nullable|string',
             'tanggal_lahir' => 'nullable|date',
             'jenis_kelamin' => 'required|in:L,P',
             'agama' => 'nullable|string',
             'alamat' => 'nullable|string',
             'no_telp' => 'nullable|string',
-            'kelas' => 'nullable|string',
-            'jurusan' => 'nullable|string',
+            'fakultas' => 'nullable|string',
+            'program_studi' => 'nullable|string',
             'tahun_masuk' => 'nullable|integer',
             'nama_ortu' => 'nullable|string',
             'pekerjaan_ortu' => 'nullable|string',
@@ -80,16 +78,15 @@ class SiswaController extends Controller
         // Create siswa profile
         $siswa = Siswa::create([
             'user_id' => $user->id,
-            'nis' => $validated['nis'],
-            'nisn' => $validated['nisn'] ?? null,
+            'nim' => $validated['nim'],
             'tempat_lahir' => $validated['tempat_lahir'] ?? null,
             'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
             'jenis_kelamin' => $validated['jenis_kelamin'],
             'agama' => $validated['agama'] ?? null,
             'alamat' => $validated['alamat'] ?? null,
             'no_telp' => $validated['no_telp'] ?? null,
-            'kelas' => $validated['kelas'] ?? null,
-            'jurusan' => $validated['jurusan'] ?? null,
+            'fakultas' => $validated['fakultas'] ?? null,
+            'program_studi' => $validated['program_studi'] ?? null,
             'tahun_masuk' => $validated['tahun_masuk'] ?? null,
             'nama_ortu' => $validated['nama_ortu'] ?? null,
             'pekerjaan_ortu' => $validated['pekerjaan_ortu'] ?? null,
@@ -117,16 +114,15 @@ class SiswaController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $siswa->user_id,
-            'nis' => 'required|unique:siswa,nis,' . $siswa->id,
-            'nisn' => 'nullable|unique:siswa,nisn,' . $siswa->id,
+            'nim' => 'required|unique:siswa,nim,' . $siswa->id,
             'tempat_lahir' => 'nullable|string',
             'tanggal_lahir' => 'nullable|date',
             'jenis_kelamin' => 'required|in:L,P',
             'agama' => 'nullable|string',
             'alamat' => 'nullable|string',
             'no_telp' => 'nullable|string',
-            'kelas' => 'nullable|string',
-            'jurusan' => 'nullable|string',
+            'fakultas' => 'nullable|string',
+            'program_studi' => 'nullable|string',
             'tahun_masuk' => 'nullable|integer',
             'nama_ortu' => 'nullable|string',
             'pekerjaan_ortu' => 'nullable|string',
@@ -149,16 +145,15 @@ class SiswaController extends Controller
 
         // Update siswa profile
         $siswa->update([
-            'nis' => $validated['nis'],
-            'nisn' => $validated['nisn'],
+            'nim' => $validated['nim'],
             'tempat_lahir' => $validated['tempat_lahir'],
             'tanggal_lahir' => $validated['tanggal_lahir'],
             'jenis_kelamin' => $validated['jenis_kelamin'],
             'agama' => $validated['agama'],
             'alamat' => $validated['alamat'],
             'no_telp' => $validated['no_telp'],
-            'kelas' => $validated['kelas'],
-            'jurusan' => $validated['jurusan'],
+            'fakultas' => $validated['fakultas'],
+            'program_studi' => $validated['program_studi'],
             'tahun_masuk' => $validated['tahun_masuk'],
             'nama_ortu' => $validated['nama_ortu'],
             'pekerjaan_ortu' => $validated['pekerjaan_ortu'],

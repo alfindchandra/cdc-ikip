@@ -43,15 +43,11 @@
                 <h4 class="text-md font-semibold text-gray-900 mb-4">Data Pribadi</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="nis" class="form-label">NIS *</label>
-                        <input type="text" id="nis" name="nis" value="{{ old('nis') }}" class="form-input" required>
-                        @error('nis')<p class="form-error">{{ $message }}</p>@enderror
+                        <label for="nim" class="form-label">NIM *</label>
+                        <input type="text" id="nim" name="nim" value="{{ old('nim') }}" class="form-input" required>
+                        @error('nim')<p class="form-error">{{ $message }}</p>@enderror
                     </div>
-                    <div>
-                        <label for="nisn" class="form-label">NISN</label>
-                        <input type="text" id="nisn" name="nisn" value="{{ old('nisn') }}" class="form-input">
-                        @error('nisn')<p class="form-error">{{ $message }}</p>@enderror
-                    </div>
+                    
                     <div>
                         <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
                         <input type="text" id="tempat_lahir" name="tempat_lahir" value="{{ old('tempat_lahir') }}" class="form-input">
@@ -99,21 +95,21 @@
                 <h4 class="text-md font-semibold text-gray-900 mb-4">Data Akademik</h4>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label for="kelas" class="form-label">Kelas</label>
-                        <select id="kelas" name="kelas" class="form-select">
+                        <label for="fakultas" class="form-label">Fakultas</label>
+                        <select id="fakultas" name="fakultas" class="form-select">
                             <option value="">Pilih</option>
-                            <option value="X" {{ old('kelas') == 'X' ? 'selected' : '' }}>X</option>
-                            <option value="XI" {{ old('kelas') == 'XI' ? 'selected' : '' }}>XI</option>
-                            <option value="XII" {{ old('kelas') == 'XII' ? 'selected' : '' }}>XII</option>
+                            <option value="{{ config('app.fakultas1')" {{ old('fakultas') == '{{ config('app.fakultas1'}}' ? 'selected' : '' }}>{{ config('app.fakultas1')}}</option>
+                            <option value="{{ config('app.fakultas2'}}" {{ old('fakultas') == '{{ config('app.fakultas2'}}' ? 'selected' : '' }}>{{ config('app.fakultas2')}}</option>
+                            <option value="{{ config('app.fakultas3'}}" {{ old('fakultas') == '{{ config('app.fakultas3'}}' ? 'selected' : '' }}>{{ config('app.fakultas3')}}</option>
                         </select>
                     </div>
                     <div>
-                        <label for="jurusan" class="form-label">Jurusan</label>
-                        <select id="jurusan" name="jurusan" class="form-select">
+                        <label for="program_studi" class="form-label">Program Studi</label>
+                        <select id="program_studi" name="program_studi" class="form-select">
                             <option value="">Pilih</option>
-                            <option value="Rekayasa Perangkat Lunak" {{ old('jurusan') == 'Rekayasa Perangkat Lunak' ? 'selected' : '' }}>RPL</option>
-                            <option value="Teknik Komputer dan Jaringan" {{ old('jurusan') == 'Teknik Komputer dan Jaringan' ? 'selected' : '' }}>TKJ</option>
-                            <option value="Multimedia" {{ old('jurusan') == 'Multimedia' ? 'selected' : '' }}>Multimedia</option>
+                            <option value="{{ config('app.program_studi1'}}" {{ old('{{ config('app.program_studi1'}}') == 'Rekayasa Perangkat Lunak' ? 'selected' : '' }}>RPL</option>
+                            <option value="{{ config('app.program_studi2'}}" {{ old('{{ config('app.program_studi2'}}') == 'Teknik Komputer dan Jaringan' ? 'selected' : '' }}>TKJ</option>
+                            <option value="{{ config('app.program_studi3'}}" {{ old('{{ config('app.program_studi3'}}') == 'Multimedia' ? 'selected' : '' }}>Multimedia</option>
                         </select>
                     </div>
                     <div>

@@ -17,35 +17,31 @@ class DatabaseSeeder extends Seeder
         // Create Admin User
         $admin = User::create([
             'name' => 'Administrator CDC',
-            'email' => 'admin@smkn1baureno.ac.id',
+            'email' => 'admin@ikippgribojonegoro.ac.id',
             'password' => Hash::make('password'),
             'role' => 'admin',
             'is_active' => true,
             'email_verified_at' => now(),
         ]);
-
-        // Create Sample Siswa
         $siswaUser1 = User::create([
-            'name' => 'salsabilla zetia Ramadhani',
-            'email' => 'salsabilla@gmail.com',
+           'name' => 'Siti Nurhaliza',
+            'email' => 'siti.nurhaliza@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'siswa',
             'is_active' => true,
             'email_verified_at' => now(),
         ]);
-
         Siswa::create([
             'user_id' => $siswaUser1->id,
-            'nis' => '2024001',
-            'nisn' => '0012345678',
+            'nim' => '2024001',
             'tempat_lahir' => 'Bojonegoro',
             'tanggal_lahir' => '2006-05-15',
             'jenis_kelamin' => 'P',
             'agama' => 'Islam',
             'alamat' => 'Jl. Raya Baureno No. 123',
             'no_telp' => '081234567890',
-            'kelas' => 'XII',
-            'jurusan' => 'Rekayasa Perangkat Lunak',
+            'fakultas' => 'Fakultas Pendidikan Bahasa dan Seni',
+            'program_studi' => 'Program Studi Pendidikan Bahasa dan Sastra Indonesisa',
             'tahun_masuk' => 2021,
             'nama_ortu' => 'Budi Santoso',
             'pekerjaan_ortu' => 'Wiraswasta',
@@ -54,8 +50,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $siswaUser2 = User::create([
-            'name' => 'Siti Nurhaliza',
-            'email' => 'siti.nurhaliza@gmail.com',
+             'name' => 'salsabilla zetia Ramadhani',
+            'email' => 'salsabilla@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'siswa',
             'is_active' => true,
@@ -64,16 +60,15 @@ class DatabaseSeeder extends Seeder
 
         Siswa::create([
             'user_id' => $siswaUser2->id,
-            'nis' => '2024002',
-            'nisn' => '0012345679',
+            'nim' => '2024002',
             'tempat_lahir' => 'Bojonegoro',
             'tanggal_lahir' => '2006-08-20',
             'jenis_kelamin' => 'P',
             'agama' => 'Islam',
             'alamat' => 'Jl. Merdeka No. 45',
             'no_telp' => '081234567892',
-            'kelas' => 'XII',
-            'jurusan' => 'Teknik Komputer dan Jaringan',
+            'fakultas' => 'Fakultas Pendidikan Matematika dan Ilmu Pengetahuan Alam',
+            'program_studi' => 'Program Studi Pendidikan Teknologi Informasi',
             'tahun_masuk' => 2021,
             'nama_ortu' => 'Slamet Riyadi',
             'pekerjaan_ortu' => 'PNS',
@@ -81,7 +76,6 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
 
-        // Create Sample Perusahaan
         $perusahaanUser1 = User::create([
             'name' => 'PT Digital Teknologi Indonesia',
             'email' => 'hrd@digitaltek.co.id',
@@ -142,10 +136,10 @@ class DatabaseSeeder extends Seeder
 
         // Create Pengaturan
         $pengaturan = [
-            ['key_name' => 'nama_sekolah', 'value' => 'SMK Negeri 1 Baureno', 'description' => 'Nama Sekolah', 'tipe' => 'text'],
-            ['key_name' => 'alamat_sekolah', 'value' => 'Jl. Raya Baureno, Bojonegoro, Jawa Timur', 'description' => 'Alamat Sekolah', 'tipe' => 'text'],
-            ['key_name' => 'email_sekolah', 'value' => 'smkn1baureno@gmail.com', 'description' => 'Email Sekolah', 'tipe' => 'text'],
-            ['key_name' => 'telp_sekolah', 'value' => '0353-123456', 'description' => 'Nomor Telepon Sekolah', 'tipe' => 'text'],
+            ['key_name' => 'nama_sekolah', 'value' => 'IKIP PGRI Bojonegoro ', 'description' => 'Nama Sekolah', 'tipe' => 'text'],
+            ['key_name' => 'alamat_sekolah', 'value' => 'Jl. Panglima Polim No. 46 Bojonegoro', 'description' => 'Alamat Sekolah', 'tipe' => 'text'],
+            ['key_name' => 'email_sekolah', 'value' => 'admin@ikippgribojonegoro.ac.id', 'description' => 'Email Sekolah', 'tipe' => 'text'],
+            ['key_name' => 'telp_sekolah', 'value' => '(0353) 881046', 'description' => 'Nomor Telepon Sekolah', 'tipe' => 'text'],
             ['key_name' => 'tahun_ajaran', 'value' => '2024/2025', 'description' => 'Tahun Ajaran Aktif', 'tipe' => 'text'],
             ['key_name' => 'batas_pkl', 'value' => '6', 'description' => 'Batas Minimal Bulan PKL', 'tipe' => 'number'],
             ['key_name' => 'auto_notif', 'value' => 'true', 'description' => 'Aktifkan Notifikasi Otomatis', 'tipe' => 'boolean'],

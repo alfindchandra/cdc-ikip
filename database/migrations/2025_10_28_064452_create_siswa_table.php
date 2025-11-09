@@ -10,16 +10,15 @@ return new class extends Migration
         Schema::create('siswa', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('nis', 20)->unique();
-            $table->string('nisn', 20)->unique()->nullable();
+            $table->string('nim', 20)->unique();
             $table->string('tempat_lahir', 100)->nullable();
             $table->date('tanggal_lahir')->nullable();
             $table->enum('jenis_kelamin', ['L', 'P']);
             $table->string('agama', 20)->nullable();
             $table->text('alamat')->nullable();
             $table->string('no_telp', 15)->nullable();
-            $table->string('kelas', 10)->nullable();
-            $table->string('jurusan', 50)->nullable();
+            $table->string('fakultas', 100)->nullable();
+            $table->string('program_studi', 100)->nullable();
             $table->year('tahun_masuk')->nullable();
             $table->string('nama_ortu')->nullable();
             $table->string('pekerjaan_ortu', 100)->nullable();

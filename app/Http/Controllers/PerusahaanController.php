@@ -115,4 +115,6 @@ class PerusahaanController extends Controller
 
         return back()->with('success', 'Status kerjasama berhasil diperbarui');
     }
+    
+
 }

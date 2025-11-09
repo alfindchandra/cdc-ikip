@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title') - CDC SMKN 1 Baureno</title>
-    
+    <title>@yield('title') - {{ config('app.ikip') }} Career Center</title>
+    <link rel="icon" href="{{ asset('images/xlogo.png') }}" type="image/png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <style>
@@ -250,9 +250,14 @@
                         <!-- User Menu -->
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition">
+                             @if(auth()->user()->avatar)
+                                <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover">
+                            @else
                                 <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
                                     {{ substr(auth()->user()->name, 0, 1) }}
                                 </div>
+                            @endif    
+                            
                                 <div class="text-left hidden md:block">
                                     <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
                                     <p class="text-xs text-gray-500">{{ ucfirst(auth()->user()->role) }}</p>
@@ -322,7 +327,7 @@
             <!-- Footer -->
             <footer class="bg-white border-t border-gray-200 py-4 px-6 mt-auto">
                 <div class="text-center text-sm text-gray-600">
-                    &copy; {{ date('Y') }} CDC SMK Negeri 1 Baureno. All rights reserved.
+                    &copy; {{ date('Y') }} CDC {{ config('app.ikip') }}. All rights reserved.
                 </div>
             </footer>
         </div>

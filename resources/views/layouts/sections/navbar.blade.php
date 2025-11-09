@@ -14,9 +14,9 @@
 
         <!-- Menu Desktop -->
         <div class="hidden lg:flex items-center space-x-4">
-          <a href="https://karir.itb.ac.id/company" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Perusahaan</a>
-          <a href="https://karir.itb.ac.id/vacancy" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Lowongan</a>
-          <a href="https://karir.itb.ac.id/kewirausahaan" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Entrepreneurship</a>
+          <a href="#lowongan" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Lowongan</a>
+          <a href="#pelatihan" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Pelatihan</a>
+          <a href="#perusahaan" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Perusahaan</a>
           <a href="https://tracer.itb.ac.id/" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Tracer Study</a>
 
           <!-- Dropdown Bantuan -->
