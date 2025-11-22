@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('perusahaan_id')->constrained('perusahaan')->onDelete('cascade');
             $table->string('judul');
             $table->string('posisi', 100);
+            $table->string('pendidikan', 100);
             $table->text('deskripsi');
             $table->text('kualifikasi');
             $table->text('benefit')->nullable();

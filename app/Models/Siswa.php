@@ -41,4 +41,19 @@ class Siswa extends Model
                     ->withPivot('status_pendaftaran', 'status_kehadiran', 'nilai', 'sertifikat')
                     ->withTimestamps();
     }
+
+
+    // Relasi ke Fakultas
+    public function fakultas()
+    {
+        // Pastikan nama tabel dan kunci asing benar
+        return $this->belongsTo(Fakultas::class, 'fakultas_id');
+    }
+
+    // Relasi ke Program Studi
+    public function programStudi()
+    {
+        // Asumsi foreign key di tabel Siswa adalah 'program_studi_id'
+        return $this->belongsTo(Program_studi::class, 'program_studi_id');
+    }
 }

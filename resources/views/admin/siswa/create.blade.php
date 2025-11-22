@@ -97,19 +97,20 @@
                     <div>
                         <label for="fakultas" class="form-label">Fakultas</label>
                         <select id="fakultas" name="fakultas" class="form-select">
+                            @foreach ($fakultas as $fakultas)
                             <option value="">Pilih</option>
-                            <option value="{{ config('app.fakultas1')" {{ old('fakultas') == '{{ config('app.fakultas1'}}' ? 'selected' : '' }}>{{ config('app.fakultas1')}}</option>
-                            <option value="{{ config('app.fakultas2'}}" {{ old('fakultas') == '{{ config('app.fakultas2'}}' ? 'selected' : '' }}>{{ config('app.fakultas2')}}</option>
-                            <option value="{{ config('app.fakultas3'}}" {{ old('fakultas') == '{{ config('app.fakultas3'}}' ? 'selected' : '' }}>{{ config('app.fakultas3')}}</option>
+                                <option value="{{ $fakultas->id }}" {{ old('fakultas') == $fakultas->id ? 'selected' : '' }}>{{ $fakultas->nama }}</option>
+                            @endforeach
+                            
                         </select>
                     </div>
                     <div>
                         <label for="program_studi" class="form-label">Program Studi</label>
                         <select id="program_studi" name="program_studi" class="form-select">
                             <option value="">Pilih</option>
-                            <option value="{{ config('app.program_studi1'}}" {{ old('{{ config('app.program_studi1'}}') == 'Rekayasa Perangkat Lunak' ? 'selected' : '' }}>RPL</option>
-                            <option value="{{ config('app.program_studi2'}}" {{ old('{{ config('app.program_studi2'}}') == 'Teknik Komputer dan Jaringan' ? 'selected' : '' }}>TKJ</option>
-                            <option value="{{ config('app.program_studi3'}}" {{ old('{{ config('app.program_studi3'}}') == 'Multimedia' ? 'selected' : '' }}>Multimedia</option>
+                            @foreach ($program_studi as $program_studi)
+                                <option value="{{ $program_studi->id }}" {{ old('program_studi') == $program_studi->id ? 'selected' : '' }}>{{ $program_studi->nama }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>

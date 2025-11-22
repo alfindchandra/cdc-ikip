@@ -183,14 +183,14 @@
                         @if($siswa->fakultas)
                         <div class="pb-3 border-b border-gray-100">
                             <p class="text-xs uppercase tracking-wide text-gray-500 mb-1 font-semibold">Fakultas</p>
-                            <p class="font-semibold text-gray-900">{{ $siswa->fakultas }}</p>
+                            <p class="font-semibold text-gray-900">{{ $siswa->fakultas->nama ?? '-' }}</p>
                         </div>
                         @endif
                         
                         @if($siswa->program_studi)
                         <div class="pb-3 border-b border-gray-100">
                             <p class="text-xs uppercase tracking-wide text-gray-500 mb-1 font-semibold">Program Studi</p>
-                            <p class="font-semibold text-gray-900">{{ $siswa->program_studi }}</p>
+                            <p class="font-semibold text-gray-900">{{ $siswa->programStudi->nama ?? '-' }}</p>
                         </div>
                         @endif
                         

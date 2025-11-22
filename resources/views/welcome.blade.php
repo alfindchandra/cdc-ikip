@@ -117,7 +117,7 @@
                             </div>
                         </div>
                         
-                        <a href="{{ route('pelatihan.show', $pelatihan->id) }}" class="block w-full text-center bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
+                        <a href="" class="block w-full text-center bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
                             Daftar Sekarang
                         </a>
                     </div>
@@ -132,45 +132,7 @@
         </div>
     </section>
 
-        <section id="perusahaan" class="py-16 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2
-">Perusahaan Mitra Kami</h2>
-                <p class="text-gray-600">Bekerja sama dengan berbagai perusahaan terkemuka</p>
-            </div>            
-            <div class="grid md:grid-cols-7 gap-6">  
-                @forelse($perusahaanMitra as $perusahaan)
-                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
-                    @if(optional($user)->avatar)
-                        <img src="{{ Storage::url($user->avatar) }}" alt="{{ $perusahaan->nama_perusahaan }}" class="w-full h-48 object-cover">
-                    @else
-                        <div class="w-full h-20 gradient-secondary flex items-center justify-center">
-                            <i class="fas fa-building text-white text-5xl"></i>
-                        </div>
-                    @endif
-
-                    
-                    <div class="p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
-                            {{ $perusahaan->nama_perusahaan }}
-                        </h3>
-                        
-                        
-                        
-                        
-                    </div>
-                </div>
-                @empty
-                <div class="col-span-full text-center py-12">
-                    <i class="fas fa-building text-gray-300 text-6xl mb-4"></i>
-                    <p class="text-gray-500">Belum ada perusahaan tersedia</p>
-                </div>
-                @endforelse
-            </div>
-        </div>  
-
-        </section>
+       @include('layouts.sections.perusahaan')
 
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-4">

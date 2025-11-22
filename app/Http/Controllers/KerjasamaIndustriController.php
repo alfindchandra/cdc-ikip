@@ -127,7 +127,7 @@ class KerjasamaIndustriController extends Controller
     public function updateStatus(Request $request, KerjasamaIndustri $kerjasama)
     {
         $validated = $request->validate([
-            'status' => 'required|in:draft,proposal,negosiasi,aktif,selesai,batal',
+            'status' => 'required|in:draft,proposal,negosiasi,aktif,selesai,nonaktif',
         ]);
 
         $kerjasama->update(['status' => $validated['status']]);

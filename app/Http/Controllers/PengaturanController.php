@@ -3,12 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Fakultas;
+use App\Models\Program_studi;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class PengaturanController extends Controller
 {
      public function profile()
     {
-        return view('profile.index');
+        $user = auth()->user();
+        $fakultas = Fakultas::all();
+        $program_studi = Program_studi::all();
+        return view('profile.index', compact('user', 'fakultas', 'program_studi'));
     }
 
     public function profileEdit()

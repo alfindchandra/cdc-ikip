@@ -185,16 +185,7 @@
                     </a>
                 @endif
 
-                <!-- Common Menu -->
-                <div class="border-t border-blue-800 mt-6 pt-6">
-                    <a href="{{ route('catatan.index') }}" 
-                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('catatan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                        <span>Catatan</span>
-                    </a>
-                </div>
+                
             </nav>
         </aside>
 
@@ -208,44 +199,6 @@
                     </div>
 
                     <div class="flex items-center space-x-4">
-                        <!-- Notifikasi -->
-                        <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                                </svg>
-                                @if(auth()->user()->notifikasi()->where('is_read', false)->count() > 0)
-                                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                                @endif
-                            </button>
-
-                            <!-- Notifikasi Dropdown -->
-                            <div x-show="open" 
-                                 @click.away="open = false"
-                                 x-cloak
-                                 class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200">
-                                <div class="p-4 border-b border-gray-200">
-                                    <div class="flex items-center justify-between">
-                                        <h3 class="font-semibold text-gray-900">Notifikasi</h3>
-                                        <a href="{{ route('notifikasi.index') }}" class="text-sm text-blue-600 hover:text-blue-700">Lihat Semua</a>
-                                    </div>
-                                </div>
-                                <div class="max-h-96 overflow-y-auto">
-                                    @forelse(auth()->user()->notifikasi()->latest()->take(5)->get() as $notif)
-                                    <a href="{{ $notif->link ?? '#' }}" 
-                                       class="block p-4 hover:bg-gray-50 transition {{ $notif->is_read ? 'bg-white' : 'bg-blue-50' }}">
-                                        <p class="text-sm font-medium text-gray-900">{{ $notif->judul }}</p>
-                                        <p class="text-xs text-gray-600 mt-1">{{ Str::limit($notif->pesan, 60) }}</p>
-                                        <p class="text-xs text-gray-400 mt-1">{{ $notif->created_at->diffForHumans() }}</p>
-                                    </a>
-                                    @empty
-                                    <div class="p-8 text-center text-gray-500">
-                                        <p class="text-sm">Tidak ada notifikasi</p>
-                                    </div>
-                                    @endforelse
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- User Menu -->
                         <div class="relative" x-data="{ open: false }">

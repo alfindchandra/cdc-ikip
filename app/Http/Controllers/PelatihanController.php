@@ -187,7 +187,7 @@ class PelatihanController extends Controller
             return view('siswa.pelatihan.show', compact('pelatihan'));
         }
 
-        return view('pelatihan.show', compact('pelatihan'));
+        return view('admin.pelatihan.show', compact('pelatihan'));
     }
 
     public function daftar(Request $request, Pelatihan $pelatihan)

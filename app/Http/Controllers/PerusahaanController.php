@@ -92,7 +92,7 @@ class PerusahaanController extends Controller
             'status_kerjasama' => 'pending',
         ]);
 
-        return redirect()->route('perusahaan.index')
+        return redirect()->route('admin.perusahaan.index')
                         ->with('success', 'Data perusahaan berhasil ditambahkan');
     }
 

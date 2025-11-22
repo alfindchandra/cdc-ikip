@@ -6,43 +6,55 @@ use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Fakultas;
+use App\Models\Program_studi;
 
 class SiswaController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Siswa::with('user');
+{
+    // Eager load 'user', 'fakultas', dan 'programStudi'
+    $query = Siswa::with(['user', 'fakultas', 'programStudi']); 
 
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nim', 'like', "%$search%")
-                  ->orWhereHas('user', function($q2) use ($search) {
-                      $q2->where('name', 'like', "%$search%");
-                  });
-            });
-        }
-
-        if ($request->has('fakultas')) {
-            $query->where('fakultas', $request->fakultas);
-        }
-
-        if ($request->has('program_studi')) {
-            $query->where('program_studi', $request->program_studi);
-        }
-
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $siswa = $query->latest()->paginate(20);
-
-        return view('admin.siswa.index', compact('siswa'));
+    if ($request->has('search')) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('nim', 'like', "%$search%")
+              ->orWhereHas('user', function($q2) use ($search) {
+                  $q2->where('name', 'like', "%$search%");
+              });
+        });
     }
 
+    if ($request->has('fakultas')) {
+        // Asumsi kolom di tabel Siswa yang menyimpan ID adalah 'fakultas_id'
+        $query->where('fakultas_id', $request->fakultas); 
+    }
+
+    if ($request->has('program_studi')) {
+        // Asumsi kolom di tabel Siswa yang menyimpan ID adalah 'program_studi_id'
+        $query->where('program_studi_id', $request->program_studi);
+    }
+    
+    // ... filter status
+
+    if ($request->has('status')) {
+        $query->where('status', $request->status);
+    }
+    
+    // Pastikan Anda memfilter berdasarkan ID kolom di tabel Siswa (fakultas_id / program_studi_id) jika menggunakan input filter dari ID.
+
+    $siswa = $query->latest()->paginate(20);
+    $fakultas = Fakultas::all();
+    $program_studi = Program_studi::all();
+
+    return view('admin.siswa.index', compact('siswa', 'fakultas', 'program_studi'));
+}
     public function create()
     {
-        return view('admin.siswa.create');
+        $fakultas = Fakultas::all();
+        $program_studi = Program_studi::all();
+        return view('admin.siswa.create', compact('fakultas', 'program_studi'));
     }
 
     public function store(Request $request)
@@ -93,6 +105,7 @@ class SiswaController extends Controller
             'no_telp_ortu' => $validated['no_telp_ortu'] ?? null,
             'status' => 'aktif',
         ]);
+        
 
         return redirect()->route('siswa.index')
                         ->with('success', 'Data siswa berhasil ditambahkan');
@@ -106,7 +119,9 @@ class SiswaController extends Controller
 
     public function edit(Siswa $siswa)
     {
-        return view('admin.siswa.edit', compact('siswa'));
+        $fakultas = Fakultas::all();
+        $program_studi = Program_studi::all();
+        return view('admin.siswa.edit', compact('siswa', 'fakultas', 'program_studi'));
     }
 
     public function update(Request $request, Siswa $siswa)

@@ -79,7 +79,7 @@
                         Edit
                     </a>
 
-                    <form action="{{ route('perusahaan.lowongan.toggle', $l->id) }}" method="POST" class="inline">
+                    <form action="{{ route('perusahaan.lowongan.status', $l->id) }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" 
                                 class="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 

@@ -18,17 +18,12 @@ use App\Http\Controllers\WelcomeController;
 
 // Guest routes
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
-Route::get('/lowongan', function() {
-    return view('lowongan.index');
-})->name('lowongan.index');
-
-Route::get('/lowongan/{id}', function($id) {
-    return view('lowongan.show', compact('id'));
-})->name('lowongan.show');
-
-Route::get('/pelatihan/{id}', function($id) {
-    return view('pelatihan.show', compact('id'));
-})->name('pelatihan.show');
+Route::get('/lowongan', [WelcomeController::class, 'lowongan'])->name('index.lowongan');
+Route::get('/lowongan/{lowongan}', [WelcomeController::class, 'lowonganShow'])->name('lowongan.show');
+Route::get('/pelatihan', [WelcomeController::class, 'pelatihan'])->name('index.pelatihan');
+Route::get('/pelatihan/{pelatihan}', [WelcomeController::class, 'pelatihanShow'])->name('show.pelatihan');
+Route::get('/kerjasama', [WelcomeController::class, 'kerjasama'])->name('index.kerjasama');
+Route::get('/kerjasama/{kerjasama}', [WelcomeController::class, 'kerjasamaShow'])->name('show.kerjasama');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -76,11 +71,16 @@ Route::middleware('auth')->group(function () {
         Route::get('pkl/{pkl}/jurnal', [PklController::class, 'showJurnal'])->name('pkl.jurnal');
         Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
         
-        // Lowongan Kerja (Admin can view all)
+        // Lowongan Kerja (Admin can view all)\
         Route::get('lowongan', [LowonganKerjaController::class, 'adminIndex'])->name('lowongan.index');
+        Route::post('lowongan/search', [LowonganKerjaController::class, 'adminSearch'])->name('lowongan.search');
+        Route::post('lowongan/{lowongan}/publish', [LowonganKerjaController::class, 'toggleStatus'])->name('lowongan.publish');
+        Route::get('lowongan/pelamar/{lowongan}', [LowonganKerjaController::class, 'adminPelamar'])->name('lowongan.pelamar');
+        Route::get('lowongan/{lowongan}/peserta', [LowonganKerjaController::class, 'peserta'])->name('lowongan.peserta');
+        Route::post('lowongan/destroy', [LowonganKerjaController::class, 'destroy'])->name('lowongan.destroy');
+        Route::get('lowongan/show/{lowongan}', [LowonganKerjaController::class, 'adminShow'])->name('lowongan.show');
         Route::post('lowongan/{lowongan}/status', [LowonganKerjaController::class, 'updateStatus'])->name('lowongan.status');
-        Route::get('lowongan/{lowongan}', [LowonganKerjaController::class, 'show'])->name('lowongan.show');
-        Route::get('lowongan/show/{lowongan}', [LowonganKerjaController::class, 'adminShow'])->name('lowongan.adminShow');
+
         // Lamaran (Admin can view all)
         Route::get('lamaran', [LamaranController::class, 'adminIndex'])->name('lamaran.index');
         
@@ -93,7 +93,7 @@ Route::middleware('auth')->group(function () {
         
         // Kerjasama Industri
         Route::resource('kerjasama', KerjasamaIndustriController::class);
-        Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
+        Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
         
         // Laporan & Arsip
         Route::resource('laporan', LaporanController::class);
@@ -142,7 +142,8 @@ Route::middleware('auth')->group(function () {
         // Lowongan Kerja
         Route::resource('lowongan', LowonganKerjaController::class)->except(['index']);
         Route::get('lowongan', [LowonganKerjaController::class, 'perusahaanIndex'])->name('lowongan.index');
-        Route::post('lowongan/{lowongan}/toggle-status', [LowonganKerjaController::class, 'toggleStatus'])->name('lowongan.toggle');
+        Route::get('lowongan/pelamar/{lowongan}', [LowonganKerjaController::class, 'pelamar'])->name('lowongan.pelamar');
+        Route::post('lowongan/{lowongan}/toggle-status', [LowonganKerjaController::class, 'toggleStatus'])->name('lowongan.status');
         
         // Lamaran
         Route::get('lamaran', [LamaranController::class, 'perusahaanIndex'])->name('lamaran.index');

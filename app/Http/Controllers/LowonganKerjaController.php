@@ -43,9 +43,22 @@ class LowonganKerjaController extends Controller
             return view('siswa.lowongan.show', compact('lowongan'));
         }
 
-        return view('lowongan.show', compact('lowongan'));
+        return view('perusahaan.lowongan.show', compact('lowongan'));
     }
 
+    public function pelamar(LowonganKerja $lowongan)
+    {
+        $lowongan->load(['lamaran.siswa']);
+
+        return view('perusahaan.lowongan.pelamar', compact('lowongan'));
+    }
+   
+    public function adminShow(LowonganKerja $lowongan)
+    {
+        $lowongan->load('perusahaan', 'lamaran.siswa');
+
+        return view('admin.lowongan.show', compact('lowongan'));
+    }
     // Admin Methods
     public function adminIndex(Request $request)
     {
@@ -99,6 +112,7 @@ class LowonganKerjaController extends Controller
             'judul' => 'required|string|max:255',
             'posisi' => 'required|string',
             'deskripsi' => 'required|string',
+            'pendidikan' => 'required|string',
             'kualifikasi' => 'required|string',
             'benefit' => 'nullable|string',
             'tipe_pekerjaan' => 'required|in:full_time,part_time,kontrak,magang',

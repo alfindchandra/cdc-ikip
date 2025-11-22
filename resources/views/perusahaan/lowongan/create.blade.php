@@ -58,6 +58,19 @@
                 <textarea name="benefit" rows="3" class="w-full rounded-lg p-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Benefit yang didapatkan...">{{ old('benefit') }}</textarea>
                 @error('benefit')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
             </div>
+            <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Pendidikan</label>
+                    <select name="pendidikan" class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                        <option value="">Pilih Tipe</option>
+                        <option value="SMA/SMK" {{ old('pendidikan') == 'smk/sma' ? 'selected' : '' }}>SMA/SMK</option>
+                        <option value="D1" {{ old('pendidikan') == 'D1' ? 'selected' : '' }}>D1</option>
+                        <option value="D3" {{ old('pendidikan') == 'D3' ? 'selected' : '' }}>D3</option>
+                        <option value="S1" {{ old('pendidikan') == 'S1' ? 'selected' : '' }}>S1</option>
+                        <option value="S2" {{ old('pendidikan') == 'S2' ? 'selected' : '' }}>S2</option>
+                        <option value="S3" {{ old('pendidikan') == 'S3' ? 'selected' : '' }}>S3</option>
+                    </select>
+                    @error('pendidikan')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                </div>
 
             <!-- Info pekerjaan -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">

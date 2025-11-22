@@ -19,8 +19,8 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_berakhir')->nullable();
-            $table->string('dokumen_mou')->nullable(); // path dokumen (PDF, dsb)
-            $table->enum('status', ['aktif', 'nonaktif', 'selesai'])->default('aktif');
+            $table->string('dokumen_mou')->nullable(); 
+            $table->enum('status', ['aktif', 'nonaktif', 'selesai','draft'])->default('aktif');
             $table->string('pic_sekolah', 150)->nullable();
             $table->string('pic_industri', 150)->nullable();
             $table->decimal('nilai_kontrak', 15, 2)->nullable();

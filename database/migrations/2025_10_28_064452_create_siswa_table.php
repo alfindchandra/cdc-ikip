@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('agama', 20)->nullable();
             $table->text('alamat')->nullable();
             $table->string('no_telp', 15)->nullable();
-            $table->string('fakultas', 100)->nullable();
-            $table->string('program_studi', 100)->nullable();
+            $table->string('fakultas_id')->constrained()->onDelete('cascade');
+            $table->string('program_studi_id')->constrained()->onDelete('cascade');
             $table->year('tahun_masuk')->nullable();
             $table->string('nama_ortu')->nullable();
             $table->string('pekerjaan_ortu', 100)->nullable();
