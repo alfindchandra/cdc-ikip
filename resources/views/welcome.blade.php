@@ -117,7 +117,7 @@
                             </div>
                         </div>
                         
-                        <a href="" class="block w-full text-center bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
+                        <a href="{{ route('siswa.pelatihan.show', $pelatihan->id) }}" class="block w-full text-center bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
                             Daftar Sekarang
                         </a>
                     </div>

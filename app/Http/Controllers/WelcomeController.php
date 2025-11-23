@@ -22,7 +22,8 @@ class WelcomeController extends Controller
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
             $query->where(function($q) use ($keyword) {
-                $q->where('judul', 'like', "%{$keyword}%")
+                $q->where('posisi', 'like', "%{$keyword}%")
+                  ->orWhere('judul', 'like', "%{$keyword}%")
                   ->orWhere('deskripsi', 'like', "%{$keyword}%")
                   ->orWhereHas('perusahaan', function($q) use ($keyword) {
                       $q->where('nama_perusahaan', 'like', "%{$keyword}%");

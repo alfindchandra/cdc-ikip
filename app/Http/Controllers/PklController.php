@@ -6,6 +6,7 @@ use App\Models\Pkl;
 use App\Models\JurnalPkl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Kerjasamaindustri; 
 
 class PklController extends Controller
 {
@@ -49,17 +50,28 @@ class PklController extends Controller
         return back()->with('success', 'Pengajuan PKL berhasil dikirim');
     }
 
-    public function show(Pkl $pkl)
+   public function show(Pkl $pkl)
     {
         $pkl->load(['siswa.user', 'perusahaan', 'jurnalPkl']);
         
         // Authorization check
         if (auth()->user()->isAdmin()) {
             return view('admin.pkl.show', compact('pkl'));
+
         } elseif (auth()->user()->isSiswa() && $pkl->siswa_id == auth()->user()->siswa->id) {
             return view('siswa.pkl.show', compact('pkl'));
+
         } elseif (auth()->user()->isPerusahaan() && $pkl->perusahaan_id == auth()->user()->perusahaan->id) {
-            return view('perusahaan.pkl.show', compact('pkl'));
+            
+            // 2. PERBAIKAN DI SINI: Definisikan variabel $kerjasama
+            // Pastikan nama kolom foreign key sesuai tabel database (misal: 'perusahaan_id' atau 'dudi_id')
+            $kerjasama = Kerjasamaindustri::where('perusahaan_id', $pkl->perusahaan_id)->get(); 
+            
+            // Jika Anda belum punya Model/Tabel Kerjasama, pakai baris ini agar tidak error:
+            // $kerjasama = []; 
+
+            // 3. Masukkan 'kerjasama' ke dalam compact
+            return view('perusahaan.pkl.show', compact('pkl', 'kerjasama'));
         }
 
         abort(403);

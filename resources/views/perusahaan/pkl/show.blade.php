@@ -23,7 +23,7 @@
                 </div>
                 <div>
                     <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-1">{{ $pkl->siswa->user->name }}</h2>
-                    <p class="text-sm md:text-base text-gray-600 mb-1">{{ $pkl->siswa->nis }} - {{ $pkl->siswa->program_studi }}</p>
+                    <p class="text-sm md:text-base text-gray-600 mb-1">{{ $pkl->siswa->nim }} - {{ $pkl->siswa->programStudi->nama }}</p>
                     <p class="text-xs text-gray-500 font-medium">{{ $pkl->posisi ?? 'Peserta PKL' }}</p>
                 </div>
             </div>
@@ -375,10 +375,6 @@
         </div>
     </div>
 
-    @if($kerjasama->hasPages())
-    <div class="flex justify-center pt-4">
-        {{ $kerjasama->links() }}
-    </div>
-    @endif
+    
 </div>
 @endsection

@@ -33,4 +33,5 @@ class Pelatihan extends Model
     {
         return $query->where('status', 'published');
     }
+    
 }

@@ -10,7 +10,7 @@ class Siswa extends Model
 
     protected $fillable = [
         'user_id', 'nim',  'tempat_lahir', 'tanggal_lahir',
-        'jenis_kelamin', 'agama', 'alamat', 'no_telp', 'fakultas', 'program_studi',
+        'jenis_kelamin', 'agama', 'alamat', 'no_telp', 'fakultas_id', 'program_studi_id',
          'tahun_masuk', 'nama_ortu', 'pekerjaan_ortu',
         'no_telp_ortu', 'status'
     ];

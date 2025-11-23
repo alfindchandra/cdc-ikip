@@ -46,7 +46,7 @@ class PelatihanController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after:tanggal_mulai',
             'kuota' => 'nullable|integer',
-            'biaya' => 'nullable|numeric',
+            'biaya' => 'nullable|numeric', 
             'materi' => 'nullable|file|mimes:pdf|max:10240',
             'thumbnail' => 'nullable|image|max:2048',
         ]);
@@ -130,35 +130,9 @@ class PelatihanController extends Controller
         return view('admin.pelatihan.peserta', compact('pelatihan'));
     }
 
-    public function updateStatusPeserta(Request $request, $pesertaId)
-    {
-        $validated = $request->validate([
-            'status_pendaftaran' => 'required|in:daftar,diterima,ditolak',
-        ]);
+    
 
-        $peserta = \DB::table('peserta_pelatihan')->where('id', $pesertaId)->first();
-        
-        \DB::table('peserta_pelatihan')
-            ->where('id', $pesertaId)
-            ->update(['status_pendaftaran' => $validated['status_pendaftaran']]);
-
-        return back()->with('success', 'Status peserta berhasil diperbarui');
-    }
-
-    public function inputNilai(Request $request, $pesertaId)
-    {
-        $validated = $request->validate([
-            'nilai' => 'required|numeric|min:0|max:100',
-            'status_kehadiran' => 'required|in:hadir,tidak_hadir,izin',
-        ]);
-
-        \DB::table('peserta_pelatihan')
-            ->where('id', $pesertaId)
-            ->update($validated);
-
-        return back()->with('success', 'Nilai berhasil disimpan');
-    }
-
+    
     // Siswa Methods
     public function siswaPelatihan(Request $request)
     {
@@ -225,4 +199,92 @@ class PelatihanController extends Controller
 
         return back()->with('success', 'Pendaftaran pelatihan berhasil dibatalkan');
     }
+    public function updateStatusPeserta(Request $request, $pelatihanId, $siswaId)
+{
+    $validated = $request->validate([
+        'status_pendaftaran' => 'required|in:pending,diterima,ditolak',
+        'nilai' => 'nullable|numeric|min:0|max:100',
+        'sertifikat' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        'catatan' => 'nullable|string'
+    ]);
+
+    $pelatihan = \App\Models\Pelatihan::findOrFail($pelatihanId);
+    $siswa = \App\Models\Siswa::findOrFail($siswaId);
+
+    // Get current pivot data
+    $pivotData = $siswa->pelatihan()->where('pelatihan_id', $pelatihanId)->first();
+    
+    if (!$pivotData) {
+        return redirect()->back()->with('error', 'Data peserta tidak ditemukan');
+    }
+
+    // Prepare update data
+    $updateData = [
+        'status_pendaftaran' => $validated['status_pendaftaran']
+    ];
+
+    // Add nilai if provided
+    if ($request->filled('nilai')) {
+        $updateData['nilai'] = $validated['nilai'];
+    }
+
+    // Add catatan if provided
+    if ($request->filled('catatan')) {
+        $updateData['catatan'] = $validated['catatan'];
+    }
+
+    // Handle sertifikat upload
+    if ($request->hasFile('sertifikat')) {
+        // Delete old sertifikat if exists
+        if ($pivotData->pivot->sertifikat) {
+            \Storage::delete($pivotData->pivot->sertifikat);
+        }
+        
+        $sertifikatPath = $request->file('sertifikat')->store('sertifikat', 'public');
+        $updateData['sertifikat'] = $sertifikatPath;
+    }
+
+    // Update pivot table
+    $siswa->pelatihan()->updateExistingPivot($pelatihanId, $updateData);
+
+    // Create notification for siswa
+    \App\Models\Notifikasi::create([
+        'user_id' => $siswa->user_id,
+        'judul' => 'Status Pelatihan Diperbarui',
+        'pesan' => "Status pendaftaran Anda untuk pelatihan '{$pelatihan->judul}' telah diperbarui menjadi {$validated['status_pendaftaran']}",
+        'kategori' => 'pelatihan',
+        'link' => route('siswa.pelatihan.show', $pelatihan->id)
+    ]);
+
+    return redirect()->back()->with('success', 'Status peserta berhasil diperbarui');
+}
+
+/**
+ * Input nilai peserta (legacy method - bisa dihapus jika tidak digunakan)
+ */
+public function inputNilai(Request $request, $pelatihanId, $siswaId)
+{
+    $validated = $request->validate([
+        'nilai' => 'required|numeric|min:0|max:100'
+    ]);
+
+    $pelatihan = \App\Models\Pelatihan::findOrFail($pelatihanId);
+    $siswa = \App\Models\Siswa::findOrFail($siswaId);
+
+    // Update nilai in pivot table
+    $siswa->pelatihan()->updateExistingPivot($pelatihanId, [
+        'nilai' => $validated['nilai']
+    ]);
+
+    // Create notification
+    \App\Models\Notifikasi::create([
+        'user_id' => $siswa->user_id,
+        'judul' => 'Nilai Pelatihan Tersedia',
+        'pesan' => "Nilai Anda untuk pelatihan '{$pelatihan->judul}' adalah {$validated['nilai']}",
+        'tipe' => 'pelatihan',
+        'link' => route('siswa.pelatihan.show', $pelatihan->id)
+    ]);
+
+    return redirect()->back()->with('success', 'Nilai berhasil diinput');
+}
 }

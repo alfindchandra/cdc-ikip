@@ -183,7 +183,7 @@
 
             <!-- Footer -->
             <p class="text-center text-sm text-gray-500 mt-8">
-                &copy; {{ date('Y') }} SMK Negeri 1 Baureno. All rights reserved.
+                &copy; {{ date('Y') }}{{ config('app.ikip') }}. All rights reserved.
             </p>
         </div>
     </div>

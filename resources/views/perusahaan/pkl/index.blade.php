@@ -63,7 +63,7 @@
                                 </div>
                                 <div class="truncate">
                                     <p class="font-semibold text-gray-900 truncate">{{ $p->siswa->user->name }}</p>
-                                    <p class="text-xs text-gray-500 mt-1 truncate">{{ $p->siswa->nis }} - {{ $p->siswa->program_studi }}</p>
+                                    <p class="text-xs text-gray-500 mt-1 truncate">{{ $p->siswa->nim }} - {{ $p->siswa->programStudi->nama }}</p>
                                 </div>
                             </div>
                         </td>

@@ -17,7 +17,7 @@
         </div>
 
         <form 
-            action="{{ route('admin.lowongan.update', $lowongan->id) }}" 
+            action="{{ route('perusahaan.lowongan.update', $lowongan->id) }}" 
             method="POST" 
             enctype="multipart/form-data" 
             class="p-6 space-y-6"

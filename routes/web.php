@@ -26,10 +26,20 @@ Route::get('/kerjasama', [WelcomeController::class, 'kerjasama'])->name('index.k
 Route::get('/kerjasama/{kerjasama}', [WelcomeController::class, 'kerjasamaShow'])->name('show.kerjasama');
 
 Route::middleware('guest')->group(function () {
+    // Login
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    
+    // Register - Pilihan Role
+    Route::get('/register', [AuthController::class, 'showRegisterChoice'])->name('register');
+    
+    // Register Siswa
+    Route::get('/register/siswa', [AuthController::class, 'showRegisterSiswa'])->name('register.siswa');
+    Route::post('/register/siswa', [AuthController::class, 'registerSiswa']);
+    
+    // Register Perusahaan
+    Route::get('/register/perusahaan', [AuthController::class, 'showRegisterPerusahaan'])->name('register.perusahaan');
+    Route::post('/register/perusahaan', [AuthController::class, 'registerPerusahaan']);
 });
 
 
@@ -88,9 +98,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('pelatihan', PelatihanController::class);
         Route::post('pelatihan/{pelatihan}/publish', [PelatihanController::class, 'publish'])->name('pelatihan.publish');
         Route::get('pelatihan/{pelatihan}/peserta', [PelatihanController::class, 'peserta'])->name('pelatihan.peserta');
-        Route::post('pelatihan/peserta/{peserta}/status', [PelatihanController::class, 'updateStatusPeserta'])->name('pelatihan.peserta.status');
-        Route::post('pelatihan/peserta/{peserta}/nilai', [PelatihanController::class, 'inputNilai'])->name('pelatihan.peserta.nilai');
-        
+        Route::post('pelatihan/{pelatihan}/peserta/{siswa}/status', [PelatihanController::class, 'updateStatusPeserta'])->name('pelatihan.peserta.status');
+Route::post('pelatihan/{pelatihan}/peserta/{siswa}/nilai', [PelatihanController::class, 'inputNilai'])->name('pelatihan.peserta.nilai');
         // Kerjasama Industri
         Route::resource('kerjasama', KerjasamaIndustriController::class);
         Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');

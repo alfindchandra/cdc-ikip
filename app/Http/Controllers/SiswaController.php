@@ -52,33 +52,32 @@ class SiswaController extends Controller
 }
     public function create()
     {
-        $fakultas = Fakultas::all();
-        $program_studi = Program_studi::all();
-        return view('admin.siswa.create', compact('fakultas', 'program_studi'));
+        $fakultas = Fakultas::orderBy('nama')->get();
+        $programStudis = Program_studi::orderBy('nama')->get();
+        return view('admin.siswa.create', compact('fakultas', 'programStudis'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+       $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'nim' => 'required|unique:siswa,nim',
-            'tempat_lahir' => 'nullable|string',
-            'tanggal_lahir' => 'nullable|date',
+            'password' => 'required|min:6|confirmed',
+            'nim' => 'required|string|max:20|unique:siswa,nim',
+            'tempat_lahir' => 'required|string|max:100',
+            'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
-            'agama' => 'nullable|string',
-            'alamat' => 'nullable|string',
-            'no_telp' => 'nullable|string',
-            'fakultas' => 'nullable|string',
-            'program_studi' => 'nullable|string',
-            'tahun_masuk' => 'nullable|integer',
-            'nama_ortu' => 'nullable|string',
-            'pekerjaan_ortu' => 'nullable|string',
-            'no_telp_ortu' => 'nullable|string',
+            'agama' => 'required|string|max:20',
+            'alamat' => 'required|string',
+            'no_telp' => 'required|string|max:15',
+            'fakultas_id' => 'required|exists:fakultas,id',
+            'program_studi_id' => 'required|exists:program_studis,id',
+            'tahun_masuk' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+            'nama_ortu' => 'required|string|max:255',
+            'pekerjaan_ortu' => 'nullable|string|max:100',
+            'no_telp_ortu' => 'nullable|string|max:15',
         ]);
 
-        // Create user
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -87,28 +86,27 @@ class SiswaController extends Controller
             'is_active' => true,
         ]);
 
-        // Create siswa profile
-        $siswa = Siswa::create([
+        Siswa::create([
             'user_id' => $user->id,
             'nim' => $validated['nim'],
-            'tempat_lahir' => $validated['tempat_lahir'] ?? null,
-            'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
+            'tempat_lahir' => $validated['tempat_lahir'],
+            'tanggal_lahir' => $validated['tanggal_lahir'],
             'jenis_kelamin' => $validated['jenis_kelamin'],
-            'agama' => $validated['agama'] ?? null,
-            'alamat' => $validated['alamat'] ?? null,
-            'no_telp' => $validated['no_telp'] ?? null,
-            'fakultas' => $validated['fakultas'] ?? null,
-            'program_studi' => $validated['program_studi'] ?? null,
-            'tahun_masuk' => $validated['tahun_masuk'] ?? null,
-            'nama_ortu' => $validated['nama_ortu'] ?? null,
-            'pekerjaan_ortu' => $validated['pekerjaan_ortu'] ?? null,
-            'no_telp_ortu' => $validated['no_telp_ortu'] ?? null,
+            'agama' => $validated['agama'],
+            'alamat' => $validated['alamat'],
+            'no_telp' => $validated['no_telp'], 
+            'fakultas_id' => $validated['fakultas_id'],
+            'program_studi_id' => $validated['program_studi_id'],
+            'tahun_masuk' => $validated['tahun_masuk'],
+            'nama_ortu' => $validated['nama_ortu'],
+            'pekerjaan_ortu' => $validated['pekerjaan_ortu'],
+            'no_telp_ortu' => $validated['no_telp_ortu'],
             'status' => 'aktif',
         ]);
-        
 
-        return redirect()->route('siswa.index')
-                        ->with('success', 'Data siswa berhasil ditambahkan');
+       
+
+        return redirect()->route('admin.siswa.index')->with('success', 'Registrasi siswa berhasil! Selamat datang.');
     }
 
     public function show(Siswa $siswa)
@@ -125,60 +123,73 @@ class SiswaController extends Controller
     }
 
     public function update(Request $request, Siswa $siswa)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $siswa->user_id,
-            'nim' => 'required|unique:siswa,nim,' . $siswa->id,
-            'tempat_lahir' => 'nullable|string',
-            'tanggal_lahir' => 'nullable|date',
-            'jenis_kelamin' => 'required|in:L,P',
-            'agama' => 'nullable|string',
-            'alamat' => 'nullable|string',
-            'no_telp' => 'nullable|string',
-            'fakultas' => 'nullable|string',
-            'program_studi' => 'nullable|string',
-            'tahun_masuk' => 'nullable|integer',
-            'nama_ortu' => 'nullable|string',
-            'pekerjaan_ortu' => 'nullable|string',
-            'no_telp_ortu' => 'nullable|string',
-            'status' => 'required|in:aktif,lulus,pindah,keluar',
-        ]);
+{
+    // 1. VALIDASI DATA
+    $validated = $request->validate([
+        // Data User
+        'name'      => 'required|string|max:255',
+        'email'     => 'required|email|unique:users,email,' . $siswa->user_id,
+        'password'  => 'nullable|string|min:6', // Tambahkan validasi minimal karakter password
+        
+        // Data Siswa
+        'nim'            => 'required|unique:siswa,nim,' . $siswa->id,
+        'tempat_lahir'   => 'nullable|string',
+        'tanggal_lahir'  => 'nullable|date',
+        'jenis_kelamin'  => 'required|in:L,P',
+        'agama'          => 'nullable|string',
+        'alamat'         => 'nullable|string',
+        'no_telp'        => 'nullable|string',
+        
+        // PERBAIKAN DI SINI (Validasi Relasi ID)
+        'fakultas_id'      => 'nullable|exists:fakultas,id',      // Pastikan tabelnya bernama 'fakultas'
+        'program_studi_id' => 'nullable|exists:program_studis,id', // Pastikan tabelnya bernama 'program_studi'
+        
+        'tahun_masuk'    => 'nullable|integer',
+        'nama_ortu'      => 'nullable|string',
+        'pekerjaan_ortu' => 'nullable|string',
+        'no_telp_ortu'   => 'nullable|string',
+        'status'         => 'required|in:aktif,lulus,pindah,keluar',
+    ]);
 
-        // Update user
-        $siswa->user->update([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-        ]);
+    // 2. UPDATE DATA USER (Login)
+    $userData = [
+        'name'  => $request->name,
+        'email' => $request->email,
+    ];
 
-        // Update password if provided
-        if ($request->filled('password')) {
-            $siswa->user->update([
-                'password' => Hash::make($request->password)
-            ]);
-        }
-
-        // Update siswa profile
-        $siswa->update([
-            'nim' => $validated['nim'],
-            'tempat_lahir' => $validated['tempat_lahir'],
-            'tanggal_lahir' => $validated['tanggal_lahir'],
-            'jenis_kelamin' => $validated['jenis_kelamin'],
-            'agama' => $validated['agama'],
-            'alamat' => $validated['alamat'],
-            'no_telp' => $validated['no_telp'],
-            'fakultas' => $validated['fakultas'],
-            'program_studi' => $validated['program_studi'],
-            'tahun_masuk' => $validated['tahun_masuk'],
-            'nama_ortu' => $validated['nama_ortu'],
-            'pekerjaan_ortu' => $validated['pekerjaan_ortu'],
-            'no_telp_ortu' => $validated['no_telp_ortu'],
-            'status' => $validated['status'],
-        ]);
-
-        return redirect()->route('siswa.index')
-                        ->with('success', 'Data siswa berhasil diperbarui');
+    // Cek apakah password diisi (jika kosong, jangan diupdate)
+    if ($request->filled('password')) {
+        $userData['password'] = Hash::make($request->password);
     }
+
+    $siswa->user->update($userData);
+
+    // 3. UPDATE DATA SISWA (Profile)
+    $siswa->update([
+        'nim'              => $request->nim,
+        'tempat_lahir'     => $request->tempat_lahir,
+        'tanggal_lahir'    => $request->tanggal_lahir,
+        'jenis_kelamin'    => $request->jenis_kelamin,
+        'agama'            => $request->agama,
+        'alamat'           => $request->alamat,
+        'no_telp'          => $request->no_telp,
+        
+        // PERBAIKAN DI SINI (Simpan ID ke kolom foreign key)
+        'fakultas_id'      => $request->fakultas_id,      // Pastikan kolom di DB siswa bernama 'fakultas_id'
+        'program_studi_id' => $request->program_studi_id, // Pastikan kolom di DB siswa bernama 'program_studi_id'
+        
+        'tahun_masuk'      => $request->tahun_masuk,
+        'nama_ortu'        => $request->nama_ortu,
+        'pekerjaan_ortu'   => $request->pekerjaan_ortu,
+        'no_telp_ortu'     => $request->no_telp_ortu,
+        'status'           => $request->status,
+    ]);
+
+    // 4. REDIRECT
+    // Pastikan route ini sesuai dengan route list Anda (biasanya admin.siswa.index)
+    return redirect()->route('admin.siswa.index')
+                     ->with('success', 'Data siswa berhasil diperbarui');
+}
 
     public function destroy(Siswa $siswa)
     {

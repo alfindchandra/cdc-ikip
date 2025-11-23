@@ -156,11 +156,6 @@
                         </button>
                     </form>
                     
-                    {{-- Tombol untuk melihat daftar pelamar --}}
-                    <a href="{{ route('perusahaan.lowongan.pelamar', $lowongan->id) }}" class="w-full justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg transition duration-150 ease-in-out flex items-center shadow-md mt-4">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M5 10a5 5 0 0110 0v1h1a7 7 0 007-7V6a2 2 0 00-2-2H4a2 2 0 00-2 2v1a7 7 0 007 7h1v1a5 5 0 01-5 5z"/></svg>
-                        Lihat {{ $lowongan->jumlah_pelamar }} Pelamar
-                    </a>
                 </div>
             </div>
 
