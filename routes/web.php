@@ -168,6 +168,7 @@ Route::post('pelatihan/{pelatihan}/peserta/{siswa}/nilai', [PelatihanController:
         Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
         
         // Kerjasama
+        Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatusPerusahaan'])->name('kerjasama.status'); 
         Route::get('kerjasama', [KerjasamaIndustriController::class, 'perusahaanIndex'])->name('kerjasama.index');
         Route::get('kerjasama/{kerjasama}', [KerjasamaIndustriController::class, 'show'])->name('kerjasama.show');
     });

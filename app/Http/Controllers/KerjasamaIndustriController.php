@@ -145,4 +145,19 @@ class KerjasamaIndustriController extends Controller
 
         return view('perusahaan.kerjasama.index', compact('kerjasama'));
     }
+    public function updateStatusPerusahaan(Request $request, KerjasamaIndustri $kerjasama)
+{
+    // Pastikan hanya perusahaan yang terkait yang bisa update
+    if ($kerjasama->perusahaan_id != auth()->user()->perusahaan->id) {
+        abort(403, 'Anda tidak memiliki akses untuk mengubah kerjasama ini.');
+    }
+
+    $validated = $request->validate([
+        'status' => 'required|in:draft,proposal,negosiasi,aktif,selesai,batal',
+    ]);
+
+    $kerjasama->update(['status' => $validated['status']]);
+
+    return back()->with('success', 'Status kerjasama berhasil diperbarui');
+}
 }

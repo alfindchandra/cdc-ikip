@@ -7,7 +7,7 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
     
     <!-- Back Button -->
-    <a href="{{ route('perusahaan.kerjasama.index') }}" class="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors duration-200 font-medium group">
+    <a href="{{ route('admin.kerjasama.index') }}" class="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors duration-200 font-medium group">
         <svg class="w-5 h-5 mr-2 transition-transform duration-200 group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
         </svg>
@@ -41,7 +41,28 @@
                         </span>
                     </div>
                     <h1 class="text-3xl font-extrabold mb-2">{{ $kerjasama->judul }}</h1>
-                    <p class="text-white/90 text-lg">Program kerjasama dengan {{ config('app.name', 'Sekolah') }}</p>
+                    <p class="text-white/90 text-lg">{{ $kerjasama->perusahaan->nama_perusahaan }}</p>
+                </div>
+                <div class="flex space-x-3 mt-4 md:mt-0">
+                    <a href="{{ route('admin.kerjasama.edit', $kerjasama->id) }}" 
+                       class="inline-flex items-center px-4 py-2 bg-white text-indigo-600 font-semibold rounded-lg hover:bg-gray-50 transition duration-150">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Edit
+                    </a>
+                    <form action="{{ route('admin.kerjasama.destroy', $kerjasama->id) }}" method="POST" 
+                          onsubmit="return confirm('Yakin ingin menghapus kerjasama ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" 
+                                class="inline-flex items-center px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-150">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Hapus
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -108,7 +129,7 @@
                             <p class="text-lg font-bold text-gray-900">{{ $kerjasama->pic_sekolah ?? '-' }}</p>
                         </div>
                         <div class="p-6 rounded-xl bg-indigo-50 border border-indigo-200">
-                            <p class="text-xs text-indigo-600 font-semibold uppercase mb-2">PIC Perusahaan</p>
+                            <p class="text-xs text-indigo-600 font-semibold uppercase mb-2">PIC Industri</p>
                             <p class="text-lg font-bold text-gray-900">{{ $kerjasama->pic_industri ?? '-' }}</p>
                         </div>
                     </div>
@@ -139,16 +160,12 @@
                 <!-- Status Update Card -->
                 <div class="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
                     <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100">
-                        <h3 class="text-lg font-bold text-indigo-900 flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                            </svg>
-                            Ubah Status Kerjasama
-                        </h3>
+                        <h3 class="text-lg font-bold text-indigo-900">Ubah Status</h3>
                     </div>
                     <div class="p-6">
-                        <form action="{{ route('perusahaan.kerjasama.status', $kerjasama->id) }}" method="POST">
+                        <form action="{{ route('admin.kerjasama.status', $kerjasama->id) }}" method="POST">
                             @csrf
+                            @method('PUT')
                             <label class="block text-sm font-medium text-gray-700 mb-2">Status Kerjasama</label>
                             <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 mb-4">
                                 <option value="draft" {{ $kerjasama->status == 'draft' ? 'selected' : '' }}>Draft</option>
@@ -158,18 +175,10 @@
                                 <option value="selesai" {{ $kerjasama->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                 <option value="batal" {{ $kerjasama->status == 'batal' ? 'selected' : '' }}>Batal</option>
                             </select>
-                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition duration-150 flex items-center justify-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                </svg>
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg transition duration-150">
                                 Perbarui Status
                             </button>
                         </form>
-                        <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                            <p class="text-xs text-yellow-800">
-                                <strong>Catatan:</strong> Perubahan status akan mempengaruhi workflow kerjasama. Pastikan status sesuai dengan kondisi aktual.
-                            </p>
-                        </div>
                     </div>
                 </div>
 
@@ -202,7 +211,7 @@
                 @if($kerjasama->dokumen_mou)
                 <div class="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
                     <div class="bg-green-50 px-6 py-4 border-b border-green-100">
-                        <h3 class="text-lg font-bold text-green-900">Dokumen Kerjasama</h3>
+                        <h3 class="text-lg font-bold text-green-900">Dokumen</h3>
                     </div>
                     <div class="p-6">
                         <a href="{{ Storage::url($kerjasama->dokumen_mou) }}" 
@@ -211,29 +220,37 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
-                            <span>Download MoU/Dokumen</span>
+                            <span>Download MoU</span>
                         </a>
                     </div>
                 </div>
                 @endif
 
-                <!-- Info Box -->
-                <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                    <div class="flex items-start space-x-3">
-                        <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <div class="text-sm text-blue-800">
-                            <p class="font-bold mb-1">Panduan Status</p>
-                            <ul class="list-disc list-inside space-y-1 mt-2">
-                                <li><strong>Draft:</strong> Rancangan awal</li>
-                                <li><strong>Proposal:</strong> Diajukan ke sekolah</li>
-                                <li><strong>Negosiasi:</strong> Dalam pembahasan</li>
-                                <li><strong>Aktif:</strong> Sedang berjalan</li>
-                                <li><strong>Selesai:</strong> Sudah selesai</li>
-                                <li><strong>Batal:</strong> Dibatalkan</li>
-                            </ul>
+                <!-- Perusahaan Info -->
+                <div class="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
+                    <div class="bg-blue-50 px-6 py-4 border-b border-blue-100">
+                        <h3 class="text-lg font-bold text-blue-900">Perusahaan Mitra</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-start space-x-4 mb-4">
+                            @if($kerjasama->perusahaan->logo)
+                            <img src="{{ Storage::url($kerjasama->perusahaan->logo) }}" 
+                                 alt="{{ $kerjasama->perusahaan->nama_perusahaan }}" 
+                                 class="w-16 h-16 rounded-lg object-cover border border-gray-200 flex-shrink-0">
+                            @else
+                            <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-gray-600 font-bold text-2xl">{{ substr($kerjasama->perusahaan->nama_perusahaan, 0, 1) }}</span>
+                            </div>
+                            @endif
+                            <div class="flex-grow">
+                                <p class="font-bold text-gray-900 text-lg">{{ $kerjasama->perusahaan->nama_perusahaan }}</p>
+                                <p class="text-sm text-gray-600">{{ $kerjasama->perusahaan->bidang_usaha }}</p>
+                            </div>
                         </div>
+                        <a href="{{ route('admin.perusahaan.show', $kerjasama->perusahaan->id) }}" 
+                           class="block text-center w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition duration-150">
+                            Lihat Detail Perusahaan
+                        </a>
                     </div>
                 </div>
 

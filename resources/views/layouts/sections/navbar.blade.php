@@ -17,6 +17,7 @@
           <a href="#lowongan" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Lowongan</a>
           <a href="#pelatihan" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Pelatihan</a>
           <a href="#perusahaan" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Perusahaan</a>
+          <a href="#perusahaan" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition">Tracer Study</a>
 
           
         </div>
