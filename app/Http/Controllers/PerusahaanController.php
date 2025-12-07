@@ -10,31 +10,51 @@ use Illuminate\Support\Facades\Storage;
 
 class PerusahaanController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = Perusahaan::with('user');
+public function index(Request $request)
+{
+    $query = Perusahaan::with('user');
 
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where('nama_perusahaan', 'like', "%$search%")
-                  ->orWhere('bidang_usaha', 'like', "%$search%")
-                  ->orWhere('kota', 'like', "%$search%");
-        }
-
-        if ($request->has('status')) {
-            $query->where('status_kerjasama', $request->status);
-        }
-
-        $perusahaan = $query->latest()->paginate(20);
-
-        return view('admin.perusahaan.index', compact('perusahaan'));
+    
+    if ($request->has('search') && $request->search != '') {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('nama_perusahaan', 'like', "%$search%")
+              ->orWhere('bidang_usaha', 'like', "%$search%")
+              ->orWhere('kota', 'like', "%$search%");
+        });
     }
 
+    
+    
+ 
+    if ($request->has('status') && $request->status != '') { 
+        $query->where('status_kerjasama', $request->status);
+    }
+
+  
+    $perusahaan = $query->latest()->paginate(20)->withQueryString();
+
+   
+
+    return view('admin.perusahaan.index', compact('perusahaan'));
+}
     public function create()
     {
         return view('admin.perusahaan.create');
     }
+    public function destroy(Perusahaan $perusahaan)
+    {
+        // Hapus logo jika ada
+        if ($perusahaan->logo) {
+            Storage::disk('public')->delete($perusahaan->logo);
+        }
 
+        // Hapus user (akan cascade delete perusahaan)
+        $perusahaan->user->delete();
+
+        return redirect()->route('admin.perusahaan.index')
+                        ->with('success', 'Perusahaan berhasil dihapus beserta semua data terkait');
+    }
     public function store(Request $request)
     {
         $validated = $request->validate([

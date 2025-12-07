@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('fakultas_id')->constrained()->onDelete('cascade');
             $table->string('program_studi_id')->constrained()->onDelete('cascade');
             $table->year('tahun_masuk')->nullable();
+            $table->year('tahun_lulus')->nullable();
             $table->string('nama_ortu')->nullable();
             $table->string('pekerjaan_ortu', 100)->nullable();
             $table->string('no_telp_ortu', 15)->nullable();

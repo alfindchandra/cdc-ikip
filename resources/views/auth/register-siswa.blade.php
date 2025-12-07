@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi Siswa - CDC IKIP PGRI Bojonegoro</title>
+    <title>Registrasi Siswa - CDC {{ config('app.ikip') }}</title>
     @vite(['resources/css/app.css'])
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body class="bg-gradient-to-br from-blue-50 via-white to-blue-50 min-h-screen py-8 px-4">
     <div class="max-w-4xl mx-auto">

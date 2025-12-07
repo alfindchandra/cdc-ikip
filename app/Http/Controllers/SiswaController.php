@@ -11,40 +11,51 @@ use App\Models\Program_studi;
 
 class SiswaController extends Controller
 {
-    public function index(Request $request)
+// app/Http/Controllers/Admin/SiswaController.php (Asumsi)
+
+public function index(Request $request)
 {
-    // Eager load 'user', 'fakultas', dan 'programStudi'
+    // 1. Inisialisasi Query dengan Eager Loading
     $query = Siswa::with(['user', 'fakultas', 'programStudi']); 
 
-    if ($request->has('search')) {
+    // 2. Filter Pencarian (Search) - NIM atau Nama User
+    if ($request->has('search') && $request->search != '') {
         $search = $request->search;
         $query->where(function($q) use ($search) {
-            $q->where('nim', 'like', "%$search%")
-              ->orWhereHas('user', function($q2) use ($search) {
-                  $q2->where('name', 'like', "%$search%");
-              });
+            // Cek di kolom 'nim'
+            $q->where('nim', 'like', "%$search%");
+            
+            // Cek di relasi 'user' (nama)
+            $q->orWhereHas('user', function($q2) use ($search) {
+                // Asumsi kolom nama di tabel user adalah 'name'
+                $q2->where('name', 'like', "%$search%");
+            });
         });
     }
 
-    if ($request->has('fakultas')) {
-        // Asumsi kolom di tabel Siswa yang menyimpan ID adalah 'fakultas_id'
+    // 3. Filter Fakultas
+    if ($request->has('fakultas') && $request->fakultas != '') {
+        // Menggunakan nama field yang benar di tabel Siswa untuk relasi Fakultas (e.g., fakultas_id)
         $query->where('fakultas_id', $request->fakultas); 
     }
 
-    if ($request->has('program_studi')) {
-        // Asumsi kolom di tabel Siswa yang menyimpan ID adalah 'program_studi_id'
+    // 4. Filter Program Studi
+    if ($request->has('program_studi') && $request->program_studi != '') {
+        // Menggunakan nama field yang benar di tabel Siswa untuk relasi Program Studi (e.g., program_studi_id)
         $query->where('program_studi_id', $request->program_studi);
     }
     
-    // ... filter status
-
-    if ($request->has('status')) {
+    // 5. Filter Status
+    if ($request->has('status') && $request->status != '') {
         $query->where('status', $request->status);
     }
     
-    // Pastikan Anda memfilter berdasarkan ID kolom di tabel Siswa (fakultas_id / program_studi_id) jika menggunakan input filter dari ID.
-
-    $siswa = $query->latest()->paginate(20);
+    // 6. Eksekusi Query dan Pagination
+    // **PERBAIKAN UTAMA:** Gunakan withQueryString() agar semua parameter filter (search, fakultas, dll.) 
+    // tetap ada saat berpindah halaman (pagination).
+    $siswa = $query->latest()->paginate(20)->withQueryString(); 
+    
+    // 7. Ambil Data Lain untuk Form Filter
     $fakultas = Fakultas::all();
     $program_studi = Program_studi::all();
 
@@ -145,6 +156,7 @@ class SiswaController extends Controller
         'program_studi_id' => 'nullable|exists:program_studis,id', // Pastikan tabelnya bernama 'program_studi'
         
         'tahun_masuk'    => 'nullable|integer',
+        'tahun_lulus'    => 'nullable|integer',
         'nama_ortu'      => 'nullable|string',
         'pekerjaan_ortu' => 'nullable|string',
         'no_telp_ortu'   => 'nullable|string',
@@ -183,6 +195,7 @@ class SiswaController extends Controller
         'pekerjaan_ortu'   => $request->pekerjaan_ortu,
         'no_telp_ortu'     => $request->no_telp_ortu,
         'status'           => $request->status,
+        'tahun_lulus'      => $request->tahun_lulus
     ]);
 
     // 4. REDIRECT

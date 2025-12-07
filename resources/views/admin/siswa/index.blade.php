@@ -1,58 +1,70 @@
 @extends('layouts.app')
 
-@section('title', 'Data Siswa')
-@section('page-title', 'Data Siswa')
+@section('title', 'Data Mahasiswa')
+@section('page-title', 'Data Mahasiswa')
 
 @section('content')
 <div class="space-y-8">
-    <!-- Filter & Search -->
     <div class="bg-white shadow-md rounded-2xl p-6 border border-gray-100">
-        <form method="GET" action="{{ route('admin.siswa.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="col-span-1 md:col-span-2">
-                <input 
-                    type="text" 
-                    name="search" 
-                    value="{{ request('search') }}"
-                    placeholder="🔍 Cari NISN atau Nama..." 
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                >
-            </div>
-            <div>
-                <select name="fakultas" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                    <option value="">Pilih</option>
-                    @foreach ($fakultas as $fakultas)
-                        <option value="{{ $fakultas->id }}" {{ request('fakultas') == $fakultas->id ? 'selected' : '' }}>{{ $fakultas->nama }}</option>
-                    @endforeach
-                 </select>
-            </div>
-            <div>
-                <select name="program_studi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                    <option value="">Pilih</option>
-                   @foreach ($program_studi as $program_studi)
-                        <option value="{{ $program_studi->id }}" {{ request('program_studi') == $program_studi->id ? 'selected' : '' }}>{{ $program_studi->nama }}</option>
-                    @endforeach
+    <form method="GET" action="{{ route('admin.siswa.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div class="col-span-1 md:col-span-2">
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ request('search') }}"
+                placeholder="🔍 Cari NIM atau Nama..." 
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            >
+        </div>
+        
+        <div>
+            <select name="fakultas" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                <option value="">Semua Fakultas</option>
+                @foreach ($fakultas as $f)
+                    <option value="{{ $f->id }}" {{ request('fakultas') == $f->id ? 'selected' : '' }}>{{ $f->nama }}</option>
+                @endforeach
             </select>
-            </div>
-            <div class="flex space-x-2">
-                <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-4 py-2 transition flex items-center justify-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    Filter
-                </button>
-                <a href="{{ route('admin.siswa.index') }}" 
-                   class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg px-4 py-2 text-center transition">
-                    Reset
-                </a>
-            </div>
-        </form>
-    </div>
+        </div>
+        
+        <div>
+            <select name="program_studi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                <option value="">Semua Program Studi</option>
+               @foreach ($program_studi as $ps)
+                    <option value="{{ $ps->id }}" {{ request('program_studi') == $ps->id ? 'selected' : '' }}>{{ $ps->nama }}</option>
+                @endforeach
+            </select>
+        </div>
+        
+        <div>
+            <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                <option value="">Semua Status</option>
+                <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                <option value="Cuti" {{ request('status') == 'Cuti' ? 'selected' : '' }}>Cuti</option>
+                <option value="Lulus" {{ request('status') == 'Lulus' ? 'selected' : '' }}>Lulus</option>
+            </select>
+        </div>
+        
+        <div class="col-span-1 md:col-span-5 flex space-x-2">
+            <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-4 py-2 transition flex items-center justify-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                Filter/Cari
+            </button>
+            <a href="{{ route('admin.siswa.index') }}" 
+               class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg px-4 py-2 text-center transition flex items-center justify-center">
+               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11.418 5a8.001 8.001 0 01-15.356 2A8.001 8.001 0 0119.418 15m0 0H15"></path></svg>
+                Reset
+            </a>
+        </div>
+    </form>
+</div>
 
     <!-- Actions -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h3 class="text-lg font-semibold text-gray-800">
-            Total: <span class="text-blue-600">{{ $siswa->total() }}</span> Siswa
+            Total: <span class="text-blue-600">{{ $siswa->total() }}</span> Mahasiswa
         </h3>
         <div class="flex flex-wrap gap-3">
             
@@ -61,7 +73,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                           d="M12 4v16m8-8H4"/>
                 </svg>
-                Tambah Siswa
+                Tambah Mahasiswa
             </a>
         </div>
     </div>
@@ -144,8 +156,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                       d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                             </svg>
-                            <p class="text-lg font-medium">Tidak ada data siswa</p>
-                            <p class="text-sm text-gray-500">Silakan tambah data siswa baru</p>
+                            <p class="text-lg font-medium">Tidak ada data Mahasiswa</p>
+                            <p class="text-sm text-gray-500">Silakan tambah data mahasiswa baru</p>
                         </td>
                     </tr>
                     @endforelse

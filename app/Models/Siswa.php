@@ -12,7 +12,7 @@ class Siswa extends Model
         'user_id', 'nim',  'tempat_lahir', 'tanggal_lahir',
         'jenis_kelamin', 'agama', 'alamat', 'no_telp', 'fakultas_id', 'program_studi_id',
          'tahun_masuk', 'nama_ortu', 'pekerjaan_ortu',
-        'no_telp_ortu', 'status'
+        'no_telp_ortu', 'status', 'tahun_lulus'
     ];
 
     protected $casts = [
@@ -55,5 +55,65 @@ class Siswa extends Model
     {
         // Asumsi foreign key di tabel Siswa adalah 'program_studi_id'
         return $this->belongsTo(Program_studi::class, 'program_studi_id');
+    }
+    public function tracerStudy()
+{
+    return $this->hasOne(TracerStudy::class);
+}
+
+/**
+ * Cek apakah alumni sudah mengisi tracer study
+ */
+public function haFilledTracerStudy()
+{
+    return $this->tracerStudy()->exists();
+}
+
+/**
+ * Scope untuk alumni yang sudah lulus
+ */
+public function scopeAlumni($query)
+{
+    return $query->where('status', 'lulus');
+}
+
+/**
+ * Scope untuk alumni yang belum mengisi tracer study
+ */
+public function scopeBelumIsiTracerStudy($query)
+{
+    return $query->whereDoesntHave('tracerStudy');
+}
+ public function getStatusTextAttribute()
+    {
+        $statuses = [
+            'aktif' => 'Aktif',
+            'lulus' => 'Lulus',
+            'pindah' => 'Pindah',
+            'keluar' => 'Keluar',
+        ];
+        return $statuses[$this->status] ?? $this->status;
+    }
+
+    public function getUmurAttribute()
+    {
+        if (!$this->tanggal_lahir) return null;
+        return $this->tanggal_lahir->age;
+    }
+
+    /**
+     * Check apakah sudah mengisi tracer study
+     */
+    public function hasFilledTracerStudy()
+    {
+        return $this->tracerStudy()->exists();
+    }
+
+    /**
+     * Check apakah sudah lulus dan eligible untuk tracer study
+     */
+    public function isEligibleForTracerStudy()
+    {
+        return $this->status === 'lulus' && $this->tahun_lulus !== null;
     }
 }

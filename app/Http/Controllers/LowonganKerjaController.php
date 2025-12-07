@@ -10,28 +10,31 @@ class LowonganKerjaController extends Controller
 {
     // Siswa Methods
     public function index(Request $request)
-    {
-        $query = LowonganKerja::with('perusahaan')->aktif();
+{
+    $query = LowonganKerja::with('perusahaan');
 
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('judul', 'like', "%$search%")
-                  ->orWhere('posisi', 'like', "%$search%")
-                  ->orWhereHas('perusahaan', function($q2) use ($search) {
-                      $q2->where('nama_perusahaan', 'like', "%$search%");
-                  });
-            });
-        }
-
-        if ($request->has('tipe')) {
-            $query->where('tipe_pekerjaan', $request->tipe);
-        }
-
-        $lowongan = $query->latest()->paginate(12);
-
-        return view('siswa.lowongan.index', compact('lowongan'));
+    if ($request->has('search') && $request->search != '') {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('judul', 'like', "%$search%")
+              ->orWhere('posisi', 'like', "%$search%")
+              ->orWhereHas('perusahaan', function($q2) use ($search) {
+ 
+                  $q2->where('nama_perusahaan', 'like', "%$search%");
+              });
+        });
     }
+
+    if ($request->has('status') && $request->status != '') { 
+        $query->where('status', $request->status);
+    }
+  
+    $lowongan = $query->latest()->paginate(20)->withQueryString();
+
+    return view('siswa.lowongan.index', compact('lowongan'));
+}
+
+       
 
     public function show(LowonganKerja $lowongan)
     {

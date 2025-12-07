@@ -177,6 +177,26 @@ class PklController extends Controller
         return view('admin.pkl.index', compact('pkl'));
     }
 
+    public function destroy(Pkl $pkl)
+    {
+        // Hapus file laporan jika ada
+        if ($pkl->laporan_pkl) {
+            Storage::disk('public')->delete($pkl->laporan_pkl);
+        }
+
+        // Hapus jurnal terkait
+        foreach ($pkl->jurnalPkl as $jurnal) {
+            if ($jurnal->foto) {
+                Storage::disk('public')->delete($jurnal->foto);
+            }
+            $jurnal->delete();
+        }
+
+        $pkl->delete();
+
+        return back()->with('success', 'Data PKL berhasil dihapus');
+    }
+
     public function updateStatus(Request $request, Pkl $pkl)
     {
         $validated = $request->validate([

@@ -76,24 +76,7 @@
         </div>
 
         <!-- Siswa PKL -->
-        <div class="card hover:shadow-lg transition-shadow">
-            <div class="card-body">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                </div>
-                <h3 class="text-sm font-medium text-gray-600 mb-1">Siswa PKL</h3>
-                <p class="text-2xl font-bold text-gray-900">{{ $pkl_berlangsung }}</p>
-                <p class="text-xs text-gray-500 mt-1">Sedang berlangsung</p>
-                <a href="{{ route('perusahaan.pkl.index') }}" class="text-sm text-blue-600 hover:text-blue-700 mt-2 inline-block">
-                    Lihat Detail →
-                </a>
-            </div>
-        </div>
-
+       
         <!-- Lamaran Baru -->
         <div class="card hover:shadow-lg transition-shadow">
             <div class="card-body">
@@ -182,53 +165,7 @@
         </div>
 
         <!-- Siswa PKL -->
-        <div class="card">
-            <div class="card-header">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900">Siswa PKL</h3>
-                    <a href="{{ route('perusahaan.pkl.index') }}" class="text-sm text-blue-600 hover:text-blue-700">
-                        Lihat Semua →
-                    </a>
-                </div>
-            </div>
-            <div class="divide-y divide-gray-200">
-                @forelse($siswa_pkl as $pkl)
-                <div class="px-6 py-4 hover:bg-gray-50 transition">
-                    <div class="flex items-start justify-between">
-                        <div class="flex items-start space-x-3 flex-1">
-                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold flex-shrink-0">
-                                {{ substr($pkl->siswa->user->name, 0, 1) }}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-semibold text-gray-900">{{ $pkl->siswa->user->name }}</p>
-                                <p class="text-sm text-gray-600">{{ $pkl->posisi ?? 'Peserta PKL' }}</p>
-                                <div class="flex items-center space-x-3 mt-2">
-                                    <span class="badge badge-{{ $pkl->status == 'berlangsung' ? 'info' : ($pkl->status == 'pengajuan' ? 'warning' : 'success') }} text-xs">
-                                        {{ ucfirst($pkl->status) }}
-                                    </span>
-                                    <span class="text-xs text-gray-500">
-                                        {{ $pkl->tanggal_mulai->format('d M') }} - {{ $pkl->tanggal_selesai->format('d M Y') }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="{{ route('perusahaan.pkl.show', $pkl->id) }}" class="text-blue-600 hover:text-blue-700 ml-4">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                @empty
-                <div class="px-6 py-12 text-center">
-                    <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                    </svg>
-                    <p class="text-sm text-gray-500">Belum ada siswa PKL</p>
-                </div>
-                @endforelse
-            </div>
-        </div>
+        
     </div>
 
     <!-- Quick Actions -->
@@ -252,12 +189,7 @@
                     <span class="text-sm font-medium text-gray-700 group-hover:text-purple-700">Tinjau Lamaran</span>
                 </a>
 
-                <a href="{{ route('perusahaan.pkl.index') }}" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition group">
-                    <svg class="w-10 h-10 text-gray-400 group-hover:text-purple-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                    </svg>
-                    <span class="text-sm font-medium text-gray-700 group-hover:text-purple-700">Kelola PKL</span>
-                </a>
+               
 
                 <a href="{{ route('perusahaan.profile.edit') }}" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition group">
                     <svg class="w-10 h-10 text-gray-400 group-hover:text-purple-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -281,7 +213,7 @@
                 <div class="flex-1">
                     <h3 class="text-lg font-bold text-gray-900 mb-2">💼 Tips untuk Perusahaan</h3>
                     <p class="text-gray-700 mb-3">
-                        Pastikan deskripsi lowongan kerja Anda jelas dan detail. Semakin lengkap informasi yang Anda berikan, semakin mudah bagi siswa untuk memahami posisi yang ditawarkan.
+                        Pastikan deskripsi lowongan kerja Anda jelas dan detail. Semakin lengkap informasi yang Anda berikan, semakin mudah bagi Mahasiswa untuk memahami posisi yang ditawarkan.
                     </p>
                     <ul class="space-y-2 text-sm text-gray-700">
                         <li class="flex items-start">
@@ -290,12 +222,7 @@
                             </svg>
                             <span>Tinjau lamaran masuk secara berkala untuk mendapatkan kandidat terbaik</span>
                         </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-green-600 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            <span>Berikan feedback kepada siswa PKL untuk membantu perkembangan mereka</span>
-                        </li>
+                       
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-green-600 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>

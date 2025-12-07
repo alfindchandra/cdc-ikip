@@ -219,30 +219,6 @@ class DatabaseSeeder extends Seeder
             Pengaturan::updateOrCreate(['key_name' => $setting['key_name']], $setting);
         }
 
-        // ==========================================================
-        // KONSEL OUTPUT (Diperbaiki)
-        // ==========================================================
-        $this->command->info('Database seeded successfully!');
-        $this->command->info('');
-        $this->command->info('Login credentials:');
-        $this->command->info('Admin:');
-        $this->command->info('   Email: admin@ikippgribojonegoro.ac.id');
-        $this->command->info('   Password: password');
-        $this->command->info('');
-        $this->command->info('Siswa 1 (Ahmad Rizki):');
-        $this->command->info('   Email: ahmad.rizki@gmail.com');
-        $this->command->info('   Password: password');
-        $this->command->info('');
-        $this->command->info('Siswa 2 (Siti Nurhaliza):');
-        $this->command->info('   Email: siti.nurhaliza@gmail.com');
-        $this->command->info('   Password: password');
-        $this->command->info('');
-        $this->command->info('Perusahaan 1 (PT Digital Teknologi Indonesia):');
-        $this->command->info('   Email: hrd@digitaltek.co.id');
-        $this->command->info('   Password: password');
-        $this->command->info('');
-        $this->command->info('Perusahaan 2 (CV Maju Jaya Komputer):');
-        $this->command->info('   Email: admin@majujaya.com');
-        $this->command->info('   Password: password');
+       
     }
 }

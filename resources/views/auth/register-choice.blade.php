@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilih Jenis Akun - CDC SMKN 1 Baureno</title>
+    <title>Pilih Jenis Akun - {{ config('app.ikip') }}</title>
     @vite(['resources/css/app.css'])
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <style>
         @keyframes float {
             0%, 100% { transform: translateY(0px); }

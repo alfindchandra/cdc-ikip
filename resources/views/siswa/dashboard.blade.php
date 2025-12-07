@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
-@section('page-title', 'Dashboard Siswa')
+@section('page-title', 'Dashboard Mahasiswa')
 
 @section('content')
 <div class="space-y-6">
@@ -19,7 +19,7 @@
                             elseif($hour < 18) echo 'Selamat sore';
                             else echo 'Selamat malam';
                         @endphp
-                        , jangan lupa untuk update jurnal PKL dan cek lowongan terbaru!
+                        , jangan lupa untuk tetap tersenyum dan cek lowongan terbaru!
                     </p>
                 </div>
                 <div class="hidden md:block">
@@ -34,33 +34,7 @@
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- PKL Status -->
-        <div class="card hover:shadow-lg transition-shadow">
-            <div class="card-body">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                    @if($pkl_aktif)
-                    <span class="badge badge-success">Aktif</span>
-                    @else
-                    <span class="badge badge-gray">Belum PKL</span>
-                    @endif
-                </div>
-                <h3 class="text-sm font-medium text-gray-600 mb-1">Status PKL</h3>
-                @if($pkl_aktif)
-                <p class="text-2xl font-bold text-gray-900">{{ ucfirst($pkl_aktif->status) }}</p>
-                <p class="text-xs text-gray-500 mt-1">{{ $pkl_aktif->perusahaan->nama_perusahaan }}</p>
-                @else
-                <p class="text-2xl font-bold text-gray-900">-</p>
-                <p class="text-xs text-gray-500 mt-1">Belum terdaftar</p>
-                @endif
-                <a href="{{ route('siswa.pkl.index') }}" class="text-sm text-blue-600 hover:text-blue-700 mt-2 inline-block">
-                    Lihat Detail →
-                </a>
-            </div>
-        </div>
+        
 
         <!-- Lamaran Pending -->
         <div class="card hover:shadow-lg transition-shadow">
@@ -134,52 +108,7 @@
         </div>
     </div>
 
-    <!-- PKL Active Card (if exists) -->
-    @if($pkl_aktif)
-    <div class="card border-l-4 border-blue-500">
-        <div class="card-header">
-            <h3 class="text-lg font-semibold text-gray-900">PKL Sedang Berlangsung</h3>
-        </div>
-        <div class="card-body">
-            <div class="flex items-start justify-between mb-4">
-                <div class="flex-1">
-                    <h4 class="text-xl font-bold text-gray-900 mb-2">{{ $pkl_aktif->perusahaan->nama_perusahaan }}</h4>
-                    <p class="text-gray-600 mb-3">{{ $pkl_aktif->posisi ?? 'Peserta PKL' }}</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <p class="text-sm text-gray-600">Periode</p>
-                            <p class="font-semibold text-gray-900">
-                                {{ $pkl_aktif->tanggal_mulai->format('d M Y') }} - {{ $pkl_aktif->tanggal_selesai->format('d M Y') }}
-                            </p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Sisa Waktu</p>
-                            <p class="font-semibold text-gray-900">
-                                {{ $pkl_aktif->tanggal_selesai->diffInDays(now()) }} hari lagi
-                            </p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Pembimbing</p>
-                            <p class="font-semibold text-gray-900">{{ $pkl_aktif->pembimbing_sekolah ?? '-' }}</p>
-                        </div>
-                    </div>
-                </div>
-                <span class="badge badge-info text-sm px-3 py-1 ml-4">{{ ucfirst($pkl_aktif->status) }}</span>
-            </div>
-            <div class="flex space-x-3">
-                <a href="{{ route('siswa.pkl.show', $pkl_aktif->id) }}" class="btn btn-primary">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    Update Jurnal
-                </a>
-                <a href="{{ route('siswa.pkl.show', $pkl_aktif->id) }}" class="btn btn-outline">
-                    Lihat Detail
-                </a>
-            </div>
-        </div>
-    </div>
-    @endif
+   
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Lowongan Terbaru -->
@@ -318,14 +247,7 @@
                     <span class="text-sm font-medium text-gray-700 group-hover:text-blue-700">Cari Lowongan</span>
                 </a>
 
-                @if(!$pkl_aktif)
-                <a href="{{ route('siswa.pkl.index') }}" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition group">
-                    <svg class="w-10 h-10 text-gray-400 group-hover:text-blue-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    <span class="text-sm font-medium text-gray-700 group-hover:text-blue-700">Daftar PKL</span>
-                </a>
-                @endif
+                
 
                 <a href="{{ route('siswa.pelatihan.index') }}" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition group">
                     <svg class="w-10 h-10 text-gray-400 group-hover:text-blue-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -355,9 +277,7 @@
                 </div>
                 <div class="flex-1">
                     <h3 class="text-lg font-bold text-gray-900 mb-2">💡 Tips Hari Ini</h3>
-                    <p class="text-gray-700 mb-3">
-                        "Jangan lupa untuk selalu mengupdate jurnal PKL setiap hari agar pembimbing dapat memantau perkembangan Anda. CV yang baik adalah kunci untuk diterima kerja!"
-                    </p>
+                    
                     <div class="flex flex-wrap gap-2">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white text-purple-700 border border-purple-200">
                             #KonsistenJurnal

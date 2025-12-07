@@ -9,8 +9,7 @@
     {{-- Filter & Search Card --}}
     <div class="bg-white shadow-xl rounded-xl p-6 border-t-4 border-blue-600">
         <h3 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b">Filter Pelatihan</h3>
-        <form method="GET" class="grid grid-cols-1 gap-4 md:grid-cols-5 md:gap-6 items-end">
-            
+<form method="GET" action="{{ route('admin.pelatihan.index') }}" class="grid grid-cols-1 gap-4 md:grid-cols-5 md:gap-6 items-end">            
             {{-- Search Input --}}
             <div class="md:col-span-2">
                 <label for="search" class="sr-only">Cari...</label>
@@ -27,7 +26,7 @@
                 <label for="jenis" class="sr-only">Jenis Pelatihan</label>
                 <select name="jenis" id="jenis" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm transition duration-150 appearance-none bg-white">
                     <option value="">Semua Jenis</option>
-                    @foreach(['soft_skill', 'hard_skill', 'sertifikasi', 'pembekalan'] as $jenis)
+                    @foreach(['webinar','seminar','bimbingan_karier','workshop', 'lainnya'] as $jenis)
                         <option value="{{ $jenis }}" {{ request('jenis') == $jenis ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $jenis)) }}</option>
                     @endforeach
                 </select>
@@ -44,10 +43,13 @@
             </div>
             
             {{-- Filter Button --}}
-            <div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-150 shadow-md transform hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <div class="flex space-x-3">
+                <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-150 shadow-md transform hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Terapkan Filter
                 </button>
+                <a href="{{ route('admin.pelatihan.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2.5 px-4 rounded-lg transition duration-150 shadow-md flex items-center justify-center">
+                    Reset
+                </a>
             </div>
         </form>
     </div>

@@ -12,7 +12,9 @@ return new class extends Migration
             $table->id();
             $table->string('judul');
             $table->text('deskripsi');
-            $table->enum('jenis', ['soft_skill', 'hard_skill', 'sertifikasi', 'pembekalan']);
+            // BARIS INI DIPERBAIKI: 'lainnya' ditambahkan ke dalam daftar ENUM
+            $table->enum('jenis', ['webinar','seminar','bimbingan_karier','workshop', 'lainnya'])->default('lainnya');
+            
             $table->string('instruktur')->nullable();
             $table->string('tempat')->nullable();
             $table->dateTime('tanggal_mulai');

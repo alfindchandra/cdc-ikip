@@ -40,12 +40,12 @@
                     <div>
                         <label for="jenis" class="block text-sm font-medium text-gray-700 mb-1">Jenis Pelatihan <span class="text-red-500">*</span></label>
                         <select id="jenis" name="jenis" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
-                            <option value="soft_skill" {{ old('jenis', $pelatihan->jenis) == 'soft_skill' ? 'selected' : '' }}>Soft Skill</option>
-                            <option value="hard_skill" {{ old('jenis', $pelatihan->jenis) == 'hard_skill' ? 'selected' : '' }}>Hard Skill</option>
-                            <option value="sertifikasi" {{ old('jenis', $pelatihan->jenis) == 'sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
-                            <option value="pembekalan" {{ old('jenis', $pelatihan->jenis) == 'pembekalan' ? 'selected' : '' }}>Pembekalan</option>
-                        </select>
-                    </div>
+                           <option value="webinar" {{ old('jenis', $pelatihan->jenis) == 'webinar' ? 'selected' : '' }}>Webinar</option>
+                            <option value="seminar" {{ old('jenis', $pelatihan->jenis) == 'seminar' ? 'selected' : '' }}>Seminar</option>
+                            <option value="bimbingan_karier" {{ old('jenis', $pelatihan->jenis) == 'bimbingan_karier' ? 'selected' : '' }}>Bimbingan Karier</option>
+                            <option value="workshop" {{ old('jenis', $pelatihan->jenis) == 'workshop' ? 'selected' : '' }}>Workshop</option>
+                            <option value="lainnya" {{ old('jenis', $pelatihan->jenis) == 'lainnya' ? 'selected' : '' }}>Lainnya</option> </select>
+                         </div>
                     <div>
                         <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status <span class="text-red-500">*</span></label>
                         <select id="status" name="status" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">

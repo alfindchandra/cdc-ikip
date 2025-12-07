@@ -18,7 +18,7 @@
                             elseif($hour < 18) echo 'Selamat sore';
                             else echo 'Selamat malam';
                         @endphp
-                        , jangan lupa untuk update jurnal PKL dan cek lowongan terbaru!
+                        , jangan lupa untuk cek lowongan terbaru!
                     </p>
                 </div>
                 <div class="hidden md:block">
@@ -30,14 +30,14 @@
         </div>
     </div>
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Total Siswa -->
         <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600">Total Siswa Aktif</p>
+                    <p class="text-sm font-medium text-gray-600">Total Mahaiswa Aktif</p>
                     <p class="text-3xl font-bold text-gray-900 mt-2">{{ $total_siswa }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Siswa terdaftar</p>
+                    <p class="text-xs text-gray-500 mt-1">Mahasiswa terdaftar</p>
                 </div>
                 <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,29 +63,14 @@
             </div>
         </div>
 
-        <!-- PKL Berlangsung -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600">PKL Berlangsung</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ $pkl_berlangsung }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Siswa sedang PKL</p>
-                </div>
-                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
+      
         <!-- Lowongan Aktif -->
         <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Lowongan Aktif</p>
                     <p class="text-3xl font-bold text-gray-900 mt-2">{{ $lowongan_aktif }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Tersedia untuk siswa</p>
+                    <p class="text-xs text-gray-500 mt-1">Tersedia untuk Mahasiswa</p>
                 </div>
                 <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,49 +82,7 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- PKL Terbaru -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-900">PKL Terbaru</h3>
-                    <a href="{{ route('admin.pkl.index') }}" class="text-sm text-blue-600 hover:text-blue-700">Lihat Semua</a>
-                </div>
-            </div>
-            <div class="divide-y divide-gray-200">
-                @forelse($pkl_terbaru as $pkl)
-                <div class="px-6 py-4 hover:bg-gray-50 transition">
-                    <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                            <p class="font-medium text-gray-900">{{ $pkl->siswa->user->name }}</p>
-                            <p class="text-sm text-gray-600 mt-1">{{ $pkl->perusahaan->nama_perusahaan }}</p>
-                            <div class="flex items-center space-x-4 mt-2">
-                                <span class="text-xs text-gray-500">
-                                    {{ $pkl->tanggal_mulai->format('d M Y') }} - {{ $pkl->tanggal_selesai->format('d M Y') }}
-                                </span>
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
-                                    @if($pkl->status == 'berlangsung') bg-green-100 text-green-800
-                                    @elseif($pkl->status == 'pengajuan') bg-yellow-100 text-yellow-800
-                                    @elseif($pkl->status == 'diterima') bg-blue-100 text-blue-800
-                                    @else bg-gray-100 text-gray-800
-                                    @endif">
-                                    {{ ucfirst($pkl->status) }}
-                                </span>
-                            </div>
-                        </div>
-                        <a href="{{ route('admin.pkl.show', $pkl->id) }}" class="ml-4 text-blue-600 hover:text-blue-700">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                @empty
-                <div class="px-6 py-12 text-center text-gray-500">
-                    <p class="text-sm">Belum ada data PKL</p>
-                </div>
-                @endforelse
-            </div>
-        </div>
+
 
         <!-- Lowongan Terbaru -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
@@ -180,17 +123,59 @@
                 @endforelse
             </div>
         </div>
+        <!-- Pelatihan Terbaru -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold text-gray-900">Pelatihan Terbaru</h3>
+            <a href="{{ route('admin.pelatihan.index') }}" class="text-sm text-blue-600 hover:text-blue-700">Lihat Semua</a>
+        </div>
+    </div>        
+    <div class="divide-y divide-gray-200">
+        @forelse($pelatihan_terbaru as $pelatihan)
+        <div class="px-6 py-4 hover:bg-gray-50 transition">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <p class="font-medium text-gray-900">{{ $pelatihan->judul }}</p>
+                    {{-- Menggunakan 'instruktur' sebagai ganti 'penyelenggara' --}}
+                    <p class="text-sm text-gray-600 mt-1">Instruktur: {{ $pelatihan->instruktur }}</p>
+                    <div class="flex items-center space-x-4 mt-2">
+                        {{-- Menggunakan 'tanggal_mulai' sebagai ganti 'tanggal' --}}
+                        <span class="text-xs text-gray-500">Mulai: {{ \Carbon\Carbon::parse($pelatihan->tanggal_mulai)->format('d M Y') }}</span>
+                        {{-- Menggunakan 'jenis' sebagai ganti 'tipe_pelatihan' --}}
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            {{ ucfirst(str_replace('_', ' ', $pelatihan->jenis)) }}
+                        </span>
+                        <span class="text-xs text-gray-500">
+                            {{ $pelatihan->jumlah_peserta }} peserta
+                        </span>
+                    </div>
+                </div>
+                <a href="{{ route('admin.pelatihan.show', $pelatihan->id) }}" class="ml-4 text-blue-600 hover:text-blue-700">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        @empty
+        <div class="px-6 py-12 text-center text-gray-500">
+            <p class="text-sm">Belum ada pelatihan tersedia</p>
+        </div>
+        @endforelse
+    </div>
+</div>
     </div>
 
     <!-- Quick Actions -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Aksi Cepat</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
             <a href="{{ route('admin.siswa.create') }}" class="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
                 <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                <span class="text-sm font-medium text-gray-700">Tambah Siswa</span>
+                <span class="text-sm font-medium text-gray-700">Tambah Mahasiswa</span>
             </a>
 
             <a href="{{ route('admin.perusahaan.create') }}" class="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
@@ -207,12 +192,7 @@
                 <span class="text-sm font-medium text-gray-700">Buat Pelatihan</span>
             </a>
 
-            <a href="{{ route('admin.laporan.create') }}" class="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
-                <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                <span class="text-sm font-medium text-gray-700">Buat Laporan</span>
-            </a>
+            
         </div>
     </div>
 </div>

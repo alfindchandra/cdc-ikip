@@ -68,19 +68,18 @@
         <div class="card-body">
             <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="md:col-span-2">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari pelatihan..." class="form-input">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari pelatihan..." class="form-input p-2 border rounded-lg w-full">
                 </div>
                 <div>
-                    <select name="jenis" class="form-select">
+                    <select name="jenis" class="form-select border rounded-lg w-full p-2">
                         <option value="">Semua Jenis</option>
-                        <option value="soft_skill" {{ request('jenis') == 'soft_skill' ? 'selected' : '' }}>Soft Skill</option>
-                        <option value="hard_skill" {{ request('jenis') == 'hard_skill' ? 'selected' : '' }}>Hard Skill</option>
-                        <option value="sertifikasi" {{ request('jenis') == 'sertifikasi' ? 'selected' : '' }}>Sertifikasi</option>
-                        <option value="pembekalan" {{ request('jenis') == 'pembekalan' ? 'selected' : '' }}>Pembekalan</option>
-                    </select>
+                         @foreach(['webinar','seminar','bimbingan_karier','workshop', 'lainnya'] as $jenis)
+                        <option value="{{ $jenis }}" {{ request('jenis') == $jenis ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $jenis)) }}</option>
+                    @endforeach
+                 </select>
                 </div>
                 <div>
-                    <button type="submit" class="btn btn-primary w-full">Cari</button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full">Cari</button>
                 </div>
             </form>
         </div>

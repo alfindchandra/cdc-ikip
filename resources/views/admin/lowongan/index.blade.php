@@ -6,44 +6,43 @@
 @section('content')
 <div class="space-y-8 px-4 sm:px-0">
     
-    <!-- Filter & Search Section -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
-        <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-            <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707v7.586l-2-2v-7.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-            Filter & Pencarian
-        </h2>
-        <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-            <div class="md:col-span-2">
-                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Cari Lowongan</label>
-                <input type="text" 
-                       id="search"
-                       name="search" 
-                       value="{{ request('search') }}"
-                       placeholder="Cari judul, posisi, atau perusahaan..." 
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150">
-            </div>
-            <div>
-                <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Status Lowongan</label>
-                <select id="status-filter" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150">
-                    <option value="">Semua Status</option>
-                    <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                    <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
-                    <option value="expired" {{ request('status') == 'expired' ? 'selected' : '' }}>Expired</option>
-                </select>
-            </div>
-            <div class="flex space-x-3 mt-2 md:mt-0">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md flex items-center justify-center transition duration-150">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    Terapkan
-                </button>
-                <a href="{{ route('admin.lowongan.index') }}" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 rounded-lg shadow-md flex items-center justify-center transition duration-150">
-                    Reset
-                </a>
-            </div>
-        </form>
-    </div>
+   <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+        <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707v7.586l-2-2v-7.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+        Filter & Pencarian
+    </h2>
+    <form method="GET" action="{{ route('admin.lowongan.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <div class="md:col-span-2">
+            <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Cari Lowongan</label>
+            <input type="text" 
+                    id="search"
+                    name="search" 
+                    value="{{ request('search') }}"
+                    placeholder="Cari judul, posisi, atau perusahaan..." 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+        </div>
+        <div>
+            <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Status Lowongan</label>
+            <select id="status-filter" name="status" class="w-full ...">
+                <option value="">Semua Status</option>
+                <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                <option value="expired" {{ request('status') == 'expired' ? 'selected' : '' }}>Expired</option>
+            </select>
+        </div>
+        <div class="flex space-x-3 mt-2 md:mt-0">
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md flex items-center justify-center transition duration-150">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                Terapkan
+            </button>
+            <a href="{{ route('admin.lowongan.index') }}" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 rounded-lg shadow-md flex items-center justify-center transition duration-150">
+                Reset
+            </a>
+        </div>
+    </form>
+</div>
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

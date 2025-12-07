@@ -15,6 +15,7 @@ use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\CatatanController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\TracerStudyController;
 
 // Guest routes
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
@@ -24,6 +25,7 @@ Route::get('/pelatihan', [WelcomeController::class, 'pelatihan'])->name('index.p
 Route::get('/pelatihan/{pelatihan}', [WelcomeController::class, 'pelatihanShow'])->name('show.pelatihan');
 Route::get('/kerjasama', [WelcomeController::class, 'kerjasama'])->name('index.kerjasama');
 Route::get('/kerjasama/{kerjasama}', [WelcomeController::class, 'kerjasamaShow'])->name('show.kerjasama');
+Route::get('/tracer-study', [WelcomeController::class, 'tracerStudy'])->name('index.tracer-study');
 
 Route::middleware('guest')->group(function () {
     // Login
@@ -65,6 +67,8 @@ Route::middleware('auth')->group(function () {
     
     // Admin routes
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+
+
         // Data Siswa
         Route::resource('siswa', SiswaController::class);
         Route::post('siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
@@ -75,11 +79,11 @@ Route::middleware('auth')->group(function () {
         Route::post('perusahaan/{perusahaan}/status', [PerusahaanController::class, 'updateStatus'])->name('perusahaan.status');
         
         // PKL Management
-        Route::resource('pkl', PklController::class);
-        Route::post('pkl/{pkl}/status', [PklController::class, 'updateStatus'])->name('pkl.status');
-        Route::post('pkl/{pkl}/nilai', [PklController::class, 'inputNilai'])->name('pkl.nilai');
-        Route::get('pkl/{pkl}/jurnal', [PklController::class, 'showJurnal'])->name('pkl.jurnal');
-        Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
+        // Route::resource('pkl', PklController::class);
+        // Route::post('pkl/{pkl}/status', [PklController::class, 'updateStatus'])->name('pkl.status');
+        // Route::post('pkl/{pkl}/nilai', [PklController::class, 'inputNilai'])->name('pkl.nilai');
+        // Route::get('pkl/{pkl}/jurnal', [PklController::class, 'showJurnal'])->name('pkl.jurnal');
+        // Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
         
         // Lowongan Kerja (Admin can view all)\
         Route::get('lowongan', [LowonganKerjaController::class, 'adminIndex'])->name('lowongan.index');
@@ -101,30 +105,48 @@ Route::middleware('auth')->group(function () {
         Route::post('pelatihan/{pelatihan}/peserta/{siswa}/status', [PelatihanController::class, 'updateStatusPeserta'])->name('pelatihan.peserta.status');
 Route::post('pelatihan/{pelatihan}/peserta/{siswa}/nilai', [PelatihanController::class, 'inputNilai'])->name('pelatihan.peserta.nilai');
         // Kerjasama Industri
-        Route::resource('kerjasama', KerjasamaIndustriController::class);
-        Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
+        // Route::resource('kerjasama', KerjasamaIndustriController::class);
+        // Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
         
         // Laporan & Arsip
         Route::resource('laporan', LaporanController::class);
         Route::get('laporan/{laporan}/download', [LaporanController::class, 'download'])->name('laporan.download');
         Route::post('laporan/{laporan}/publish', [LaporanController::class, 'publish'])->name('laporan.publish');
         
+         Route::prefix('tracer-study')->name('tracer-study.')->group(function () {
+        Route::get('/', [TracerStudyController::class, 'index'])->name('index');
+        Route::get('/create', [TracerStudyController::class, 'create'])->name('create');
+        Route::post('/', [TracerStudyController::class, 'store'])->name('store');
+        Route::get('/{tracerStudy}', [TracerStudyController::class, 'show'])->name('show');
+        Route::get('/{tracerStudy}/edit', [TracerStudyController::class, 'edit'])->name('edit');
+        Route::put('/{tracerStudy}', [TracerStudyController::class, 'update'])->name('update');
+        Route::delete('/{tracerStudy}', [TracerStudyController::class, 'destroy'])->name('destroy');
+        
+        // Laporan & Analisis
+        Route::get('/laporan/analisis', [TracerStudyController::class, 'laporan'])->name('laporan');
+        Route::get('/laporan/export', [TracerStudyController::class, 'exportExcel'])->name('export');
+    });
         // Pengaturan
         Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
         Route::put('pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');
     });
+
     
     // Siswa routes
     Route::middleware('role:siswa')->prefix('siswa')->name('siswa.')->group(function () {
         // PKL
-        Route::get('pkl', [PklController::class, 'siswaPkl'])->name('pkl.index');
-        Route::post('pkl/daftar', [PklController::class, 'daftar'])->name('pkl.daftar');
-        Route::get('pkl/{pkl}', [PklController::class, 'show'])->name('pkl.show');
-        Route::post('pkl/{pkl}/jurnal', [PklController::class, 'addJurnal'])->name('pkl.jurnal.add');
-        Route::put('pkl/jurnal/{jurnal}', [PklController::class, 'updateJurnal'])->name('pkl.jurnal.update');
-        Route::delete('pkl/jurnal/{jurnal}', [PklController::class, 'deleteJurnal'])->name('pkl.jurnal.delete');
-        Route::post('pkl/{pkl}/upload-laporan', [PklController::class, 'uploadLaporan'])->name('pkl.laporan');
+        // Route::get('pkl', [PklController::class, 'siswaPkl'])->name('pkl.index');
+        // Route::post('pkl/daftar', [PklController::class, 'daftar'])->name('pkl.daftar');
+        // Route::get('pkl/{pkl}', [PklController::class, 'show'])->name('pkl.show');
+        // Route::post('pkl/{pkl}/jurnal', [PklController::class, 'addJurnal'])->name('pkl.jurnal.add');
+        // Route::put('pkl/jurnal/{jurnal}', [PklController::class, 'updateJurnal'])->name('pkl.jurnal.update');
+        // Route::delete('pkl/jurnal/{jurnal}', [PklController::class, 'deleteJurnal'])->name('pkl.jurnal.delete');
+        // Route::post('pkl/{pkl}/upload-laporan', [PklController::class, 'uploadLaporan'])->name('pkl.laporan');
         
+        Route::prefix('tracer-study')->name('tracer-study.')->group(function () {
+        Route::get('/', [TracerStudyController::class, 'alumniForm'])->name('form');
+        Route::post('/', [TracerStudyController::class, 'alumniStore'])->name('store');
+    });
         // Lowongan Kerja
         Route::get('lowongan', [LowonganKerjaController::class, 'index'])->name('lowongan.index');
         Route::get('lowongan/{lowongan}', [LowonganKerjaController::class, 'show'])->name('lowongan.show');
@@ -159,17 +181,17 @@ Route::post('pelatihan/{pelatihan}/peserta/{siswa}/nilai', [PelatihanController:
         Route::get('lamaran/{lamaran}', [LamaranController::class, 'show'])->name('lamaran.show');
         Route::post('lamaran/{lamaran}/status', [LamaranController::class, 'updateStatus'])->name('lamaran.status');
         
-        // PKL
-        Route::get('pkl', [PklController::class, 'perusahaanPkl'])->name('pkl.index');
-        Route::get('pkl/{pkl}', [PklController::class, 'show'])->name('pkl.show');
-        Route::post('pkl/{pkl}/terima', [PklController::class, 'terimaPkl'])->name('pkl.terima');
-        Route::post('pkl/{pkl}/tolak', [PklController::class, 'tolakPkl'])->name('pkl.tolak');
-        Route::get('pkl/{pkl}/jurnal', [PklController::class, 'showJurnal'])->name('pkl.jurnal');
-        Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
+        // // PKL
+        // Route::get('pkl', [PklController::class, 'perusahaanPkl'])->name('pkl.index');
+        // Route::get('pkl/{pkl}', [PklController::class, 'show'])->name('pkl.show');
+        // Route::post('pkl/{pkl}/terima', [PklController::class, 'terimaPkl'])->name('pkl.terima');
+        // Route::post('pkl/{pkl}/tolak', [PklController::class, 'tolakPkl'])->name('pkl.tolak');
+        // Route::get('pkl/{pkl}/jurnal', [PklController::class, 'showJurnal'])->name('pkl.jurnal');
+        // Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
         
         // Kerjasama
-        Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatusPerusahaan'])->name('kerjasama.status'); 
-        Route::get('kerjasama', [KerjasamaIndustriController::class, 'perusahaanIndex'])->name('kerjasama.index');
-        Route::get('kerjasama/{kerjasama}', [KerjasamaIndustriController::class, 'show'])->name('kerjasama.show');
+    //     Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatusPerusahaan'])->name('kerjasama.status'); 
+    //     Route::get('kerjasama', [KerjasamaIndustriController::class, 'perusahaanIndex'])->name('kerjasama.index');
+    //     Route::get('kerjasama/{kerjasama}', [KerjasamaIndustriController::class, 'show'])->name('kerjasama.show');
     });
 });

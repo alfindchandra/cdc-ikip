@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi - CDC SMKN 1 Baureno</title>
+    <title>Registrasi - {{ config('app.ikip') }}</title>
     @vite(['resources/css/app.css'])
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <style>
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
@@ -55,7 +58,7 @@
                     </svg>
                 </div>
                 <h1 class="text-2xl font-bold text-gray-900">Career Development Center</h1>
-                <p class="text-gray-600 mt-1 text-sm">SMK Negeri 1 Baureno</p>
+                <p class="text-gray-600 mt-1 text-sm">{{ config('app.ikip') }}</p>
             </div>
 
             <!-- Register Card -->

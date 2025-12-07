@@ -9,26 +9,35 @@ use Illuminate\Support\Facades\Storage;
 class PelatihanController extends Controller
 {
     // Admin Methods
-    public function index(Request $request)
-    {
-        $query = Pelatihan::query();
+   public function index(Request $request)
+{
+    $query = Pelatihan::query();
 
-        if ($request->has('search')) {
-            $query->where('judul', 'like', "%{$request->search}%");
-        }
+    // Memastikan request 'search' ada dan tidak kosong
+    if ($request->has('search') && $request->search != '') {
+        $search = $request->search;
 
-        if ($request->has('jenis')) {
-            $query->where('jenis', $request->jenis);
-        }
+        $query->where(function($q) use ($search) {
+        
+            $q->where('judul', 'like', "%$search%");
+            
 
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $pelatihan = $query->latest()->paginate(20);
-
-        return view('admin.pelatihan.index', compact('pelatihan'));
+        });
     }
+
+    if ($request->has('jenis') && $request->jenis != '') {
+        $query->where('jenis', $request->jenis);
+    }
+
+    if ($request->has('status') && $request->status != '') {
+        $query->where('status', $request->status);
+    }
+
+
+    $pelatihan = $query->latest()->paginate(20)->withQueryString();
+
+    return view('admin.pelatihan.index', compact('pelatihan'));
+}
 
     public function create()
     {
@@ -40,7 +49,7 @@ class PelatihanController extends Controller
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'jenis' => 'required|in:soft_skill,hard_skill,sertifikasi,pembekalan',
+            'jenis' => 'required|in:webinar,seminar,bimbingan_karier,workshop,lainnya',
             'instruktur' => 'nullable|string',
             'tempat' => 'nullable|string',
             'tanggal_mulai' => 'required|date',
@@ -77,7 +86,7 @@ class PelatihanController extends Controller
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'jenis' => 'required|in:soft_skill,hard_skill,sertifikasi,pembekalan',
+            'jenis' => 'required|in:webinar,seminar,bimbingan_karier,workshop,lainnya',
             'instruktur' => 'nullable|string',
             'tempat' => 'nullable|string',
             'tanggal_mulai' => 'required|date',
@@ -134,24 +143,28 @@ class PelatihanController extends Controller
 
     
     // Siswa Methods
-    public function siswaPelatihan(Request $request)
-    {
-        $query = Pelatihan::published();
+   public function siswaPelatihan(Request $request)
+{
 
-        if ($request->has('search')) {
-            $query->where('judul', 'like', "%{$request->search}%");
-        }
+    $query = Pelatihan::published(); 
 
-        if ($request->has('jenis')) {
-            $query->where('jenis', $request->jenis);
-        }
 
-        $pelatihan = $query->where('tanggal_mulai', '>', now())
-                           ->latest('tanggal_mulai')
-                           ->paginate(12);
-
-        return view('siswa.pelatihan.index', compact('pelatihan'));
+    if ($request->has('search') && $request->search != '') {
+        $query->where('judul', 'like', "%{$request->search}%");
     }
+
+    if ($request->has('jenis') && $request->jenis != '') {
+        $query->where('jenis', $request->jenis);
+    }
+
+
+    
+    $pelatihan = $query->latest('tanggal_mulai')
+                       ->paginate(12)
+                       ->withQueryString();
+
+    return view('siswa.pelatihan.index', compact('pelatihan'));
+}
 
     public function show(Pelatihan $pelatihan)
     {

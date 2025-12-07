@@ -24,29 +24,33 @@ class DashboardController extends Controller
         }
     }
 
-    private function adminDashboard()
-    {
-        $data = [
-            'total_siswa' => Siswa::where('status', 'aktif')->count(),
-            'total_perusahaan' => Perusahaan::where('status_kerjasama', 'aktif')->count(),
-            'pkl_berlangsung' => Pkl::where('status', 'berlangsung')->count(),
-            'lowongan_aktif' => LowonganKerja::aktif()->count(),
-            'pelatihan_mendatang' => Pelatihan::where('status', 'published')
+   private function adminDashboard()
+{
+    $data = [
+        'total_siswa' => Siswa::where('status', 'aktif')->count(),
+        'total_perusahaan' => Perusahaan::where('status_kerjasama', 'aktif')->count(),
+        'pkl_berlangsung' => Pkl::where('status', 'berlangsung')->count(),
+        'lowongan_aktif' => LowonganKerja::aktif()->count(),
+        'pelatihan_mendatang' => Pelatihan::where('status', 'published')
                                              ->where('tanggal_mulai', '>', now())
                                              ->count(),
-            'pkl_terbaru' => Pkl::with(['siswa.user', 'perusahaan'])
+        'pkl_terbaru' => Pkl::with(['siswa.user', 'perusahaan'])
                                 ->latest()
                                 ->take(5)
                                 ->get(),
-            'lowongan_terbaru' => LowonganKerja::with('perusahaan')
-                                               ->aktif()
-                                               ->latest()
-                                               ->take(5)
-                                               ->get(),
-        ];
+        'lowongan_terbaru' => LowonganKerja::with('perusahaan')
+                                             ->aktif()
+                                             ->latest()
+                                             ->take(5)
+                                             ->get(),
+        'pelatihan_terbaru' => Pelatihan::published()
+                                              ->latest()
+                                              ->take(5)
+                                              ->get(),
+    ];
 
-        return view('admin.dashboard', $data);
-    }
+    return view('admin.dashboard', $data);
+}
 
     private function siswaDashboard()
     {

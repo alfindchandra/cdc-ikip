@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Siswa')
-@section('page-title', 'Tambah Data Siswa')
+@section('title', 'Tambah Mahasiswa')
+@section('page-title', 'Tambah Data Mahasiswa')
 
 @section('content')
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -9,8 +9,8 @@
     <!-- Header Page -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Tambah Siswa Baru</h2>
-            <p class="text-sm text-gray-500 mt-1">Silakan lengkapi formulir di bawah ini untuk mendaftarkan siswa.</p>
+            <h2 class="text-2xl font-bold text-gray-800">Tambah Mahasiswa Baru</h2>
+            <p class="text-sm text-gray-500 mt-1">Silakan lengkapi formulir di bawah ini untuk mendaftarkan Mahasiswa.</p>
         </div>
     </div>
 
