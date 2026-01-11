@@ -27,7 +27,7 @@
             <div class="p-6 flex flex-col justify-between h-full">
                 <div>
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-lg font-bold text-gray-900">{{ $l->judul }}</h3>
+                        <h3 class="text-lg font-bold text-gray-900">{{ $l->posisi }}</h3>
                         <span class="
                             px-3 py-1 text-sm font-medium rounded-full
                             {{ $l->status == 'aktif' ? 'bg-green-100 text-green-700' : ($l->status == 'expired' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700') }}">
@@ -35,7 +35,7 @@
                         </span>
                     </div>
 
-                    <p class="text-gray-600 text-sm mb-4">{{ $l->posisi }}</p>
+                    
 
                     <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                         <div>

@@ -121,33 +121,56 @@
             </div>
 
             {{-- Chart Visualization --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {{-- Status Alumni Chart --}}
-                <div class="bg-white rounded-2xl shadow-2xl p-6 h-full border border-gray-100">
-                    <h5 class="text-xl font-bold text-gray-800 border-b pb-3 mb-4 flex items-center"><i class="fas fa-chart-pie mr-2 text-indigo-600"></i> Distribusi Status Alumni</h5>
-                    <div class="h-80 flex items-center justify-center">
-                        {{-- Data Chart Status Alumni dimasukkan sebagai atribut data untuk JS murni --}}
-                        @if ($statistik['total_responden'] > 0)
-                            <canvas id="statusChart" data-chart-data='@json($chartStatusData)'></canvas>
-                        @else
-                            <p class="text-center text-gray-500 text-lg">Data Status Alumni tidak tersedia.</p>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- Waktu Tunggu Kerja Chart --}}
-                <div class="bg-white rounded-2xl shadow-2xl p-6 h-full border border-gray-100">
-                    <h5 class="text-xl font-bold text-gray-800 border-b pb-3 mb-4 flex items-center"><i class="fas fa-clock mr-2 text-purple-600"></i> Waktu Tunggu Kerja</h5>
-                    <div class="h-80 flex items-center justify-center">
-                        {{-- Data Chart Waktu Tunggu dimasukkan sebagai atribut data untuk JS murni --}}
-                        @if ($statistik['bekerja'] > 0)
-                            <canvas id="waktuTungguChart" data-chart-data='@json($chartWaktuTungguData)'></canvas>
-                        @else
-                            <p class="text-center text-gray-500 text-lg">Data Waktu Tunggu Kerja tidak tersedia.</p>
-                        @endif
-                    </div>
-                </div>
+             <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {{-- Status Alumni Chart (Doughnut) --}}
+        <div class="bg-white shadow-2xl rounded-2xl overflow-hidden">
+            <div class="p-5 border-b border-gray-100 bg-gray-50">
+                <h2 class="text-xl font-bold text-indigo-700">Status Alumni <i class="fas fa-chart-pie ml-2 text-indigo-400"></i></h2>
             </div>
+            <div class="p-6 h-96 flex items-center justify-center"> {{-- Menambahkan flex dan tinggi tetap --}}
+                <canvas id="statusChart" class="max-h-full"></canvas>
+            </div>
+        </div>
+
+        {{-- Breakdown Status (Progress Bars) --}}
+        <div class="bg-white shadow-2xl rounded-2xl overflow-hidden">
+            <div class="p-5 border-b border-gray-100 bg-gray-50">
+                <h2 class="text-xl font-bold text-indigo-700">Persentase Status <i class="fas fa-list-alt ml-2 text-indigo-400"></i></h2>
+            </div>
+            <div class="p-6 space-y-6">
+                @php
+                    $totalResponden = $statistik['total_responden'] > 0 ? $statistik['total_responden'] : 1;
+                    $breakdownStatus = [
+                        'bekerja' => ['icon' => 'fas fa-briefcase', 'color' => 'green', 'label' => 'Bekerja'],
+                        'wirausaha' => ['icon' => 'fas fa-store', 'color' => 'blue', 'label' => 'Wirausaha'],
+                        'melanjutkan_studi' => ['icon' => 'fas fa-book', 'color' => 'cyan', 'label' => 'Melanjutkan Studi'],
+                        'belum_bekerja' => ['icon' => 'fas fa-user-clock', 'color' => 'amber', 'label' => 'Belum Bekerja'],
+                    ];
+                @endphp
+
+                @foreach($breakdownStatus as $key => $info)
+                    @php
+                        $count = $statistik[$key] ?? 0;
+                        $percentage = ($count / $totalResponden) * 100;
+                    @endphp
+                    <div class="space-y-1 group">
+                        <div class="flex justify-between text-sm font-semibold text-gray-700">
+                            <span class="flex items-center text-{{ $info['color'] }}-600 transition duration-300">
+                                <i class="{{ $info['icon'] }} mr-2"></i>{{ $info['label'] }}
+                            </span>
+                            <strong class="text-gray-900">{{ $count }} <span class="text-sm font-normal text-gray-500 ml-1">({{ round($percentage, 1) }}%)</span></strong>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div class="bg-{{ $info['color'] }}-500 h-3 rounded-full transition-all duration-700 ease-out" 
+                                 style="width: {{ $percentage }}%">
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
         </div>
     </section>
 
@@ -508,6 +531,72 @@
             console.error("Error initializing Waktu Tunggu Chart:", e);
         }
     }
+</script>
+<script>
+    // Ambil nilai dari PHP dan pastikan default ke 0 jika tidak ada
+    const dataBekerja = {{ $statistik['bekerja'] ?? 0 }};
+    const dataWirausaha = {{ $statistik['wirausaha'] ?? 0 }};
+    const dataStudi = {{ $statistik['melanjutkan_studi'] ?? 0 }};
+    const dataBelumBekerja = {{ $statistik['belum_bekerja'] ?? 0 }};
+
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Bekerja', 'Wirausaha', 'Melanjutkan Studi', 'Belum Bekerja'],
+            datasets: [{
+                data: [dataBekerja, dataWirausaha, dataStudi, dataBelumBekerja],
+                backgroundColor: [
+                    'rgba(16, 185, 129, 0.9)', // Green-500
+                    'rgba(59, 130, 246, 0.9)', // Blue-500
+                    'rgba(6, 182, 212, 0.9)',  // Cyan-500
+                    'rgba(245, 158, 11, 0.9)'  // Amber-500
+                ],
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 3,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 20,
+                        font: {
+                            family: 'Inter, sans-serif'
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 10,
+                    bodyFont: {
+                        family: 'Inter, sans-serif'
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const value = context.parsed;
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                            
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += new Intl.NumberFormat('id-ID').format(value) + ` (${percentage}%)`;
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
 </script>
 @endpush
 @endsection

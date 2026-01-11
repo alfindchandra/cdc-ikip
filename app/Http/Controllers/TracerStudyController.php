@@ -47,7 +47,7 @@ public function index(Request $request)
     // 4. Filter Fakultas (Menambahkan logika cek empty string)
     if ($request->has('fakultas_id') && $request->fakultas_id != '') {
         $query->whereHas('siswa', function($q) use ($request) {
-            $q->where('fakultas_id', $request->fakultas_id);
+            $q->where('fakultas_id', $request->fakultas_id); 
         });
     }
     

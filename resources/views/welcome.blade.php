@@ -174,18 +174,15 @@
                         <li><a href="#lowongan" class="hover:text-white transition">Lowongan Kerja</a></li>
                         <li><a href="#perusahaan" class="hover:text-white transition">Perusahaan</a></li>
                         <li><a href="#pelatihan" class="hover:text-white transition">Pelatihan</a></li>
-                        <li><a href="#tentang" class="hover:text-white transition">Tentang Kami</a></li>
                     </ul>
                 </div>
                 
                 <div>
                     <h4 class="font-bold mb-4">Layanan</h4>
                     <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-white transition">PKL/Magang</a></li>
-                        <li><a href="#" class="hover:text-white transition">Bimbingan Karir</a></li>
-                        <li><a href="#" class="hover:text-white transition">Sertifikasi</a></li>
+                        <li><a href="#" class="hover:text-white transition">Pelatihan</a></li>
                         <li><a href="#" class="hover:text-white transition">Job Fair</a></li>
-                        <li><a href="#" class="hover:text-white transition">Konsultasi</a></li>
+                        <li><a href="#" class="hover:text-white transition">Lowongan Kerja</a></li>
                     </ul>
                 </div>
                 

@@ -4,12 +4,11 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB; // Tambahkan import DB
+use Illuminate\Support\Facades\DB; 
 use App\Models\User;
 use App\Models\Siswa;
 use App\Models\Perusahaan;
 use App\Models\Pengaturan;
-// Impor seeder yang baru dibuat
 use Database\Seeders\FakultasSeeder;
 use Database\Seeders\ProgramStudiSeeder;
 
@@ -19,14 +18,14 @@ class DatabaseSeeder extends Seeder
     
     public function run(): void
     {
-        // 1. Panggil Seeder Fakultas dan Program Studi terlebih dahulu
+        
         $this->call([
             FakultasSeeder::class,
             ProgramStudiSeeder::class,
-            // Anda bisa memanggil seeder lain di sini
+        
         ]);
 
-        // 2. AMBIL ID FAKULTAS DAN PROGRAM STUDI
+        // 2. FAKULTAS DAN PROGRAM STUDI
         $fpbsId = DB::table('fakultas')->where('nama', 'Fakultas Pendidikan Bahasa dan Seni')->value('id');
         $fpmipaId = DB::table('fakultas')->where('nama', 'Fakultas Pendidikan Matematika dan Ilmu Pengetahuan Alam')->value('id');
         
@@ -45,12 +44,7 @@ class DatabaseSeeder extends Seeder
             'is_active' => true,
             'email_verified_at' => now(),
         ]);
-        
-        // ==========================================================
-        // CREATE SAMPLE SISWA (Untuk Testing)
-        // ==========================================================
 
-        // Siswa 1: Siti Nurhaliza
         $siswaUser1 = User::create([
            'name' => 'Siti Nurhaliza',
            'email' => 'siti.nurhaliza@gmail.com',

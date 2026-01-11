@@ -4,247 +4,139 @@
 @section('page-title', 'Riwayat Lamaran Saya')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-600">Total Lamaran</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-1">
-                            {{ auth()->user()->siswa->lamaran()->count() }}
-                        </p>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="space-y-8">
 
-        <div class="card">
-            <div class="card-body">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-600">Diproses</p>
-                        <p class="text-2xl font-bold text-yellow-600 mt-1">
-                            {{ auth()->user()->siswa->lamaran()->whereIn('status', ['dikirim', 'dilihat', 'diproses'])->count() }}
-                        </p>
-                    </div>
-                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {{-- === STATISTICS === --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        @php
+            $stats = [
+                ['label'=>'Total Lamaran','count'=>auth()->user()->siswa->lamaran()->count(),'color'=>'blue','icon'=>'M9 12h6'],
+                ['label'=>'Diproses','count'=>auth()->user()->siswa->lamaran()->whereIn('status',['dikirim','dilihat','diproses'])->count(),'color'=>'yellow','icon'=>'M12 8v4l3 3'],
+                ['label'=>'Diterima','count'=>auth()->user()->siswa->lamaran()->where('status','diterima')->count(),'color'=>'green','icon'=>'M9 12l2 2 4-4'],
+                ['label'=>'Ditolak','count'=>auth()->user()->siswa->lamaran()->where('status','ditolak')->count(),'color'=>'red','icon'=>'M10 14l2-2'],
+            ];
+        @endphp
 
-        <div class="card">
-            <div class="card-body">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-600">Diterima</p>
-                        <p class="text-2xl font-bold text-green-600 mt-1">
-                            {{ auth()->user()->siswa->lamaran()->where('status', 'diterima')->count() }}
-                        </p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-600">Ditolak</p>
-                        <p class="text-2xl font-bold text-red-600 mt-1">
-                            {{ auth()->user()->siswa->lamaran()->where('status', 'ditolak')->count() }}
-                        </p>
-                    </div>
-                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filter -->
-    <div class="card">
-        <div class="card-body">
-            <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="md:col-span-3">
-                    <select name="status" class="form-select">
-                        <option value="">Semua Status</option>
-                        <option value="dikirim" {{ request('status') == 'dikirim' ? 'selected' : '' }}>Dikirim</option>
-                        <option value="dilihat" {{ request('status') == 'dilihat' ? 'selected' : '' }}>Dilihat</option>
-                        <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
-                        <option value="diterima" {{ request('status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
-                        <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                    </select>
-                </div>
+        @foreach($stats as $s)
+        <div class="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition">
+            <div class="flex justify-between items-center">
                 <div>
-                    <button type="submit" class="btn btn-primary w-full">Filter</button>
+                    <p class="text-sm text-gray-500">{{ $s['label'] }}</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ $s['count'] }}</p>
                 </div>
-            </form>
+                <div class="w-12 h-12 bg-{{ $s['color'] }}-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-{{ $s['color'] }}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $s['icon'] }}"/>
+                    </svg>
+                </div>
+            </div>
         </div>
+        @endforeach
     </div>
 
-    <!-- Lamaran List -->
-    <div class="space-y-4">
+    {{-- === FILTER === --}}
+    <div class="bg-white rounded-xl shadow-sm p-5">
+        <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <select name="status" class="w-full rounded-lg border-gray-300 focus:ring focus:ring-blue-200">
+                <option value="">Semua Status</option>
+                @foreach(['dikirim','dilihat','diproses','diterima','ditolak'] as $st)
+                    <option value="{{ $st }}" {{ request('status')==$st?'selected':'' }}>
+                        {{ ucfirst($st) }}
+                    </option>
+                @endforeach
+            </select>
+            <button class="md:col-span-1 w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 transition">
+                Filter
+            </button>
+        </form>
+    </div>
+
+    {{-- === LIST LAMARAN === --}}
+    <div class="space-y-5">
         @forelse($lamaran as $l)
-        <div class="card hover:shadow-lg transition-shadow">
-            <div class="card-body">
-                <div class="flex items-start space-x-4">
-                    <!-- Company Logo -->
-                    <div class="flex-shrink-0">
-                        @if($l->lowongan->perusahaan->logo)
-                        <img src="{{ Storage::url($l->lowongan->perusahaan->logo) }}" 
-                             alt="{{ $l->lowongan->perusahaan->nama_perusahaan }}" 
+        <div class="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition">
+            <div class="flex flex-col md:flex-row gap-4">
+
+                {{-- Logo --}}
+                <div class="flex-shrink-0">
+                    @if($l->lowongan->perusahaan->logo)
+                        <img src="{{ Storage::url($l->lowongan->perusahaan->logo) }}"
                              class="w-16 h-16 rounded-lg object-cover">
-                        @else
-                        <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                            <span class="text-gray-600 font-bold text-xl">
-                                {{ substr($l->lowongan->perusahaan->nama_perusahaan, 0, 1) }}
-                            </span>
+                    @else
+                        <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center text-xl font-bold">
+                            {{ substr($l->lowongan->perusahaan->nama_perusahaan,0,1) }}
                         </div>
-                        @endif
+                    @endif
+                </div>
+
+                {{-- Content --}}
+                <div class="flex-1 space-y-3">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                        <div>
+                            <h3 class="text-lg font-semibold">{{ $l->lowongan->judul }}</h3>
+                            <p class="text-sm text-gray-500">{{ $l->lowongan->perusahaan->nama_perusahaan }}</p>
+                        </div>
+                        <span class="px-3 py-1 text-xs rounded-full font-medium
+                            @class([
+                                'bg-blue-100 text-blue-700'=>$l->status=='dikirim',
+                                'bg-cyan-100 text-cyan-700'=>$l->status=='dilihat',
+                                'bg-yellow-100 text-yellow-700'=>$l->status=='diproses',
+                                'bg-green-100 text-green-700'=>$l->status=='diterima',
+                                'bg-red-100 text-red-700'=>$l->status=='ditolak'
+                            ])">
+                            {{ ucfirst($l->status) }}
+                        </span>
                     </div>
 
-                    <!-- Lamaran Info -->
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-start justify-between mb-2">
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-900">{{ $l->lowongan->judul }}</h3>
-                                <p class="text-sm text-gray-600">{{ $l->lowongan->perusahaan->nama_perusahaan }}</p>
-                            </div>
-                            <span class="badge 
-                                @if($l->status == 'dikirim') badge-primary
-                                @elseif($l->status == 'dilihat') badge-info
-                                @elseif($l->status == 'diproses') badge-warning
-                                @elseif($l->status == 'diterima') badge-success
-                                @else badge-danger
-                                @endif text-sm px-3 py-1 flex-shrink-0 ml-4">
-                                {{ ucfirst($l->status) }}
-                            </span>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <div><p class="text-gray-400">Tanggal</p><p class="font-medium">{{ $l->tanggal_melamar->format('d M Y') }}</p></div>
+                        <div><p class="text-gray-400">Posisi</p><p class="font-medium">{{ $l->lowongan->posisi }}</p></div>
+                        <div><p class="text-gray-400">Tipe</p><p class="font-medium">{{ ucfirst(str_replace('_',' ',$l->lowongan->tipe_pekerjaan)) }}</p></div>
+                        <div><p class="text-gray-400">Lokasi</p><p class="font-medium">{{ $l->lowongan->lokasi }}</p></div>
+                    </div>
+
+                    {{-- Actions --}}
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-3 border-t gap-3">
+                        <div class="flex gap-3 text-sm">
+                            @foreach(['cv'=>'CV','surat_lamaran'=>'Surat','portofolio'=>'Portofolio'] as $f=>$lbl)
+                                @if($l->$f)
+                                <a href="{{ Storage::url($l->$f) }}" target="_blank"
+                                   class="text-blue-600 hover:underline">{{ $lbl }}</a>
+                                @endif
+                            @endforeach
                         </div>
 
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3 text-sm">
-                            <div>
-                                <p class="text-gray-500">Tanggal Melamar</p>
-                                <p class="font-medium text-gray-900">{{ $l->tanggal_melamar->format('d M Y') }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500">Posisi</p>
-                                <p class="font-medium text-gray-900">{{ $l->lowongan->posisi }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500">Tipe</p>
-                                <p class="font-medium text-gray-900">{{ ucfirst(str_replace('_', ' ', $l->lowongan->tipe_pekerjaan)) }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-500">Lokasi</p>
-                                <p class="font-medium text-gray-900">{{ $l->lowongan->lokasi }}</p>
-                            </div>
-                        </div>
+                        <div class="flex gap-3">
+                            <a href="{{ route('siswa.lowongan.show',$l->lowongan->id) }}"
+                               class="text-blue-600 font-medium hover:underline">Detail</a>
 
-                        @if($l->catatan)
-                        <div class="mb-3 p-3 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-600 mb-1">Catatan Anda:</p>
-                            <p class="text-sm text-gray-700 line-clamp-2">{{ $l->catatan }}</p>
-                        </div>
-                        @endif
-
-                        @if($l->catatan_perusahaan)
-                        <div class="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                            <p class="text-xs text-blue-800 font-medium mb-1">Catatan dari Perusahaan:</p>
-                            <p class="text-sm text-blue-900">{{ $l->catatan_perusahaan }}</p>
-                        </div>
-                        @endif
-
-                        <!-- Actions -->
-                        <div class="flex items-center justify-between pt-3 border-t border-gray-200">
-                            <div class="flex items-center space-x-2 text-xs text-gray-500">
-                                @if($l->cv)
-                                <a href="{{ Storage::url($l->cv) }}" target="_blank" class="flex items-center text-blue-600 hover:text-blue-700">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                    </svg>
-                                    CV
-                                </a>
-                                @endif
-                                @if($l->surat_lamaran)
-                                <a href="{{ Storage::url($l->surat_lamaran) }}" target="_blank" class="flex items-center text-blue-600 hover:text-blue-700">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                    </svg>
-                                    Surat
-                                </a>
-                                @endif
-                                @if($l->portofolio)
-                                <a href="{{ Storage::url($l->portofolio) }}" target="_blank" class="flex items-center text-blue-600 hover:text-blue-700">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                    Portofolio
-                                </a>
-                                @endif
-                            </div>
-
-                            <div class="flex items-center space-x-2">
-                                <a href="{{ route('siswa.lowongan.show', $l->lowongan->id) }}" 
-                                   class="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                                    Lihat Lowongan →
-                                </a>
-                                @if(in_array($l->status, ['dikirim', 'dilihat']))
-                                <form action="{{ route('siswa.lamaran.destroy', $l->id) }}" 
-                                      method="POST" 
-                                      onsubmit="return confirm('Yakin ingin membatalkan lamaran ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-sm text-red-600 hover:text-red-700 font-medium">
-                                        Batalkan
-                                    </button>
-                                </form>
-                                @endif
-                            </div>
+                            @if(in_array($l->status,['dikirim','dilihat']))
+                            <form method="POST" action="{{ route('siswa.lamaran.destroy',$l->id) }}"
+                                  onsubmit="return confirm('Batalkan lamaran ini?')">
+                                @csrf @method('DELETE')
+                                <button class="text-red-600 font-medium hover:underline">Batalkan</button>
+                            </form>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         @empty
-        <div class="card">
-            <div class="card-body text-center py-12">
-                <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <p class="text-lg font-medium text-gray-900 mb-2">Belum Ada Lamaran</p>
-                <p class="text-sm text-gray-500 mb-6">Mulai cari lowongan pekerjaan yang sesuai dengan minat Anda</p>
-                <a href="{{ route('siswa.lowongan.index') }}" class="btn btn-primary">
-                    Cari Lowongan
-                </a>
-            </div>
+        <div class="bg-white rounded-xl shadow-sm p-10 text-center">
+            <p class="text-lg font-semibold">Belum Ada Lamaran</p>
+            <p class="text-gray-500 mt-1 mb-4">Mulai cari lowongan yang sesuai minat Anda</p>
+            <a href="{{ route('siswa.lowongan.index') }}"
+               class="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+                Cari Lowongan
+            </a>
         </div>
         @endforelse
     </div>
 
-    <!-- Pagination -->
-    @if($lamaran->hasPages())
+    {{-- Pagination --}}
     <div class="flex justify-center">
         {{ $lamaran->links() }}
     </div>
-    @endif
 </div>
 @endsection

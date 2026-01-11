@@ -36,9 +36,9 @@
     </div>
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Lowongan Aktif -->
-        <div class="card hover:shadow-lg transition-shadow">
+        <div class="card hover:shadow-lg transition-shadow p-3 rounded-2xl">
             <div class="card-body">
                 <div class="flex items-center justify-between mb-3">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -57,7 +57,7 @@
         </div>
 
         <!-- Total Pelamar -->
-        <div class="card hover:shadow-lg transition-shadow">
+        <div class="card hover:shadow-lg transition-shadow p-3 rounded-2xl">
             <div class="card-body">
                 <div class="flex items-center justify-between mb-3">
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -78,7 +78,7 @@
         <!-- Siswa PKL -->
        
         <!-- Lamaran Baru -->
-        <div class="card hover:shadow-lg transition-shadow">
+        <div class="card hover:shadow-lg transition-shadow p-3 rounded-2xl">
             <div class="card-body">
                 <div class="flex items-center justify-between mb-3">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">

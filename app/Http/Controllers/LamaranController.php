@@ -10,16 +10,22 @@ use Illuminate\Support\Facades\Storage;
 class LamaranController extends Controller
 {
     // Siswa Methods
-    public function index()
-    {
-        $siswa = auth()->user()->siswa;
-        $lamaran = Lamaran::where('siswa_id', $siswa->id)
-                         ->with('lowongan.perusahaan')
-                         ->latest()
-                         ->paginate(20);
+public function index()
+{
+    $siswa = auth()->user()->siswa;
 
-        return view('siswa.lamaran.index', compact('lamaran'));
+    $query = Lamaran::where('siswa_id', $siswa->id)
+                    ->with('lowongan.perusahaan')
+                    ->latest();
+
+    if (request()->filled('status')) {
+        $query->where('status', request('status'));
     }
+
+    $lamaran = $query->paginate(20)->withQueryString();
+
+    return view('siswa.lamaran.index', compact('lamaran'));
+}
 
     public function store(Request $request)
     {

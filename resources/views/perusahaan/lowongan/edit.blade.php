@@ -38,11 +38,7 @@
 
             <!-- Judul dan Posisi -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Judul Lowongan *</label>
-                    <input type="text" name="judul" value="{{ old('judul', $lowongan->judul) }}" class="w-full rounded-lg p-3 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Contoh: Web Developer" required>
-                    @error('judul')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
-                </div>
+               
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Posisi *</label>
                     <input type="text" name="posisi" value="{{ old('posisi', $lowongan->posisi) }}" class="w-full rounded-lg p-3 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Contoh: Full Stack Developer" required>

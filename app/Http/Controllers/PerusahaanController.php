@@ -42,6 +42,11 @@ public function index(Request $request)
     {
         return view('admin.perusahaan.create');
     }
+     public function edit(Perusahaan $perusahaan)
+    {
+        return view('admin.perusahaan.edit', compact('perusahaan'));
+    }
+
     public function destroy(Perusahaan $perusahaan)
     {
         // Hapus logo jika ada

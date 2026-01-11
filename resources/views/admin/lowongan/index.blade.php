@@ -22,12 +22,14 @@
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150">
         </div>
         <div>
-            <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Status Lowongan</label>
-            <select id="status-filter" name="status" class="w-full ...">
-                <option value="">Semua Status</option>
-                <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
-                <option value="expired" {{ request('status') == 'expired' ? 'selected' : '' }}>Expired</option>
+            <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+            <select id="status-filter" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                <option value="">Semua Kategori</option>
+                  <option value="full_time" {{ request('status') == 'full_time' ? 'selected' : '' }}>Full Time</option>
+                        <option value="part_time" {{ request('status') == 'part_time' ? 'selected' : '' }}>Part Time</option>
+                        <option value="kontrak" {{ request('status') == 'kontrak' ? 'selected' : '' }}>Kontrak</option>
+                        <option value="magang" {{ request('status') == 'magang' ? 'selected' : '' }}>Magang</option>
+
             </select>
         </div>
         <div class="flex space-x-3 mt-2 md:mt-0">
@@ -44,41 +46,7 @@
     </form>
 </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        @php
-            // Asumsi data statis ini tersedia di controller (misalnya: $stats)
-            $stats = [
-                ['label' => 'Total Lowongan', 'count' => $lowongan->total(), 'color' => 'gray', 'icon' => 'clipboard-list'],
-                ['label' => 'Aktif', 'count' => $lowongan->where('status', 'aktif')->count(), 'color' => 'green', 'icon' => 'check-circle'],
-                ['label' => 'Nonaktif', 'count' => $lowongan->where('status', 'nonaktif')->count(), 'color' => 'yellow', 'icon' => 'pause-circle'],
-                ['label' => 'Expired', 'count' => $lowongan->where('status', 'expired')->count(), 'color' => 'red', 'icon' => 'x-circle'],
-            ];
-        @endphp
-
-        @foreach($stats as $stat)
-        <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100 hover:shadow-lg transition duration-300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500 mb-1">{{ $stat['label'] }}</p>
-                    <p class="text-4xl font-extrabold text-{{ $stat['color'] }}-600">{{ $stat['count'] }}</p>
-                </div>
-                <div class="w-12 h-12 bg-{{ $stat['color'] }}-100 rounded-full flex items-center justify-center text-{{ $stat['color'] }}-600">
-                    {{-- Placeholder Icons for Stats --}}
-                    @if($stat['icon'] == 'clipboard-list')
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-                    @elseif($stat['icon'] == 'check-circle')
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    @elseif($stat['icon'] == 'pause-circle')
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    @else 
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    @endif
-                </div>
-            </div>
-        </div>
-        @endforeach
-    </div>
+   
 
     <!-- Table Section -->
     <div class="bg-white rounded-xl shadow-lg border border-gray-100">
@@ -88,7 +56,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Lowongan</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Perusahaan & Lokasi</th>
-                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Tipe</th>
+                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Kategori</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">Periode Batas</th>
                         <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Pelamar</th>
                         <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>

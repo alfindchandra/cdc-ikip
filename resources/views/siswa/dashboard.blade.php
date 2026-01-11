@@ -32,12 +32,12 @@
     </div>
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- PKL Status -->
         
 
         <!-- Lamaran Pending -->
-        <div class="card hover:shadow-lg transition-shadow">
+        <div class="card hover:shadow-lg transition-shadow p-3 rounded-2xl">
             <div class="card-body">
                 <div class="flex items-center justify-between mb-3">
                     <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -59,7 +59,7 @@
         </div>
 
         <!-- Pelatihan -->
-        <div class="card hover:shadow-lg transition-shadow">
+        <div class="card hover:shadow-lg transition-shadow p-3 rounded-2xl">
             <div class="card-body">
                 <div class="flex items-center justify-between mb-3">
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -78,7 +78,7 @@
         </div>
 
         <!-- Profil Completion -->
-        <div class="card hover:shadow-lg transition-shadow">
+        <div class="card hover:shadow-lg transition-shadow p-2 rounded-2xl">
             <div class="card-body">
                 <div class="flex items-center justify-between mb-3">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -239,7 +239,7 @@
             <h3 class="text-lg font-semibold text-gray-900">Aksi Cepat</h3>
         </div>
         <div class="card-body">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <a href="{{ route('siswa.lowongan.index') }}" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition group">
                     <svg class="w-10 h-10 text-gray-400 group-hover:text-blue-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>

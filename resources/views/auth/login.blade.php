@@ -24,24 +24,14 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 via-white to-blue-50 min-h-screen flex items-center justify-center p-4 bg-pattern">
-    <div class="max-w-6xl w-full grid lg:grid-cols-2 gap-8 items-center">
+    <div class="w-full flex items-center justify-center">
         
-        <!-- Left Side - Illustration & Info -->
-        <div class="hidden lg:block">
-            <div class="float-animation">
-                <img src="{{ asset('images/ass.png') }}" alt="Illustration Login" class="w-full h-auto">
-            </div>
-        </div>
-
+        
         <!-- Right Side - Login Form -->
         <div class="max-w-md w-full mx-auto">
             <!-- Logo & Header (Mobile) -->
             <div class="text-center mb-8 lg:hidden">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl mb-4 shadow-lg">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                    </svg>
-                </div>
+                
                 <h1 class="text-2xl font-bold text-gray-900">Login</h1>
                 <p class="text-gray-600 mt-1 text-sm">CDC IKIP PGRI Bojonegoro</p>
             </div>

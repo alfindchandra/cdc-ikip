@@ -107,7 +107,7 @@ class WelcomeController extends Controller
     }
     public function tracerStudy()
    {
-    // Statistik Umum
+    // Statistik Umum 
     $statistik = [
         'total_responden' => TracerStudy::count(),
 
@@ -193,6 +193,7 @@ class WelcomeController extends Controller
         ->orderBy('total_alumni', 'desc')
         ->take(10)
         ->get();
+    
 
     // Testimoni Alumni (kolom kepuasan_alumni TIDAK ADA → diganti kepuasan_pendidikan)
     $testimoni = TracerStudy::with(['siswa.user', 'siswa.programStudi'])
