@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('lowongan_kerja', function (Blueprint $table) {
             $table->id();
             $table->foreignId('perusahaan_id')->constrained('perusahaan')->onDelete('cascade');
-            $table->string('judul');
             $table->string('posisi', 100);
             $table->string('pendidikan', 100);
             $table->text('deskripsi');

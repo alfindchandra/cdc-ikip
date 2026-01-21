@@ -109,12 +109,7 @@
                     <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ada batasan</p>
                     @error('kuota')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Thumbnail Baru (Opsional)</label>
-                    <input type="file" name="thumbnail" accept="image/*" class="w-full text-sm p-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-                    <p class="text-xs text-gray-500 mt-1">Maksimal 2MB. Kosongkan jika tidak ingin mengubah</p>
-                    @error('thumbnail')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
-                </div>
+                
             </div>
 
             <!-- Tanggal -->

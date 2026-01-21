@@ -76,16 +76,22 @@
                             <h3 class="text-lg font-semibold">{{ $l->lowongan->judul }}</h3>
                             <p class="text-sm text-gray-500">{{ $l->lowongan->perusahaan->nama_perusahaan }}</p>
                         </div>
-                        <span class="px-3 py-1 text-xs rounded-full font-medium
-                            @class([
-                                'bg-blue-100 text-blue-700'=>$l->status=='dikirim',
-                                'bg-cyan-100 text-cyan-700'=>$l->status=='dilihat',
-                                'bg-yellow-100 text-yellow-700'=>$l->status=='diproses',
-                                'bg-green-100 text-green-700'=>$l->status=='diterima',
-                                'bg-red-100 text-red-700'=>$l->status=='ditolak'
-                            ])">
-                            {{ ucfirst($l->status) }}
-                        </span>
+                       
+                       <span
+                        @class([
+                            'px-3 py-3 text-xs rounded-full font-medium',
+
+                            'bg-blue-100 text-blue-700' => $l->status === 'dikirim',
+                            'bg-cyan-100 text-cyan-700' => $l->status === 'dilihat',
+                            'bg-yellow-100 text-yellow-700' => $l->status === 'diproses',
+                            'bg-green-100 text-green-700' => $l->status === 'diterima',
+                            'bg-red-100 text-red-700' => $l->status === 'ditolak',
+                        ])
+                    >
+                        {{ ucfirst($l->status) }}
+                    </span>
+
+
                     </div>
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">

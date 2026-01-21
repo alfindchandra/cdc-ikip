@@ -154,7 +154,7 @@ class LowonganKerjaController extends Controller
     public function update(Request $request, LowonganKerja $lowongan)
     {
         $validated = $request->validate([
-            'judul' => 'required|string|max:255',
+     
             'posisi' => 'required|string',
             'deskripsi' => 'required|string',
             'kualifikasi' => 'required|string',
@@ -166,15 +166,10 @@ class LowonganKerjaController extends Controller
             'kuota' => 'nullable|integer',
             'tanggal_mulai' => 'required|date',
             'tanggal_berakhir' => 'required|date|after:tanggal_mulai',
-            'thumbnail' => 'nullable|image|max:2048',
+           
         ]);
 
-        if ($request->hasFile('thumbnail')) {
-            if ($lowongan->thumbnail) {
-                Storage::disk('public')->delete($lowongan->thumbnail);
-            }
-            $validated['thumbnail'] = $request->file('thumbnail')->store('lowongan', 'public');
-        }
+       
 
         $lowongan->update($validated);
 

@@ -150,7 +150,7 @@ Route::post('pelatihan/{pelatihan}/peserta/{siswa}/nilai', [PelatihanController:
         // Lowongan Kerja
         Route::get('lowongan', [LowonganKerjaController::class, 'index'])->name('lowongan.index');
         Route::get('lowongan/{lowongan}', [LowonganKerjaController::class, 'show'])->name('lowongan.show');
-        
+        Route::get('/lowongan/{lowongan}/apply', [LamaranController::class, 'create'])->name('lowongan.apply');
         // Lamaran
         Route::get('lamaran', [LamaranController::class, 'index'])->name('lamaran.index');
         Route::post('lamaran', [LamaranController::class, 'store'])->name('lamaran.store');

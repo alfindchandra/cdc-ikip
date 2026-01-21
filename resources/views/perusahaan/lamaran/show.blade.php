@@ -142,7 +142,7 @@
                     </div>
 
                     <div>
-                        <p class="text-sm text-gray-500">Status Saat Ini</p>
+                        <p class="text-sm text-gray-500 mb-2">Status Saat Ini</p>
                         <span class="
                             px-3 py-1 text-sm rounded-full font-medium
                             @if($lamaran->status == 'dikirim') bg-yellow-100 text-yellow-700
@@ -159,16 +159,16 @@
 
             <!-- Ubah Status -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Aksi</h3>
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Ubah Status</h3>
 
                 <form action="{{ route('perusahaan.lamaran.status', $lamaran->id) }}" method="POST">
                     @csrf
 
                     <div class="space-y-3">
                         <div>
-                            <label class="text-sm font-medium text-gray-700">Ubah Status</label>
+                            
                             <select name="status" 
-                                class="mt-1 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                class="mt-1 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2">
                                 <option value="dilihat" {{ $lamaran->status == 'dilihat' ? 'selected' : '' }}>Dilihat</option>
                                 <option value="diproses" {{ $lamaran->status == 'diproses' ? 'selected' : '' }}>Diproses</option>
                                 <option value="diterima" {{ $lamaran->status == 'diterima' ? 'selected' : '' }}>Diterima</option>
@@ -176,12 +176,7 @@
                             </select>
                         </div>
 
-                        <div>
-                            <label class="text-sm font-medium text-gray-700">Catatan</label>
-                            <textarea name="catatan" rows="3"
-                                class="mt-1 w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Berikan catatan...">{{ $lamaran->catatan }}</textarea>
-                        </div>
+                        
 
                         <button type="submit"
                             class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold">

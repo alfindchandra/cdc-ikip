@@ -174,7 +174,7 @@
             <h3 class="text-lg font-semibold text-gray-900">Aksi Cepat</h3>
         </div>
         <div class="card-body">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <a href="{{ route('perusahaan.lowongan.create') }}" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition group">
                     <svg class="w-10 h-10 text-gray-400 group-hover:text-purple-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>

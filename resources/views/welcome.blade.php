@@ -63,6 +63,9 @@
     @include('layouts.sections.loker')
 
 
+
+
+
     <!-- Training Section -->
     <section id="pelatihan" class="py-16 bg-gray-50">
         <div class="container mx-auto px-4">
@@ -134,6 +137,7 @@
         </div>
     </section>
 
+    @include('index.tracer-study')
        @include('layouts.sections.perusahaan')
 
     <footer class="bg-gray-900 text-white py-12">

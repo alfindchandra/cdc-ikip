@@ -29,7 +29,7 @@
                
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Posisi *</label>
-                    <input type="text" name="posisi" value="{{ old('posisi') }}" class="w-full rounded-lg p-3 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Contoh: Full Stack Developer" required>
+                    <input type="text" name="posisi" value="{{ old('posisi') }}" class="w-full border-2 rounded-lg p-3 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Contoh: Full Stack Developer" required>
                     @error('posisi')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -38,12 +38,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Pekerjaan *</label>
-                    <textarea name="deskripsi" rows="5" class="w-full p-2 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Jelaskan tugas dan tanggung jawab..." required>{{ old('deskripsi') }}</textarea>
+                    <textarea name="deskripsi" rows="5" class="w-full border-2 p-2 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Jelaskan tugas dan tanggung jawab..." required>{{ old('deskripsi') }}</textarea>
                     @error('deskripsi')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kualifikasi *</label>
-                    <textarea name="kualifikasi" rows="5" class="w-full p-2 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Tuliskan kualifikasi yang dibutuhkan..." required>{{ old('kualifikasi') }}</textarea>
+                    <textarea name="kualifikasi" rows="5" class="w-full p-2 rounded-lg border-gray-300 border-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Tuliskan kualifikasi yang dibutuhkan..." required>{{ old('kualifikasi') }}</textarea>
                     @error('kualifikasi')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -51,12 +51,12 @@
             <!-- Benefit -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Benefit</label>
-                <textarea name="benefit" rows="3" class="w-full rounded-lg p-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Benefit yang didapatkan...">{{ old('benefit') }}</textarea>
+                <textarea name="benefit" rows="3" class="w-full rounded-lg p-2 border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Benefit yang didapatkan...">{{ old('benefit') }}</textarea>
                 @error('benefit')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Pendidikan</label>
-                    <select name="pendidikan" class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                    <select name="pendidikan" class="w-full rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm p-2">
                         <option value="">Pilih Tipe</option>
                         <option value="SMA/SMK" {{ old('pendidikan') == 'smk/sma' ? 'selected' : '' }}>SMA/SMK</option>
                         <option value="D1" {{ old('pendidikan') == 'D1' ? 'selected' : '' }}>D1</option>
@@ -72,7 +72,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tipe Pekerjaan *</label>
-                    <select name="tipe_pekerjaan" class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" required>
+                    <select name="tipe_pekerjaan" class="w-full rounded-lg border-gray-300 border-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm p-2" required>
                         <option value="">Pilih Tipe</option>
                         <option value="full_time" {{ old('tipe_pekerjaan') == 'full_time' ? 'selected' : '' }}>Full Time</option>
                         <option value="part_time" {{ old('tipe_pekerjaan') == 'part_time' ? 'selected' : '' }}>Part Time</option>
@@ -83,7 +83,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi *</label>
-                    <input type="text" name="lokasi" value="{{ old('lokasi') }}" class=" p-3 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Contoh: Surabaya" required>
+                    <input type="text" name="lokasi" value="{{ old('lokasi') }}" class=" p-3 border-2 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Contoh: Surabaya" required>
                     @error('lokasi')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -92,12 +92,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Gaji Minimum (Rp)</label>
-                    <input type="number" name="gaji_min" value="{{ old('gaji_min') }}" class="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="3000000">
+                    <input type="number" name="gaji_min" value="{{ old('gaji_min') }}" class="w-full border-2 p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="3000000">
                     @error('gaji_min')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Gaji Maksimum (Rp)</label>
-                    <input type="number" name="gaji_max" value="{{ old('gaji_max') }}" class="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="5000000">
+                    <input type="number" name="gaji_max" value="{{ old('gaji_max') }}" class="w-full border-2 p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="5000000">
                     @error('gaji_max')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -106,7 +106,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kuota</label>
-                    <input type="number" name="kuota" value="{{ old('kuota') }}" class="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="5">
+                    <input type="number" name="kuota" value="{{ old('kuota') }}" class="w-full p-3 rounded-lg border-gray-300 border-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="5">
                     <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ada batasan</p>
                     @error('kuota')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
@@ -117,12 +117,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai *</label>
-                    <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', date('Y-m-d')) }}" class="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" required>
+                    <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', date('Y-m-d')) }}" class="w-full border-2 p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" required>
                     @error('tanggal_mulai')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Berakhir *</label>
-                    <input type="date" name="tanggal_berakhir" value="{{ old('tanggal_berakhir') }}" class="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" required>
+                    <input type="date" name="tanggal_berakhir" value="{{ old('tanggal_berakhir') }}" class="w-full border-2 p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" required>
                     @error('tanggal_berakhir')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>

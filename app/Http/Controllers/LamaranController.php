@@ -9,50 +9,80 @@ use Illuminate\Support\Facades\Storage;
 
 class LamaranController extends Controller
 {
-    // Siswa Methods
-public function index()
-{
-    $siswa = auth()->user()->siswa;
+    /* =======================
+     * SISWA METHODS
+     * ======================= */
 
-    $query = Lamaran::where('siswa_id', $siswa->id)
-                    ->with('lowongan.perusahaan')
-                    ->latest();
+    public function index(Request $request)
+    {
+        $siswa = auth()->user()->siswa;
 
-    if (request()->filled('status')) {
-        $query->where('status', request('status'));
+        $query = $siswa->lamaran()->with(['lowongan.perusahaan']);
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $lamaran = $query->latest()->paginate(20)->withQueryString();
+
+        return view('siswa.lamaran.index', compact('lamaran'));
     }
 
-    $lamaran = $query->paginate(20)->withQueryString();
+    public function create(LowonganKerja $lowongan)
+    {
+        $siswa = auth()->user()->siswa;
 
-    return view('siswa.lamaran.index', compact('lamaran'));
-}
+        // Cek sudah melamar
+        $sudahMelamar = $siswa->lamaran()
+            ->where('lowongan_id', $lowongan->id)
+            ->exists();
+
+        if ($sudahMelamar) {
+            return redirect()->route('siswa.lamaran.index')
+                ->with('info', 'Anda sudah melamar pekerjaan ini');
+        }
+
+        // Cek lowongan masih aktif
+        if ($lowongan->tanggal_berakhir < now()) {
+            return redirect()->route('siswa.lowongan.show', $lowongan)
+                ->with('error', 'Lowongan ini sudah ditutup');
+        }
+
+        $lowongan->load('perusahaan');
+        return view('siswa.lamaran.create', compact('lowongan'));
+    }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'lowongan_id' => 'required|exists:lowongan_kerja,id',
-            'cv' => 'required|file|mimes:pdf|max:5120',
-            'surat_lamaran' => 'nullable|file|mimes:pdf|max:5120',
-            'portofolio' => 'nullable|file|mimes:pdf,zip|max:10240',
-            'catatan' => 'nullable|string',
+            'lowongan_id'     => 'required|exists:lowongan_kerja,id',
+            'cv'              => 'required|file|mimes:pdf|max:5120',
+            'surat_lamaran'   => 'nullable|file|mimes:pdf|max:5120',
+            'portofolio'      => 'nullable|file|mimes:pdf,zip|max:10240',
+            'catatan'         => 'nullable|string|max:1000',
+        ], [
+            'cv.required' => 'CV wajib diupload',
+            'cv.mimes'    => 'CV harus berformat PDF',
+            'cv.max'      => 'Ukuran CV maksimal 5MB',
         ]);
 
         $siswa = auth()->user()->siswa;
 
-        // Check if already applied
+        // Cek duplikasi lamaran
         $exists = Lamaran::where('siswa_id', $siswa->id)
-                        ->where('lowongan_id', $validated['lowongan_id'])
-                        ->exists();
+            ->where('lowongan_id', $validated['lowongan_id'])
+            ->exists();
 
         if ($exists) {
             return back()->with('error', 'Anda sudah melamar lowongan ini');
         }
 
         $data = [
-            'lowongan_id' => $validated['lowongan_id'],
-            'siswa_id' => $siswa->id,
-            'status' => 'dikirim',
-            'catatan' => $validated['catatan'],
+            'lowongan_id'     => $validated['lowongan_id'],
+            'siswa_id'        => $siswa->id,
+            'status'          => 'dikirim',
+            'catatan'         => $validated['catatan'] ?? null,
+            'tanggal_melamar' => now(),
         ];
 
         if ($request->hasFile('cv')) {
@@ -69,11 +99,12 @@ public function index()
 
         Lamaran::create($data);
 
-        // Increment jumlah pelamar
-        LowonganKerja::find($validated['lowongan_id'])->increment('jumlah_pelamar');
+        // Tambah jumlah pelamar
+        LowonganKerja::find($validated['lowongan_id'])
+            ->increment('jumlah_pelamar');
 
         return redirect()->route('siswa.lamaran.index')
-                        ->with('success', 'Lamaran berhasil dikirim');
+            ->with('success', 'Lamaran berhasil dikirim');
     }
 
     public function show(Lamaran $lamaran)
@@ -82,9 +113,15 @@ public function index()
 
         if (auth()->user()->isAdmin()) {
             return view('admin.lamaran.show', compact('lamaran'));
-        } elseif (auth()->user()->isSiswa() && $lamaran->siswa_id == auth()->user()->siswa->id) {
+        }
+
+        if (auth()->user()->isSiswa() &&
+            $lamaran->siswa_id === auth()->user()->siswa->id) {
             return view('siswa.lamaran.show', compact('lamaran'));
-        } elseif (auth()->user()->isPerusahaan() && $lamaran->lowongan->perusahaan_id == auth()->user()->perusahaan->id) {
+        }
+
+        if (auth()->user()->isPerusahaan() &&
+            $lamaran->lowongan->perusahaan_id === auth()->user()->perusahaan->id) {
             return view('perusahaan.lamaran.show', compact('lamaran'));
         }
 
@@ -93,8 +130,13 @@ public function index()
 
     public function destroy(Lamaran $lamaran)
     {
-        // Only allow deletion if status is 'dikirim'
-        if ($lamaran->status !== 'dikirim') {
+        // Validasi kepemilikan
+        if ($lamaran->siswa_id !== auth()->user()->siswa->id) {
+            abort(403);
+        }
+
+        // Status yang boleh dibatalkan
+        if (!in_array($lamaran->status, ['dikirim', 'dilihat'])) {
             return back()->with('error', 'Lamaran tidak dapat dibatalkan');
         }
 
@@ -102,7 +144,7 @@ public function index()
         if ($lamaran->surat_lamaran) Storage::disk('public')->delete($lamaran->surat_lamaran);
         if ($lamaran->portofolio) Storage::disk('public')->delete($lamaran->portofolio);
 
-        // Decrement jumlah pelamar
+        // Kurangi jumlah pelamar
         $lamaran->lowongan->decrement('jumlah_pelamar');
 
         $lamaran->delete();
@@ -110,12 +152,15 @@ public function index()
         return back()->with('success', 'Lamaran berhasil dibatalkan');
     }
 
-    // Admin Methods
+    /* =======================
+     * ADMIN METHODS
+     * ======================= */
+
     public function adminIndex(Request $request)
     {
         $query = Lamaran::with(['siswa.user', 'lowongan.perusahaan']);
 
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
@@ -124,16 +169,19 @@ public function index()
         return view('admin.lamaran.index', compact('lamaran'));
     }
 
-    // Perusahaan Methods
+    /* =======================
+     * PERUSAHAAN METHODS
+     * ======================= */
+
     public function perusahaanIndex(Request $request)
     {
         $perusahaan = auth()->user()->perusahaan;
-        
-        $query = Lamaran::whereHas('lowongan', function($q) use ($perusahaan) {
+
+        $query = Lamaran::whereHas('lowongan', function ($q) use ($perusahaan) {
             $q->where('perusahaan_id', $perusahaan->id);
         })->with(['siswa.user', 'lowongan']);
 
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
@@ -145,8 +193,8 @@ public function index()
     public function updateStatus(Request $request, Lamaran $lamaran)
     {
         $validated = $request->validate([
-            'status' => 'required|in:dilihat,diproses,diterima,ditolak',
-            'catatan' => 'nullable|string',
+            'status'   => 'required|in:dilihat,diproses,diterima,ditolak',
+            'catatan'  => 'nullable|string',
         ]);
 
         $lamaran->update($validated);

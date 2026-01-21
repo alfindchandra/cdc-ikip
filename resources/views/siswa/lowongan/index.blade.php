@@ -69,11 +69,25 @@
                     {{ ucfirst(str_replace('_',' ',$l->tipe_pekerjaan)) }}
                 </span>
 
-                @if($l->gaji_min && $l->gaji_max)
-                    <span class="text-sm text-gray-600">
-                        💰 Rp {{ number_format($l->gaji_min/1000000,1) }}jt –
-                        {{ number_format($l->gaji_max/1000000,1) }}jt
-                    </span>
+                @if($l->gaji_min || $l->gaji_max)
+                    <span class="badge badge-success text-sm px-3 py-1">
+                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2
+                                                m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1
+                                                m0-1c-1.11 0-2.08-.402-2.599-1
+                                                M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+
+                                    @if($l->gaji_min && $l->gaji_max)
+                                        Rp {{ number_format($l->gaji_min / 1000000, 0) }}jt -
+                                        {{ number_format($l->gaji_max / 1000000, 0) }}jt
+                                    @elseif($l->gaji_min)
+                                        Min Rp {{ number_format($l->gaji_min / 1000000, 0) }}jt
+                                    @elseif($l->gaji_max)
+                                        Max Rp {{ number_format($l->gaji_max / 1000000, 0) }}jt
+                                    @endif
+                                </span>
                 @endif
             </div>
 
