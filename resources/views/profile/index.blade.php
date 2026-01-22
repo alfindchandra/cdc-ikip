@@ -174,46 +174,7 @@
 
             <div class="lg:col-span-8 space-y-8">
                 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                    <div class="px-6 py-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            </span>
-                            <h3 class="font-bold text-lg text-slate-800">Riwayat PKL</h3>
-                        </div>
-                        <a href="{{ route('siswa.pkl.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline">Lihat Semua</a>
-                    </div>
-                    
-                    <div class="p-6">
-                        @forelse($siswa->pkl()->latest()->take(3)->get() as $pkl)
-                        <div class="group relative pl-8 pb-8 last:pb-0 border-l-2 border-slate-100 last:border-transparent">
-                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-4 border-blue-500"></div>
-                            
-                            <div class="bg-slate-50 p-4 rounded-xl hover:bg-blue-50 transition-colors -mt-2">
-                                <div class="flex flex-col sm:flex-row justify-between gap-2 mb-2">
-                                    <h4 class="font-bold text-slate-900 text-lg">{{ $pkl->perusahaan->nama_perusahaan }}</h4>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-{{ $pkl->status == 'selesai' ? 'green' : 'blue' }}-100 text-{{ $pkl->status == 'selesai' ? 'green' : 'blue' }}-800">
-                                        {{ ucfirst($pkl->status) }}
-                                    </span>
-                                </div>
-                                <p class="text-slate-600 font-medium mb-2">{{ $pkl->posisi ?? 'Peserta Magang' }}</p>
-                                <div class="flex items-center text-xs text-slate-500 gap-4">
-                                    <span class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                        {{ $pkl->tanggal_mulai->format('d M Y') }} - {{ $pkl->tanggal_selesai->format('d M Y') }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        @empty
-                            <div class="text-center py-10 text-slate-400">
-                                <p>Belum ada riwayat PKL.</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-
+              
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                     <div class="px-6 py-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
                         <div class="flex items-center gap-3">

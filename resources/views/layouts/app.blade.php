@@ -177,7 +177,7 @@
                             
                                 <div class="text-left hidden md:block">
                                     <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
-                                    <p class="text-xs text-gray-500">{{ ucfirst(auth()->user()->role) }}</p>
+                                    <!-- <p class="text-xs text-gray-500">{{ ucfirst(auth()->user()->role) }}</p> -->
                                 </div>
                                 <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>

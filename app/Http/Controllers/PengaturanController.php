@@ -39,7 +39,7 @@ class PengaturanController extends Controller
         // Tambah validasi untuk siswa
         if ($user->isSiswa()) {
             $rules = array_merge($rules, [
-                'nim' => 'nullable|string|max:20|unique:siswa,nisn,' . $user->siswa->id,
+                'nim' => 'nullable|string|max:20|unique:siswa,nim,' . $user->siswa->id,
                 'tempat_lahir' => 'nullable|string|max:100',
                 'tanggal_lahir' => 'nullable|date',
                 'jenis_kelamin' => 'required|in:L,P',
@@ -80,7 +80,7 @@ class PengaturanController extends Controller
         // Update siswa profile if user is siswa
         if ($user->isSiswa()) {
             $siswaData = [
-                'nisn' => $validated['nisn'] ?? null,
+                'nim' => $validated['nim'] ?? null,
                 'tempat_lahir' => $validated['tempat_lahir'] ?? null,
                 'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
                 'jenis_kelamin' => $validated['jenis_kelamin'],
