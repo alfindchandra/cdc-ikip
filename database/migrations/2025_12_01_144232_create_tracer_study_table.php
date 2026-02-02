@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tracer_study', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('siswa_id')->constrained('siswa')->onDelete('cascade');
+            $table->foreignId('mahasiswa_id')->constrained('mahasiswa')->onDelete('cascade');
             
             // Status Utama
             $table->enum('status_pekerjaan', [

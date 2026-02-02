@@ -122,7 +122,7 @@
                             </div>
                         </div>
                         
-                        <a href="{{ route('siswa.pelatihan.show', $pelatihan->id) }}" class="block w-full text-center bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
+                        <a href="{{ route('mahasiswa.pelatihan.show', $pelatihan->id) }}" class="block w-full text-center bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
                             Daftar Sekarang
                         </a>
                     </div>
@@ -153,7 +153,7 @@
                         </div>
                     </div>
                     <p class="text-sm text-gray-400 mb-4">
-                        Membantu siswa dan alumni meraih karir impian melalui layanan penempatan kerja dan pelatihan profesional.
+                        Membantu mahasiswa dan alumni meraih karir impian melalui layanan penempatan kerja dan pelatihan profesional.
                     </p>
                     <div class="flex space-x-3">
                         <a href="#" class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition">

@@ -10,10 +10,10 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         @php
             $stats = [
-                ['label'=>'Total Lamaran','count'=>auth()->user()->siswa->lamaran()->count(),'color'=>'blue','icon'=>'M9 12h6'],
-                ['label'=>'Diproses','count'=>auth()->user()->siswa->lamaran()->whereIn('status',['dikirim','dilihat','diproses'])->count(),'color'=>'yellow','icon'=>'M12 8v4l3 3'],
-                ['label'=>'Diterima','count'=>auth()->user()->siswa->lamaran()->where('status','diterima')->count(),'color'=>'green','icon'=>'M9 12l2 2 4-4'],
-                ['label'=>'Ditolak','count'=>auth()->user()->siswa->lamaran()->where('status','ditolak')->count(),'color'=>'red','icon'=>'M10 14l2-2'],
+                ['label'=>'Total Lamaran','count'=>auth()->user()->mahasiswa->lamaran()->count(),'color'=>'blue','icon'=>'M9 12h6'],
+                ['label'=>'Diproses','count'=>auth()->user()->mahasiswa->lamaran()->whereIn('status',['dikirim','dilihat','diproses'])->count(),'color'=>'yellow','icon'=>'M12 8v4l3 3'],
+                ['label'=>'Diterima','count'=>auth()->user()->mahasiswa->lamaran()->where('status','diterima')->count(),'color'=>'green','icon'=>'M9 12l2 2 4-4'],
+                ['label'=>'Ditolak','count'=>auth()->user()->mahasiswa->lamaran()->where('status','ditolak')->count(),'color'=>'red','icon'=>'M10 14l2-2'],
             ];
         @endphp
 
@@ -113,11 +113,11 @@
                         </div>
 
                         <div class="flex gap-3">
-                            <a href="{{ route('siswa.lowongan.show',$l->lowongan->id) }}"
+                            <a href="{{ route('mahasiswa.lowongan.show',$l->lowongan->id) }}"
                                class="text-blue-600 font-medium hover:underline">Detail</a>
 
                             @if(in_array($l->status,['dikirim','dilihat']))
-                            <form method="POST" action="{{ route('siswa.lamaran.destroy',$l->id) }}"
+                            <form method="POST" action="{{ route('mahasiswa.lamaran.destroy',$l->id) }}"
                                   onsubmit="return confirm('Batalkan lamaran ini?')">
                                 @csrf @method('DELETE')
                                 <button class="text-red-600 font-medium hover:underline">Batalkan</button>
@@ -132,7 +132,7 @@
         <div class="bg-white rounded-xl shadow-sm p-10 text-center">
             <p class="text-lg font-semibold">Belum Ada Lamaran</p>
             <p class="text-gray-500 mt-1 mb-4">Mulai cari lowongan yang sesuai minat Anda</p>
-            <a href="{{ route('siswa.lowongan.index') }}"
+            <a href="{{ route('mahasiswa.lowongan.index') }}"
                class="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
                 Cari Lowongan
             </a>

@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('peserta_pelatihan', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('siswa_id');
+            $table->unsignedBigInteger('mahasiswa_id');
             $table->unsignedBigInteger('pelatihan_id');
 
             $table->string('status_pendaftaran')->nullable();
@@ -24,11 +24,11 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign key constraint
-            $table->foreign('siswa_id')->references('id')->on('siswa')->onDelete('cascade');
+            $table->foreign('mahasiswa_id')->references('id')->on('mahasiswa')->onDelete('cascade');
             $table->foreign('pelatihan_id')->references('id')->on('pelatihan')->onDelete('cascade');
 
-            // Pastikan kombinasi unik agar 1 siswa tidak bisa daftar pelatihan yang sama lebih dari sekali
-            $table->unique(['siswa_id', 'pelatihan_id']);
+            // Pastikan kombinasi unik agar 1 mahasiswa tidak bisa daftar pelatihan yang sama lebih dari sekali
+            $table->unique(['mahasiswa_id', 'pelatihan_id']);
         });
     }
 

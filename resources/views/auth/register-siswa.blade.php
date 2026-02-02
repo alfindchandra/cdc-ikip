@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi Siswa - CDC {{ config('app.ikip') }}</title>
+    <title>Registrasi Mahasiswa - CDC {{ config('app.ikip') }}</title>
     @vite(['resources/css/app.css'])
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
@@ -26,7 +26,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Registrasi Mahasiswa</h1>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Registrasi Mahamahasiswa</h1>
             <p class="text-gray-600">Lengkapi data diri Anda untuk membuat akun</p>
         </div>
 
@@ -47,7 +47,7 @@
             </div>
             @endif
 
-            <form method="POST" action="{{ route('register.siswa') }}" class="space-y-6">
+            <form method="POST" action="{{ route('register.mahasiswa') }}" class="space-y-6">
                 @csrf
 
                 <!-- Data Akun Section -->
@@ -109,7 +109,7 @@
                             <label for="nim" class="block text-sm font-semibold text-gray-700 mb-2">NIM *</label>
                             <input type="text" id="nim" name="nim" value="{{ old('nim') }}" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                                   placeholder="Nomor Induk Mahasiswa" maxlength="20" required>
+                                   placeholder="Nomor Induk Mahamahasiswa" maxlength="20" required>
                         </div>
 
                         <!-- Jenis Kelamin -->
@@ -266,7 +266,7 @@
                 <div class="pt-4">
                     <button type="submit" 
                             class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-3.5 rounded-xl hover:from-blue-700 hover:to-blue-800 shadow-lg transform hover:scale-[1.02] transition-all flex items-center justify-center space-x-2">
-                        <span>Daftar Sebagai Mahasiswa</span>
+                        <span>Daftar Sebagai Mahamahasiswa</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                         </svg>

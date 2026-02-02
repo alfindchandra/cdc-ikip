@@ -26,18 +26,18 @@
                 <div class="flex items-start space-x-4 mb-6">
                     <div class="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center 
                                 text-blue-600 text-3xl font-bold">
-                        {{ substr($lamaran->siswa->user->name, 0, 1) }}
+                        {{ substr($lamaran->mahasiswa->user->name, 0, 1) }}
                     </div>
                     <div class="flex-1">
-                        <h2 class="text-2xl font-bold text-gray-900">{{ $lamaran->siswa->user->name }}</h2>
-                        <p class="text-gray-600 mt-1">NIM: {{ $lamaran->siswa->nim }}</p>
+                        <h2 class="text-2xl font-bold text-gray-900">{{ $lamaran->mahasiswa->user->name }}</h2>
+                        <p class="text-gray-600 mt-1">NIM: {{ $lamaran->mahasiswa->nim }}</p>
 
                         <div class="flex flex-wrap gap-2 mt-3">
                             <span class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full">
-                                {{ $lamaran->siswa->fakultas->nama }}
+                                {{ $lamaran->mahasiswa->fakultas->nama }}
                             </span>
                             <span class="px-3 py-1 text-sm bg-indigo-100 text-indigo-700 rounded-full">
-                                {{ $lamaran->siswa->programStudi->nama }}
+                                {{ $lamaran->mahasiswa->programStudi->nama }}
                             </span>
                         </div>
                     </div>
@@ -46,24 +46,24 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <p class="text-sm text-gray-500">Email</p>
-                        <p class="font-medium text-gray-900">{{ $lamaran->siswa->user->email }}</p>
+                        <p class="font-medium text-gray-900">{{ $lamaran->mahasiswa->user->email }}</p>
                     </div>
 
                     <div>
                         <p class="text-sm text-gray-500">No. Telepon</p>
-                        <p class="font-medium text-gray-900">{{ $lamaran->siswa->no_telp ?? '-' }}</p>
+                        <p class="font-medium text-gray-900">{{ $lamaran->mahasiswa->no_telp ?? '-' }}</p>
                     </div>
 
                     <div>
                         <p class="text-sm text-gray-500">Tanggal Lahir</p>
                         <p class="font-medium text-gray-900">
-                            {{ $lamaran->siswa->tanggal_lahir ? $lamaran->siswa->tanggal_lahir->format('d F Y') : '-' }}
+                            {{ $lamaran->mahasiswa->tanggal_lahir ? $lamaran->mahasiswa->tanggal_lahir->format('d F Y') : '-' }}
                         </p>
                     </div>
 
                     <div>
                         <p class="text-sm text-gray-500">Alamat</p>
-                        <p class="font-medium text-gray-900">{{ $lamaran->siswa->alamat ?? '-' }}</p>
+                        <p class="font-medium text-gray-900">{{ $lamaran->mahasiswa->alamat ?? '-' }}</p>
                     </div>
                 </div>
             </div>
@@ -191,23 +191,23 @@
                 <h4 class="font-semibold text-gray-900 mb-4">Hubungi Pelamar</h4>
 
                 <div class="space-y-3 text-sm">
-                    <a href="mailto:{{ $lamaran->siswa->user->email }}"
+                    <a href="mailto:{{ $lamaran->mahasiswa->user->email }}"
                        class="flex items-center text-blue-700 hover:underline">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                   d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                         </svg>
-                        {{ $lamaran->siswa->user->email }}
+                        {{ $lamaran->mahasiswa->user->email }}
                     </a>
 
-                    @if($lamaran->siswa->no_telp)
-                    <a href="tel:{{ $lamaran->siswa->no_telp }}"
+                    @if($lamaran->mahasiswa->no_telp)
+                    <a href="tel:{{ $lamaran->mahasiswa->no_telp }}"
                        class="flex items-center text-blue-700 hover:underline">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                   d="M3 5a2 2 0 012-2h3.3a1 1 0 01.9.7l1.5 4.5a1 1 0 01-.5 1.2l-2.3 1.1a11 11 0 005.5 5.5l1.1-2.3a1 1 0 011.2-.5l4.5 1.5a1 1 0 01.7.9V19a2 2 0 01-2 2h-1C9.7 21 3 14.3 3 6V5z"/>
                         </svg>
-                        {{ $lamaran->siswa->no_telp }}
+                        {{ $lamaran->mahasiswa->no_telp }}
                     </a>
                     @endif
                 </div>

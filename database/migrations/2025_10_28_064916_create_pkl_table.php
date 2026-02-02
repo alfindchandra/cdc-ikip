@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('pkl', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('siswa_id')->constrained('siswa')->onDelete('cascade');
+            $table->foreignId('mahasiswa_id')->constrained('mahasiswa')->onDelete('cascade');
             $table->foreignId('perusahaan_id')->constrained('perusahaan')->onDelete('cascade');
             $table->string('pembimbing_sekolah')->nullable();
             $table->string('pembimbing_industri')->nullable();

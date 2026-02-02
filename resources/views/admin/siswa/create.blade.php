@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Mahasiswa')
-@section('page-title', 'Tambah Data Mahasiswa')
+@section('title', 'Tambah Mahamahasiswa')
+@section('page-title', 'Tambah Data Mahamahasiswa')
 
 @section('content')
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -9,8 +9,8 @@
     <!-- Header Page -->
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Tambah Mahasiswa Baru</h2>
-            <p class="text-sm text-gray-500 mt-1">Silakan lengkapi formulir di bawah ini untuk mendaftarkan Mahasiswa.</p>
+            <h2 class="text-2xl font-bold text-gray-800">Tambah Mahamahasiswa Baru</h2>
+            <p class="text-sm text-gray-500 mt-1">Silakan lengkapi formulir di bawah ini untuk mendaftarkan Mahamahasiswa.</p>
         </div>
     </div>
 
@@ -25,7 +25,7 @@
             <h3 class="text-lg font-semibold text-gray-800">Formulir Pendaftaran</h3>
         </div>
         
-        <form action="{{ route('admin.siswa.store') }}" method="POST" class="p-6 sm:p-8 space-y-8">
+        <form action="{{ route('admin.mahasiswa.store') }}" method="POST" class="p-6 sm:p-8 space-y-8">
             @csrf
 
             <!-- ========================
@@ -215,7 +215,7 @@
                  ACTION BUTTONS
             ========================== -->
             <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200 bg-gray-50 -mx-6 -mb-6 p-6 sm:-mx-8 sm:-mb-8 sm:p-8 rounded-b-xl">
-                <a href="{{ route('admin.siswa.index') }}" class="px-6 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:text-gray-800 transition duration-200 focus:ring focus:ring-gray-200">
+                <a href="{{ route('admin.mahasiswa.index') }}" class="px-6 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:text-gray-800 transition duration-200 focus:ring focus:ring-gray-200">
                     Batal
                 </a>
                 <button type="submit" class="px-6 py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-md hover:shadow-lg transition duration-200 focus:ring focus:ring-blue-300">

@@ -201,10 +201,10 @@
                     @forelse($data as $index => $item)
                         <tr class="{{ $index % 2 === 0 ? 'bg-white' : 'bg-gray-50' }}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $index + 1 }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->siswa->user->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->siswa->nim }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->siswa->programStudi->nama ?? '-' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->siswa->tahun_lulus ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->mahasiswa->user->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->mahasiswa->nim }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->mahasiswa->programStudi->nama ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->mahasiswa->tahun_lulus ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 @php
                                     $statusBadge = [

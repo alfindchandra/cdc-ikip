@@ -65,8 +65,8 @@ class WelcomeController extends Controller
         $statistik = [
             'total_lowongan' => LowonganKerja::where('status', 'aktif')->count(),
             'total_perusahaan' => Perusahaan::where('status_kerjasama', 'aktif')->count(),
-            'total_siswa_pkl' => \App\Models\Pkl::where('status', 'berlangsung')->count(),
-            'total_alumni' => \App\Models\Siswa::where('status', 'lulus')->count(),
+            'total_mahasiswa_pkl' => \App\Models\Pkl::where('status', 'berlangsung')->count(),
+            'total_alumni' => \App\Models\Mahasiswa::where('status', 'lulus')->count(),
               'total_responden' => TracerStudy::count(),
 
         // Status pekerjaan mengikuti ENUM pada migrasi
@@ -155,7 +155,7 @@ class WelcomeController extends Controller
     
 
     // Testimoni Alumni (kolom kepuasan_alumni TIDAK ADA → diganti kepuasan_pendidikan)
-    $testimoni = TracerStudy::with(['siswa.user', 'siswa.programStudi'])
+    $testimoni = TracerStudy::with(['mahasiswa.user', 'mahasiswa.programStudi'])
                             ->whereNotNull('kepuasan_pendidikan')
                             ->where('kepuasan_pendidikan', '>=', 4)
                             ->inRandomOrder()
@@ -292,7 +292,7 @@ class WelcomeController extends Controller
     
 
     // Testimoni Alumni (kolom kepuasan_alumni TIDAK ADA → diganti kepuasan_pendidikan)
-    $testimoni = TracerStudy::with(['siswa.user', 'siswa.programStudi'])
+    $testimoni = TracerStudy::with(['mahasiswa.user', 'mahasiswa.programStudi'])
                             ->whereNotNull('kepuasan_pendidikan')
                             ->where('kepuasan_pendidikan', '>=', 4)
                             ->inRandomOrder()

@@ -13,8 +13,8 @@
         Kembali ke Profil
     </a>
 
-    @if(auth()->user()->isSiswa())
-        @php $siswa = auth()->user()->siswa; @endphp
+    @if(auth()->user()->isMahasiswa())
+        @php $mahasiswa = auth()->user()->mahasiswa; @endphp
 
         <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
             @csrf
@@ -132,9 +132,9 @@
                                     NIM
                                 </label>
                                 <input type="text" id="nim" name="nim" 
-                                       value="{{ old('nim', auth()->user()->siswa->nim ?? '') }}"
+                                       value="{{ old('nim', auth()->user()->mahasiswa->nim ?? '') }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                                       placeholder="Nomor Induk Mahasiswa">
+                                       placeholder="Nomor Induk Mahamahasiswa">
                                 @error('nim')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
@@ -160,7 +160,7 @@
                                     Tempat Lahir
                                 </label>
                                 <input type="text" id="tempat_lahir" name="tempat_lahir" 
-                                       value="{{ old('tempat_lahir', auth()->user()->siswa->tempat_lahir ?? '') }}"
+                                       value="{{ old('tempat_lahir', auth()->user()->mahasiswa->tempat_lahir ?? '') }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                                        placeholder="Kota kelahiran">
                                 @error('tempat_lahir')
@@ -174,7 +174,7 @@
                                     Tanggal Lahir
                                 </label>
                                 <input type="date" id="tanggal_lahir" name="tanggal_lahir" 
-                                       value="{{ old('tanggal_lahir', auth()->user()->siswa->tanggal_lahir ?? '') }}"
+                                       value="{{ old('tanggal_lahir', auth()->user()->mahasiswa->tanggal_lahir ?? '') }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all">
                                 @error('tanggal_lahir')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -189,8 +189,8 @@
                                 <select id="jenis_kelamin" name="jenis_kelamin" required
                                         class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all appearance-none bg-white">
                                     <option value="">Pilih Jenis Kelamin</option>
-                                    <option value="L" {{ old('jenis_kelamin', auth()->user()->siswa->jenis_kelamin ?? '') == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                                    <option value="P" {{ old('jenis_kelamin', auth()->user()->siswa->jenis_kelamin ?? '') == 'P' ? 'selected' : '' }}>Perempuan</option>
+                                    <option value="L" {{ old('jenis_kelamin', auth()->user()->mahasiswa->jenis_kelamin ?? '') == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="P" {{ old('jenis_kelamin', auth()->user()->mahasiswa->jenis_kelamin ?? '') == 'P' ? 'selected' : '' }}>Perempuan</option>
                                 </select>
                                 @error('jenis_kelamin')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -206,7 +206,7 @@
                                         class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all appearance-none bg-white">
                                     <option value="">Pilih Agama</option>
                                     @foreach(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu'] as $agama)
-                                        <option value="{{ $agama }}" {{ old('agama', auth()->user()->siswa->agama ?? '') == $agama ? 'selected' : '' }}>{{ $agama }}</option>
+                                        <option value="{{ $agama }}" {{ old('agama', auth()->user()->mahasiswa->agama ?? '') == $agama ? 'selected' : '' }}>{{ $agama }}</option>
                                     @endforeach
                                 </select>
                                 @error('agama')
@@ -220,7 +220,7 @@
                                     No. Telepon
                                 </label>
                                 <input type="text" id="no_telp" name="no_telp" 
-                                       value="{{ old('no_telp', auth()->user()->siswa->no_telp ?? '') }}"
+                                       value="{{ old('no_telp', auth()->user()->mahasiswa->no_telp ?? '') }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                                        placeholder="08123456789">
                                 @error('no_telp')
@@ -235,7 +235,7 @@
                                 </label>
                                 <textarea id="alamat" name="alamat" rows="3"
                                           class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all resize-none"
-                                          placeholder="Jl. Contoh No. 123, RT/RW, Kelurahan, Kecamatan">{{ old('alamat', auth()->user()->siswa->alamat ?? '') }}</textarea>
+                                          placeholder="Jl. Contoh No. 123, RT/RW, Kelurahan, Kecamatan">{{ old('alamat', auth()->user()->mahasiswa->alamat ?? '') }}</textarea>
                                 @error('alamat')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
@@ -263,7 +263,7 @@
                                     Nama Orang Tua/Wali
                                 </label>
                                 <input type="text" id="nama_ortu" name="nama_ortu" 
-                                       value="{{ old('nama_ortu', auth()->user()->siswa->nama_ortu ?? '') }}"
+                                       value="{{ old('nama_ortu', auth()->user()->mahasiswa->nama_ortu ?? '') }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                                        placeholder="Nama lengkap orang tua/wali">
                                 @error('nama_ortu')
@@ -277,7 +277,7 @@
                                     Pekerjaan
                                 </label>
                                 <input type="text" id="pekerjaan_ortu" name="pekerjaan_ortu" 
-                                       value="{{ old('pekerjaan_ortu', auth()->user()->siswa->pekerjaan_ortu ?? '') }}"
+                                       value="{{ old('pekerjaan_ortu', auth()->user()->mahasiswa->pekerjaan_ortu ?? '') }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                                        placeholder="Pekerjaan orang tua/wali">
                                 @error('pekerjaan_ortu')
@@ -291,7 +291,7 @@
                                     No. Telepon Orang Tua/Wali
                                 </label>
                                 <input type="text" id="no_telp_ortu" name="no_telp_ortu" 
-                                       value="{{ old('no_telp_ortu', auth()->user()->siswa->no_telp_ortu ?? '') }}"
+                                       value="{{ old('no_telp_ortu', auth()->user()->mahasiswa->no_telp_ortu ?? '') }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                                        placeholder="08123456789">
                                 @error('no_telp_ortu')

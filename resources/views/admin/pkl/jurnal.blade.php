@@ -28,18 +28,18 @@
                 <div class="col-md-6">
                     <table class="table table-sm">
                         <tr>
-                            <td width="40%" class="fw-bold">Nama Siswa</td>
-                            <td>{{ $pkl->siswa->user->name }}</td>
+                            <td width="40%" class="fw-bold">Nama Mahasiswa</td>
+                            <td>{{ $pkl->mahasiswa->user->name }}</td>
                         </tr>
                         <tr>
                             <td class="fw-bold">NIM</td>
-                            <td>{{ $pkl->siswa->nim }}</td>
+                            <td>{{ $pkl->mahasiswa->nim }}</td>
                         </tr>
                         <tr>
                             <td class="fw-bold">Fakultas/Prodi</td>
                             <td>
-                                {{ $pkl->siswa->fakultas->nama ?? '-' }} / 
-                                {{ $pkl->siswa->programStudi->nama ?? '-' }}
+                                {{ $pkl->mahasiswa->fakultas->nama ?? '-' }} / 
+                                {{ $pkl->mahasiswa->programStudi->nama ?? '-' }}
                             </td>
                         </tr>
                     </table>
@@ -125,7 +125,7 @@
         <div class="card-body">
             @if($pkl->jurnalPkl->isEmpty())
                 <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>Belum ada jurnal yang diinput oleh siswa.
+                    <i class="fas fa-info-circle me-2"></i>Belum ada jurnal yang diinput oleh mahasiswa.
                 </div>
             @else
                 <div class="table-responsive">

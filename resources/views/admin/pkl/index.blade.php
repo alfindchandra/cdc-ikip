@@ -14,7 +14,7 @@
             <div class="md:col-span-2">
                 <label for="search" class="sr-only">Cari...</label>
                 <input type="text" name="search" id="search" value="{{ request('search') }}" 
-                       placeholder="Cari nama siswa atau perusahaan..." 
+                       placeholder="Cari nama mahasiswa atau perusahaan..." 
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 shadow-sm transition duration-150">
             </div>
             
@@ -70,7 +70,7 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Siswa</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Mahasiswa</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Perusahaan</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Periode</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
@@ -81,9 +81,9 @@
                     @forelse($pkl as $p)
                     <tr class="hover:bg-blue-50 transition duration-150">
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <p class="font-semibold text-gray-900">{{ $p->siswa->user->name }}</p>
-                            <p class="text-sm text-gray-500">{{ $p->siswa->nis }}</p>
-                            <p class="text-xs text-gray-400 mt-1">{{ $p->siswa->kelas }}</p>
+                            <p class="font-semibold text-gray-900">{{ $p->mahasiswa->user->name }}</p>
+                            <p class="text-sm text-gray-500">{{ $p->mahasiswa->nis }}</p>
+                            <p class="text-xs text-gray-400 mt-1">{{ $p->mahasiswa->kelas }}</p>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                             {{ $p->perusahaan->nama_perusahaan }}

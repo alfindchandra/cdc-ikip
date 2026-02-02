@@ -9,7 +9,7 @@ class Lamaran extends Model
     protected $table = 'lamaran';
 
     protected $fillable = [
-        'lowongan_id', 'siswa_id', 'cv', 'surat_lamaran',
+        'lowongan_id', 'mahasiswa_id', 'cv', 'surat_lamaran',
         'portofolio', 'status', 'tanggal_melamar', 'catatan'
     ];
 
@@ -22,8 +22,8 @@ class Lamaran extends Model
         return $this->belongsTo(LowonganKerja::class, 'lowongan_id');
     }
 
-    public function siswa()
+    public function mahasiswa()
     {
-        return $this->belongsTo(Siswa::class);
+        return $this->belongsTo(Mahasiswa::class);
     }
 }

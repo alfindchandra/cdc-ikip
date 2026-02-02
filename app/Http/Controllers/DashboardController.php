@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Siswa;
+use App\Models\Mahasiswa;
 use App\Models\Perusahaan;
 use App\Models\Pkl;
 use App\Models\LowonganKerja;
@@ -17,8 +17,8 @@ class DashboardController extends Controller
         
         if ($user->isAdmin()) {
             return $this->adminDashboard();
-        } elseif ($user->isSiswa()) {
-            return $this->siswaDashboard();
+        } elseif ($user->isMahasiswa()) {
+            return $this->mahasiswaDashboard();
         } elseif ($user->isPerusahaan()) {
             return $this->perusahaanDashboard();
         }
@@ -27,14 +27,14 @@ class DashboardController extends Controller
    private function adminDashboard()
 {
     $data = [
-        'total_siswa' => Siswa::where('status', 'aktif')->count(),
+        'total_mahasiswa' => Mahasiswa::where('status', 'aktif')->count(),
         'total_perusahaan' => Perusahaan::where('status_kerjasama', 'aktif')->count(),
         'pkl_berlangsung' => Pkl::where('status', 'berlangsung')->count(),
         'lowongan_aktif' => LowonganKerja::aktif()->count(),
         'pelatihan_mendatang' => Pelatihan::where('status', 'published')
                                              ->where('tanggal_mulai', '>', now())
                                              ->count(),
-        'pkl_terbaru' => Pkl::with(['siswa.user', 'perusahaan'])
+        'pkl_terbaru' => Pkl::with(['mahasiswa.user', 'perusahaan'])
                                 ->latest()
                                 ->take(5)
                                 ->get(),
@@ -52,18 +52,18 @@ class DashboardController extends Controller
     return view('admin.dashboard', $data);
 }
 
-    private function siswaDashboard()
+    private function mahasiswaDashboard()
     {
-        $siswa = auth()->user()->siswa;
+        $mahasiswa = auth()->user()->mahasiswa;
         
         $data = [
-            'pkl_aktif' => Pkl::where('siswa_id', $siswa->id)
+            'pkl_aktif' => Pkl::where('mahasiswa_id', $mahasiswa->id)
                               ->whereIn('status', ['berlangsung', 'diterima'])
                               ->first(),
-            'lamaran_pending' => $siswa->lamaran()
+            'lamaran_pending' => $mahasiswa->lamaran()
                                        ->whereIn('status', ['dikirim', 'dilihat', 'diproses'])
                                        ->count(),
-            'pelatihan_terdaftar' => $siswa->pelatihan()
+            'pelatihan_terdaftar' => $mahasiswa->pelatihan()
                                            ->wherePivot('status_pendaftaran', 'diterima')
                                            ->count(),
             'lowongan_terbaru' => LowonganKerja::with('perusahaan')
@@ -77,7 +77,7 @@ class DashboardController extends Controller
                                              ->get(),
         ];
 
-        return view('siswa.dashboard', $data);
+        return view('mahasiswa.dashboard', $data);
     }
 
     private function perusahaanDashboard()
@@ -98,8 +98,8 @@ class DashboardController extends Controller
                                            ->latest()
                                            ->take(5)
                                            ->get(),
-            'siswa_pkl' => Pkl::where('perusahaan_id', $perusahaan->id)
-                              ->with('siswa.user')
+            'mahasiswa_pkl' => Pkl::where('perusahaan_id', $perusahaan->id)
+                              ->with('mahasiswa.user')
                               ->latest()
                               ->take(5)
                               ->get(),

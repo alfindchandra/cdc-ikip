@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Siswa PKL')
-@section('page-title', 'Kelola Siswa PKL')
+@section('title', 'Mahasiswa PKL')
+@section('page-title', 'Kelola Mahasiswa PKL')
 
 @section('content')
 <div class="space-y-8"> {{-- Tingkatkan spacing --}}
@@ -44,7 +44,7 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Siswa (NIM & Prodi)</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Mahasiswa (NIM & Prodi)</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Periode PKL</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Posisi</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
@@ -54,16 +54,16 @@
                 <tbody class="divide-y divide-gray-200">
                     @forelse($pkl as $p)
                     <tr class="hover:bg-indigo-50/50 transition duration-150 ease-in-out">
-                        {{-- Kolom Siswa --}}
+                        {{-- Kolom Mahasiswa --}}
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-3">
                                 <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold flex-shrink-0 text-lg">
                                     {{-- Menggunakan warna Indigo untuk identitas perusahaan --}}
-                                    {{ substr($p->siswa->user->name, 0, 1) }}
+                                    {{ substr($p->mahasiswa->user->name, 0, 1) }}
                                 </div>
                                 <div class="truncate">
-                                    <p class="font-semibold text-gray-900 truncate">{{ $p->siswa->user->name }}</p>
-                                    <p class="text-xs text-gray-500 mt-1 truncate">{{ $p->siswa->nim }} - {{ $p->siswa->programStudi->nama }}</p>
+                                    <p class="font-semibold text-gray-900 truncate">{{ $p->mahasiswa->user->name }}</p>
+                                    <p class="text-xs text-gray-500 mt-1 truncate">{{ $p->mahasiswa->nim }} - {{ $p->mahasiswa->programStudi->nama }}</p>
                                 </div>
                             </div>
                         </td>
@@ -112,8 +112,8 @@
                             <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                             </svg>
-                            <p class="text-lg font-semibold text-gray-700">Tidak ada data siswa PKL.</p>
-                            <p class="text-sm mt-1">Belum ada pengajuan atau siswa yang terdaftar di perusahaan Anda.</p>
+                            <p class="text-lg font-semibold text-gray-700">Tidak ada data mahasiswa PKL.</p>
+                            <p class="text-sm mt-1">Belum ada pengajuan atau mahasiswa yang terdaftar di perusahaan Anda.</p>
                         </td>
                     </tr>
                     @endforelse

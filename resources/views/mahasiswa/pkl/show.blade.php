@@ -7,7 +7,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Back Button -->
-    <a href="{{ route('siswa.pkl.index') }}" class="inline-flex items-center text-blue-600 hover:text-blue-700">
+    <a href="{{ route('mahasiswa.pkl.index') }}" class="inline-flex items-center text-blue-600 hover:text-blue-700">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
         </svg>
@@ -108,7 +108,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             </button>
-                            <form action="{{ route('siswa.pkl.jurnal.delete', $jurnal->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus jurnal ini?')">
+                            <form action="{{ route('mahasiswa.pkl.jurnal.delete', $jurnal->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus jurnal ini?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="text-red-600 hover:text-red-700" title="Hapus">
@@ -160,7 +160,7 @@
 @if($pkl->status == 'berlangsung')
 <div id="modalTambahJurnal" class="modal-overlay hidden" onclick="if(event.target === this) this.classList.add('hidden')">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <form action="{{ route('siswa.pkl.jurnal.add', $pkl->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('mahasiswa.pkl.jurnal.add', $pkl->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
@@ -254,7 +254,7 @@
 
 <script>
 function editJurnal(id, tanggal, kegiatan) {
-    document.getElementById('formEditJurnal').action = `/siswa/pkl/jurnal/${id}`;
+    document.getElementById('formEditJurnal').action = `/mahasiswa/pkl/jurnal/${id}`;
     document.getElementById('edit_tanggal').value = tanggal;
     document.getElementById('edit_kegiatan').value = kegiatan;
     document.getElementById('modalEditJurnal').classList.remove('hidden');

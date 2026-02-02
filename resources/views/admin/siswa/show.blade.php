@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Siswa')
-@section('page-title', 'Detail Data Siswa')
+@section('title', 'Detail Mahasiswa')
+@section('page-title', 'Detail Data Mahasiswa')
 
 @section('content')
 <div class="space-y-8 p-4 sm:p-6 lg:p-8">
@@ -10,33 +10,33 @@
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
             <div class="flex items-center space-x-6">
                 <div class="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-3xl font-bold ring-4 ring-indigo-50/50">
-                    {{ substr($siswa->user->name, 0, 1) }}
+                    {{ substr($mahasiswa->user->name, 0, 1) }}
                 </div>
                 <div>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900">{{ $siswa->user->name }}</h2>
-                    <p class="text-md text-gray-600 font-mono mt-1">NIM:{{ $siswa->nim }}</p>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900">{{ $mahasiswa->user->name }}</h2>
+                    <p class="text-md text-gray-600 font-mono mt-1">NIM:{{ $mahasiswa->nim }}</p>
                     <div class="flex flex-wrap items-center gap-3 mt-3">
                         <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                             
                         </span>
                         <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                            {{ $siswa->ProgramStudi->nama ?? '-' }}
+                            {{ $mahasiswa->ProgramStudi->nama ?? '-' }}
                         </span>
                         <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold
-                            @if($siswa->status == 'aktif') bg-green-100 text-green-800
+                            @if($mahasiswa->status == 'aktif') bg-green-100 text-green-800
                             @else bg-gray-100 text-gray-600
                             @endif">
-                            Status: {{ ucfirst($siswa->status) }}
+                            Status: {{ ucfirst($mahasiswa->status) }}
                         </span>
                     </div>
                 </div>
             </div>
             <div class="flex space-x-3 w-full sm:w-auto mr-5">
-                <a href="{{ route('admin.siswa.edit', $siswa->id) }}" class="btn btn-secondary flex-1 sm:flex-none bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 flex items-center justify-center">
+                <a href="{{ route('admin.mahasiswa.edit', $mahasiswa->id) }}" class="btn btn-secondary flex-1 sm:flex-none bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 flex items-center justify-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                     Edit Data
                 </a>
-                <a href="{{ route('admin.siswa.index') }}" class="btn btn-outline flex-1 sm:flex-none border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg transition duration-150 flex items-center justify-center">Kembali</a>
+                <a href="{{ route('admin.mahasiswa.index') }}" class="btn btn-outline flex-1 sm:flex-none border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg transition duration-150 flex items-center justify-center">Kembali</a>
             </div>
         </div>
     </div>
@@ -56,13 +56,13 @@
                 <div class="p-6 space-y-4">
                     @php
                         $data_pribadi = [
-                            ['label' => 'NIM', 'value' => $siswa->nim ?? '-'],
-                            ['label' => 'TTL', 'value' => ($siswa->tempat_lahir ?? '-') . ', ' . ($siswa->tanggal_lahir ? $siswa->tanggal_lahir->format('d F Y') : '-')],
-                            ['label' => 'Jenis Kelamin', 'value' => $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($siswa->jenis_kelamin == 'P' ? 'Perempuan' : '-')],
-                            ['label' => 'Agama', 'value' => $siswa->agama ?? '-'],
-                            ['label' => 'No. Telepon', 'value' => $siswa->no_telp ?? '-'],
-                            ['label' => 'Email', 'value' => $siswa->user->email],
-                            ['label' => 'Alamat', 'value' => $siswa->alamat ?? '-'],
+                            ['label' => 'NIM', 'value' => $mahasiswa->nim ?? '-'],
+                            ['label' => 'TTL', 'value' => ($mahasiswa->tempat_lahir ?? '-') . ', ' . ($mahasiswa->tanggal_lahir ? $mahasiswa->tanggal_lahir->format('d F Y') : '-')],
+                            ['label' => 'Jenis Kelamin', 'value' => $mahasiswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($mahasiswa->jenis_kelamin == 'P' ? 'Perempuan' : '-')],
+                            ['label' => 'Agama', 'value' => $mahasiswa->agama ?? '-'],
+                            ['label' => 'No. Telepon', 'value' => $mahasiswa->no_telp ?? '-'],
+                            ['label' => 'Email', 'value' => $mahasiswa->user->email],
+                            ['label' => 'Alamat', 'value' => $mahasiswa->alamat ?? '-'],
                         ];
                     @endphp
                     @foreach($data_pribadi as $data)
@@ -84,9 +84,9 @@
                 <div class="p-6 space-y-4">
                     @php
                         $data_ortu = [
-                            ['label' => 'Nama', 'value' => $siswa->nama_ortu ?? '-'],
-                            ['label' => 'Pekerjaan', 'value' => $siswa->pekerjaan_ortu ?? '-'],
-                            ['label' => 'No. Telepon', 'value' => $siswa->no_telp_ortu ?? '-'],
+                            ['label' => 'Nama', 'value' => $mahasiswa->nama_ortu ?? '-'],
+                            ['label' => 'Pekerjaan', 'value' => $mahasiswa->pekerjaan_ortu ?? '-'],
+                            ['label' => 'No. Telepon', 'value' => $mahasiswa->no_telp_ortu ?? '-'],
                         ];
                     @endphp
                     @foreach($data_ortu as $data)
@@ -109,7 +109,7 @@
                     </h3>
                 </div>
                 <div class="p-6 divide-y divide-gray-100">
-                    @forelse($siswa->pkl as $pkl)
+                    @forelse($mahasiswa->pkl as $pkl)
                     <div class="py-4 flex items-start justify-between space-x-4">
                         <div class="border-l-4 border-blue-500 pl-4">
                             <p class="font-bold text-lg text-gray-900">{{ $pkl->perusahaan->nama_perusahaan }}</p>
@@ -141,7 +141,7 @@
                     </h3>
                 </div>
                 <div class="p-6 divide-y divide-gray-100">
-                    @forelse($siswa->lamaran as $lamaran)
+                    @forelse($mahasiswa->lamaran as $lamaran)
                     <div class="py-4 flex items-start justify-between space-x-4">
                         <div class="border-l-4 border-purple-500 pl-4">
                             <p class="font-bold text-lg text-gray-900">{{ $lamaran->lowongan->judul }}</p>
@@ -173,7 +173,7 @@
                     </h3>
                 </div>
                 <div class="p-6 divide-y divide-gray-100">
-                    @forelse($siswa->pelatihan as $pelatihan)
+                    @forelse($mahasiswa->pelatihan as $pelatihan)
                     <div class="py-4 flex items-start justify-between space-x-4">
                         <div class="border-l-4 border-green-500 pl-4">
                             <p class="font-bold text-lg text-gray-900">{{ $pelatihan->judul }}</p>

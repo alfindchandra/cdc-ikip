@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Siswa;
+use App\Models\Mahasiswa;
 use App\Models\Perusahaan;
 use App\Models\Fakultas;
 use App\Models\Program_studi;
@@ -41,12 +41,12 @@ class AuthController extends Controller
         return view('auth.register-choice');
     }
 
-    // Tampilkan form register siswa
-    public function showRegisterSiswa()
+    // Tampilkan form register mahasiswa
+    public function showRegisterMahasiswa()
     {
         $fakultas = Fakultas::orderBy('nama')->get();
         $programStudis = Program_studi::orderBy('nama')->get();
-        return view('auth.register-siswa', compact('fakultas', 'programStudis'));
+        return view('auth.register-mahasiswa', compact('fakultas', 'programStudis'));
     }
 
     // Tampilkan form register perusahaan
@@ -55,14 +55,14 @@ class AuthController extends Controller
         return view('auth.register-perusahaan');
     }
 
-    // Proses register siswa
-    public function registerSiswa(Request $request)
+    // Proses register mahasiswa
+    public function registerMahasiswa(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'nim' => 'required|string|max:20|unique:siswa,nim',
+            'nim' => 'required|string|max:20|unique:mahasiswa,nim',
             'tempat_lahir' => 'required|string|max:100',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
@@ -81,11 +81,11 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'siswa',
+            'role' => 'mahasiswa',
             'is_active' => true,
         ]);
 
-        Siswa::create([
+        Mahasiswa::create([
             'user_id' => $user->id,
             'nim' => $validated['nim'],
             'tempat_lahir' => $validated['tempat_lahir'],
@@ -105,7 +105,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Registrasi siswa berhasil! Selamat datang.');
+        return redirect()->route('dashboard')->with('success', 'Registrasi mahasiswa berhasil! Selamat datang.');
     }
 
     // Proses register perusahaan

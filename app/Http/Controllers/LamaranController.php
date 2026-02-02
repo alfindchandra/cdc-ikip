@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Storage;
 class LamaranController extends Controller
 {
     /* =======================
-     * SISWA METHODS
+     * MAHASISWA METHODS
      * ======================= */
 
     public function index(Request $request)
     {
-        $siswa = auth()->user()->siswa;
+        $mahasiswa = auth()->user()->mahasiswa;
 
-        $query = $siswa->lamaran()->with(['lowongan.perusahaan']);
+        $query = $mahasiswa->lamaran()->with(['lowongan.perusahaan']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -25,31 +25,31 @@ class LamaranController extends Controller
 
         $lamaran = $query->latest()->paginate(20)->withQueryString();
 
-        return view('siswa.lamaran.index', compact('lamaran'));
+        return view('mahasiswa.lamaran.index', compact('lamaran'));
     }
 
     public function create(LowonganKerja $lowongan)
     {
-        $siswa = auth()->user()->siswa;
+        $mahasiswa = auth()->user()->mahasiswa;
 
         // Cek sudah melamar
-        $sudahMelamar = $siswa->lamaran()
+        $sudahMelamar = $mahasiswa->lamaran()
             ->where('lowongan_id', $lowongan->id)
             ->exists();
 
         if ($sudahMelamar) {
-            return redirect()->route('siswa.lamaran.index')
+            return redirect()->route('mahasiswa.lamaran.index')
                 ->with('info', 'Anda sudah melamar pekerjaan ini');
         }
 
         // Cek lowongan masih aktif
         if ($lowongan->tanggal_berakhir < now()) {
-            return redirect()->route('siswa.lowongan.show', $lowongan)
+            return redirect()->route('mahasiswa.lowongan.show', $lowongan)
                 ->with('error', 'Lowongan ini sudah ditutup');
         }
 
         $lowongan->load('perusahaan');
-        return view('siswa.lamaran.create', compact('lowongan'));
+        return view('mahasiswa.lamaran.create', compact('lowongan'));
     }
 
     public function store(Request $request)
@@ -66,10 +66,10 @@ class LamaranController extends Controller
             'cv.max'      => 'Ukuran CV maksimal 5MB',
         ]);
 
-        $siswa = auth()->user()->siswa;
+        $mahasiswa = auth()->user()->mahasiswa;
 
         // Cek duplikasi lamaran
-        $exists = Lamaran::where('siswa_id', $siswa->id)
+        $exists = Lamaran::where('mahasiswa_id', $mahasiswa->id)
             ->where('lowongan_id', $validated['lowongan_id'])
             ->exists();
 
@@ -79,7 +79,7 @@ class LamaranController extends Controller
 
         $data = [
             'lowongan_id'     => $validated['lowongan_id'],
-            'siswa_id'        => $siswa->id,
+            'mahasiswa_id'        => $mahasiswa->id,
             'status'          => 'dikirim',
             'catatan'         => $validated['catatan'] ?? null,
             'tanggal_melamar' => now(),
@@ -103,21 +103,21 @@ class LamaranController extends Controller
         LowonganKerja::find($validated['lowongan_id'])
             ->increment('jumlah_pelamar');
 
-        return redirect()->route('siswa.lamaran.index')
+        return redirect()->route('mahasiswa.lamaran.index')
             ->with('success', 'Lamaran berhasil dikirim');
     }
 
     public function show(Lamaran $lamaran)
     {
-        $lamaran->load('lowongan.perusahaan', 'siswa.user');
+        $lamaran->load('lowongan.perusahaan', 'mahasiswa.user');
 
         if (auth()->user()->isAdmin()) {
             return view('admin.lamaran.show', compact('lamaran'));
         }
 
-        if (auth()->user()->isSiswa() &&
-            $lamaran->siswa_id === auth()->user()->siswa->id) {
-            return view('siswa.lamaran.show', compact('lamaran'));
+        if (auth()->user()->isMahasiswa() &&
+            $lamaran->mahasiswa_id === auth()->user()->mahasiswa->id) {
+            return view('mahasiswa.lamaran.show', compact('lamaran'));
         }
 
         if (auth()->user()->isPerusahaan() &&
@@ -131,7 +131,7 @@ class LamaranController extends Controller
     public function destroy(Lamaran $lamaran)
     {
         // Validasi kepemilikan
-        if ($lamaran->siswa_id !== auth()->user()->siswa->id) {
+        if ($lamaran->mahasiswa_id !== auth()->user()->mahasiswa->id) {
             abort(403);
         }
 
@@ -158,7 +158,7 @@ class LamaranController extends Controller
 
     public function adminIndex(Request $request)
     {
-        $query = Lamaran::with(['siswa.user', 'lowongan.perusahaan']);
+        $query = Lamaran::with(['mahasiswa.user', 'lowongan.perusahaan']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -179,7 +179,7 @@ class LamaranController extends Controller
 
         $query = Lamaran::whereHas('lowongan', function ($q) use ($perusahaan) {
             $q->where('perusahaan_id', $perusahaan->id);
-        })->with(['siswa.user', 'lowongan']);
+        })->with(['mahasiswa.user', 'lowongan']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);

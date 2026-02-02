@@ -24,7 +24,7 @@ class Pelatihan extends Model
 
     public function peserta()
     {
-        return $this->belongsToMany(Siswa::class, 'peserta_pelatihan')
+        return $this->belongsToMany(Mahasiswa::class, 'peserta_pelatihan')
                     ->withPivot('status_pendaftaran', 'status_kehadiran', 'nilai', 'sertifikat', 'feedback', 'tanggal_daftar')
                     ->withTimestamps();
     }

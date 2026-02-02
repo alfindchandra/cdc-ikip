@@ -123,7 +123,7 @@ public function index(Request $request)
 
     public function show(Perusahaan $perusahaan)
     {
-        $perusahaan->load(['lowonganKerja', 'pkl.siswa', 'kerjasamaIndustri']);
+        $perusahaan->load(['lowonganKerja', 'pkl.mahasiswa', 'kerjasamaIndustri']);
         return view('admin.perusahaan.show', compact('perusahaan'));
     }
 

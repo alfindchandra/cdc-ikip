@@ -142,8 +142,8 @@ class PelatihanController extends Controller
     
 
     
-    // Siswa Methods
-   public function siswaPelatihan(Request $request)
+    // Mahasiswa Methods
+   public function mahasiswaPelatihan(Request $request)
 {
 
     $query = Pelatihan::published(); 
@@ -163,15 +163,15 @@ class PelatihanController extends Controller
                        ->paginate(12)
                        ->withQueryString();
 
-    return view('siswa.pelatihan.index', compact('pelatihan'));
+    return view('mahasiswa.pelatihan.index', compact('pelatihan'));
 }
 
     public function show(Pelatihan $pelatihan)
     {
         if (auth()->user()->isAdmin()) {
             return view('admin.pelatihan.show', compact('pelatihan'));
-        } elseif (auth()->user()->isSiswa()) {
-            return view('siswa.pelatihan.show', compact('pelatihan'));
+        } elseif (auth()->user()->isMahasiswa()) {
+            return view('mahasiswa.pelatihan.show', compact('pelatihan'));
         }
 
         return view('admin.pelatihan.show', compact('pelatihan'));
@@ -179,10 +179,10 @@ class PelatihanController extends Controller
 
     public function daftar(Request $request, Pelatihan $pelatihan)
     {
-        $siswa = auth()->user()->siswa;
+        $mahasiswa = auth()->user()->mahasiswa;
 
         // Check if already registered
-        $exists = $pelatihan->peserta()->where('siswa_id', $siswa->id)->exists();
+        $exists = $pelatihan->peserta()->where('mahasiswa_id', $mahasiswa->id)->exists();
 
         if ($exists) {
             return back()->with('error', 'Anda sudah terdaftar di pelatihan ini');
@@ -193,7 +193,7 @@ class PelatihanController extends Controller
             return back()->with('error', 'Kuota pelatihan sudah penuh');
         }
 
-        $pelatihan->peserta()->attach($siswa->id, [
+        $pelatihan->peserta()->attach($mahasiswa->id, [
             'status_pendaftaran' => 'daftar',
             'tanggal_daftar' => now(),
         ]);
@@ -205,14 +205,14 @@ class PelatihanController extends Controller
 
     public function batalDaftar(Pelatihan $pelatihan)
     {
-        $siswa = auth()->user()->siswa;
+        $mahasiswa = auth()->user()->mahasiswa;
 
-        $pelatihan->peserta()->detach($siswa->id);
+        $pelatihan->peserta()->detach($mahasiswa->id);
         $pelatihan->decrement('jumlah_peserta');
 
         return back()->with('success', 'Pendaftaran pelatihan berhasil dibatalkan');
     }
-    public function updateStatusPeserta(Request $request, $pelatihanId, $siswaId)
+    public function updateStatusPeserta(Request $request, $pelatihanId, $mahasiswaId)
 {
     $validated = $request->validate([
         'status_pendaftaran' => 'required|in:pending,diterima,ditolak',
@@ -222,10 +222,10 @@ class PelatihanController extends Controller
     ]);
 
     $pelatihan = \App\Models\Pelatihan::findOrFail($pelatihanId);
-    $siswa = \App\Models\Siswa::findOrFail($siswaId);
+    $mahasiswa = \App\Models\Mahasiswa::findOrFail($mahasiswaId);
 
     // Get current pivot data
-    $pivotData = $siswa->pelatihan()->where('pelatihan_id', $pelatihanId)->first();
+    $pivotData = $mahasiswa->pelatihan()->where('pelatihan_id', $pelatihanId)->first();
     
     if (!$pivotData) {
         return redirect()->back()->with('error', 'Data peserta tidak ditemukan');
@@ -258,15 +258,15 @@ class PelatihanController extends Controller
     }
 
     // Update pivot table
-    $siswa->pelatihan()->updateExistingPivot($pelatihanId, $updateData);
+    $mahasiswa->pelatihan()->updateExistingPivot($pelatihanId, $updateData);
 
-    // Create notification for siswa
+    // Create notification for mahasiswa
     \App\Models\Notifikasi::create([
-        'user_id' => $siswa->user_id,
+        'user_id' => $mahasiswa->user_id,
         'judul' => 'Status Pelatihan Diperbarui',
         'pesan' => "Status pendaftaran Anda untuk pelatihan '{$pelatihan->judul}' telah diperbarui menjadi {$validated['status_pendaftaran']}",
         'kategori' => 'pelatihan',
-        'link' => route('siswa.pelatihan.show', $pelatihan->id)
+        'link' => route('mahasiswa.pelatihan.show', $pelatihan->id)
     ]);
 
     return redirect()->back()->with('success', 'Status peserta berhasil diperbarui');
@@ -275,27 +275,27 @@ class PelatihanController extends Controller
 /**
  * Input nilai peserta (legacy method - bisa dihapus jika tidak digunakan)
  */
-public function inputNilai(Request $request, $pelatihanId, $siswaId)
+public function inputNilai(Request $request, $pelatihanId, $mahasiswaId)
 {
     $validated = $request->validate([
         'nilai' => 'required|numeric|min:0|max:100'
     ]);
 
     $pelatihan = \App\Models\Pelatihan::findOrFail($pelatihanId);
-    $siswa = \App\Models\Siswa::findOrFail($siswaId);
+    $mahasiswa = \App\Models\Mahasiswa::findOrFail($mahasiswaId);
 
     // Update nilai in pivot table
-    $siswa->pelatihan()->updateExistingPivot($pelatihanId, [
+    $mahasiswa->pelatihan()->updateExistingPivot($pelatihanId, [
         'nilai' => $validated['nilai']
     ]);
 
     // Create notification
     \App\Models\Notifikasi::create([
-        'user_id' => $siswa->user_id,
+        'user_id' => $mahasiswa->user_id,
         'judul' => 'Nilai Pelatihan Tersedia',
         'pesan' => "Nilai Anda untuk pelatihan '{$pelatihan->judul}' adalah {$validated['nilai']}",
         'tipe' => 'pelatihan',
-        'link' => route('siswa.pelatihan.show', $pelatihan->id)
+        'link' => route('mahasiswa.pelatihan.show', $pelatihan->id)
     ]);
 
     return redirect()->back()->with('success', 'Nilai berhasil diinput');

@@ -8,7 +8,7 @@
     <div class="space-y-6">
         
         <!-- Back Button -->
-        <a href="{{ route('siswa.lowongan.show', $lowongan) }}" 
+        <a href="{{ route('mahasiswa.lowongan.show', $lowongan) }}" 
            class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition group">
             <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -48,7 +48,7 @@
         </div>
 
         <!-- Application Form -->
-        <form action="{{ route('siswa.lamaran.store') }}" 
+        <form action="{{ route('mahasiswa.lamaran.store') }}" 
               method="POST" 
               enctype="multipart/form-data" 
               class="bg-white rounded-3xl shadow-lg border border-gray-100"
@@ -283,7 +283,7 @@
                         Dengan mengirim lamaran, Anda menyetujui data Anda diproses oleh perusahaan
                     </p>
                     <div class="flex gap-3 w-full sm:w-auto">
-                        <a href="{{ route('siswa.lowongan.show', $lowongan) }}" 
+                        <a href="{{ route('mahasiswa.lowongan.show', $lowongan) }}" 
                            class="flex-1 sm:flex-none px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition text-center">
                             Batal
                         </a>

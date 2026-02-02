@@ -142,41 +142,41 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($pelatihan->peserta as $siswa)
+                        @forelse($pelatihan->peserta as $mahasiswa)
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">
-                                        {{ substr($siswa->user->name, 0, 1) }}
+                                        {{ substr($mahasiswa->user->name, 0, 1) }}
                                     </div>
                                     <div class="ml-3">
-                                        <p class="font-medium text-gray-900">{{ $siswa->user->name }}</p>
-                                        <p class="text-sm text-gray-500">{{ $siswa->nim }}</p>
+                                        <p class="font-medium text-gray-900">{{ $mahasiswa->user->name }}</p>
+                                        <p class="text-sm text-gray-500">{{ $mahasiswa->nim }}</p>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $siswa->pivot->created_at->format('d M Y') }}
+                                {{ $mahasiswa->pivot->created_at->format('d M Y') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="badge 
-                                    @if($siswa->pivot->status_pendaftaran == 'diterima') badge-success
-                                    @elseif($siswa->pivot->status_pendaftaran == 'ditolak') badge-danger
+                                    @if($mahasiswa->pivot->status_pendaftaran == 'diterima') badge-success
+                                    @elseif($mahasiswa->pivot->status_pendaftaran == 'ditolak') badge-danger
                                     @else badge-warning
                                     @endif">
-                                    {{ ucfirst($siswa->pivot->status_pendaftaran) }}
+                                    {{ ucfirst($mahasiswa->pivot->status_pendaftaran) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if($siswa->pivot->nilai)
-                                <span class="text-lg font-bold text-green-600">{{ $siswa->pivot->nilai }}</span>
+                                @if($mahasiswa->pivot->nilai)
+                                <span class="text-lg font-bold text-green-600">{{ $mahasiswa->pivot->nilai }}</span>
                                 @else
                                 <span class="text-sm text-gray-400">-</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if($siswa->pivot->sertifikat)
-                                <a href="{{ Storage::url($siswa->pivot->sertifikat) }}" 
+                                @if($mahasiswa->pivot->sertifikat)
+                                <a href="{{ Storage::url($mahasiswa->pivot->sertifikat) }}" 
                                    target="_blank"
                                    class="text-blue-600 hover:text-blue-700 text-sm">
                                     <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,7 +188,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <button onclick="document.getElementById('modal-manage-{{ $siswa->id }}').classList.remove('hidden')" 
+                                <button onclick="document.getElementById('modal-manage-{{ $mahasiswa->id }}').classList.remove('hidden')" 
                                         class="text-blue-600 hover:text-blue-700 font-medium">
                                     Kelola
                                 </button>
@@ -196,14 +196,14 @@
                         </tr>
 
                         <!-- Modal Kelola Peserta -->
-                        <div id="modal-manage-{{ $siswa->id }}" class="fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full z-50 hidden" onclick="if(event.target === this) this.classList.add('hidden')">
+                        <div id="modal-manage-{{ $mahasiswa->id }}" class="fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full z-50 hidden" onclick="if(event.target === this) this.classList.add('hidden')">
                             <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-xl bg-white" onclick="event.stopPropagation()">
-                                <form action="{{ route('admin.pelatihan.peserta.status', [$pelatihan->id, $siswa->id]) }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('admin.pelatihan.peserta.status', [$pelatihan->id, $mahasiswa->id]) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     
                                     <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                                         <h3 class="text-xl font-bold text-gray-900">Kelola Peserta</h3>
-                                        <button type="button" onclick="document.getElementById('modal-manage-{{ $siswa->id }}').classList.add('hidden')" class="text-gray-400 hover:text-gray-600">
+                                        <button type="button" onclick="document.getElementById('modal-manage-{{ $mahasiswa->id }}').classList.add('hidden')" class="text-gray-400 hover:text-gray-600">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                             </svg>
@@ -211,14 +211,14 @@
                                     </div>
 
                                     <div class="px-6 py-6 space-y-5">
-                                        <p class="text-lg font-semibold text-indigo-700">{{ $siswa->user->name }}</p>
+                                        <p class="text-lg font-semibold text-indigo-700">{{ $mahasiswa->user->name }}</p>
 
                                         <div>
                                             <label class="form-label">Status Pendaftaran</label>
                                             <select name="status_pendaftaran" class="form-select">
-                                                <option value="pending" {{ $siswa->pivot->status_pendaftaran == 'pending' ? 'selected' : '' }}>Pending</option>
-                                                <option value="diterima" {{ $siswa->pivot->status_pendaftaran == 'diterima' ? 'selected' : '' }}>Diterima</option>
-                                                <option value="ditolak" {{ $siswa->pivot->status_pendaftaran == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                                <option value="pending" {{ $mahasiswa->pivot->status_pendaftaran == 'pending' ? 'selected' : '' }}>Pending</option>
+                                                <option value="diterima" {{ $mahasiswa->pivot->status_pendaftaran == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                                                <option value="ditolak" {{ $mahasiswa->pivot->status_pendaftaran == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                                             </select>
                                         </div>
 
@@ -228,7 +228,7 @@
                                                    name="nilai" 
                                                    min="0" 
                                                    max="100" 
-                                                   value="{{ $siswa->pivot->nilai }}"
+                                                   value="{{ $mahasiswa->pivot->nilai }}"
                                                    class="form-input" 
                                                    placeholder="Masukkan nilai">
                                         </div>
@@ -239,7 +239,7 @@
                                                    name="sertifikat" 
                                                    accept=".pdf,.jpg,.jpeg,.png"
                                                    class="form-input">
-                                            @if($siswa->pivot->sertifikat)
+                                            @if($mahasiswa->pivot->sertifikat)
                                             <p class="text-xs text-gray-500 mt-1">
                                                 Sertifikat sudah ada. Upload file baru untuk mengganti.
                                             </p>
@@ -253,13 +253,13 @@
                                             <textarea name="catatan" 
                                                       rows="3" 
                                                       class="form-textarea"
-                                                      placeholder="Catatan untuk peserta...">{{ $siswa->pivot->catatan }}</textarea>
+                                                      placeholder="Catatan untuk peserta...">{{ $mahasiswa->pivot->catatan }}</textarea>
                                         </div>
                                     </div>
 
                                     <div class="px-6 py-4 border-t border-gray-100 flex justify-end space-x-3">
                                         <button type="button" 
-                                                onclick="document.getElementById('modal-manage-{{ $siswa->id }}').classList.add('hidden')" 
+                                                onclick="document.getElementById('modal-manage-{{ $mahasiswa->id }}').classList.add('hidden')" 
                                                 class="btn btn-outline">
                                             Batal
                                         </button>

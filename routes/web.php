@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\PklController;
 use App\Http\Controllers\LowonganKerjaController;
@@ -35,9 +35,9 @@ Route::middleware('guest')->group(function () {
     // Register - Pilihan Role
     Route::get('/register', [AuthController::class, 'showRegisterChoice'])->name('register');
     
-    // Register Siswa
-    Route::get('/register/siswa', [AuthController::class, 'showRegisterSiswa'])->name('register.siswa');
-    Route::post('/register/siswa', [AuthController::class, 'registerSiswa']);
+    // Register Mahasiswa
+    Route::get('/register/mahasiswa', [AuthController::class, 'showRegisterMahasiswa'])->name('register.mahasiswa');
+    Route::post('/register/mahasiswa', [AuthController::class, 'registerMahasiswa']);
     
     // Register Perusahaan
     Route::get('/register/perusahaan', [AuthController::class, 'showRegisterPerusahaan'])->name('register.perusahaan');
@@ -69,10 +69,10 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
 
 
-        // Data Siswa
-        Route::resource('siswa', SiswaController::class);
-        Route::post('siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
-        Route::get('siswa/export', [SiswaController::class, 'export'])->name('siswa.export');
+        // Data Mahasiswa
+        Route::resource('mahasiswa', MahasiswaController::class);
+        Route::post('mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import');
+        Route::get('mahasiswa/export', [MahasiswaController::class, 'export'])->name('mahasiswa.export');
         
         // Data Perusahaan
         Route::resource('perusahaan', PerusahaanController::class);
@@ -102,11 +102,11 @@ Route::middleware('auth')->group(function () {
         Route::resource('pelatihan', PelatihanController::class);
         Route::post('pelatihan/{pelatihan}/publish', [PelatihanController::class, 'publish'])->name('pelatihan.publish');
         Route::get('pelatihan/{pelatihan}/peserta', [PelatihanController::class, 'peserta'])->name('pelatihan.peserta');
-        Route::post('pelatihan/{pelatihan}/peserta/{siswa}/status', [PelatihanController::class, 'updateStatusPeserta'])->name('pelatihan.peserta.status');
-Route::post('pelatihan/{pelatihan}/peserta/{siswa}/nilai', [PelatihanController::class, 'inputNilai'])->name('pelatihan.peserta.nilai');
+        Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/status', [PelatihanController::class, 'updateStatusPeserta'])->name('pelatihan.peserta.status');
+Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanController::class, 'inputNilai'])->name('pelatihan.peserta.nilai');
         // Kerjasama Industri
-        // Route::resource('kerjasama', KerjasamaIndustriController::class);
-        // Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
+        Route::resource('kerjasama', KerjasamaIndustriController::class);
+        Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
         
         // Laporan & Arsip
         Route::resource('laporan', LaporanController::class);
@@ -132,10 +132,10 @@ Route::post('pelatihan/{pelatihan}/peserta/{siswa}/nilai', [PelatihanController:
     });
 
     
-    // Siswa routes
-    Route::middleware('role:siswa')->prefix('siswa')->name('siswa.')->group(function () {
+    // Mahasiswa routes
+    Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         // PKL
-        // Route::get('pkl', [PklController::class, 'siswaPkl'])->name('pkl.index');
+        // Route::get('pkl', [PklController::class, 'mahasiswaPkl'])->name('pkl.index');
         // Route::post('pkl/daftar', [PklController::class, 'daftar'])->name('pkl.daftar');
         // Route::get('pkl/{pkl}', [PklController::class, 'show'])->name('pkl.show');
         // Route::post('pkl/{pkl}/jurnal', [PklController::class, 'addJurnal'])->name('pkl.jurnal.add');
@@ -158,7 +158,7 @@ Route::post('pelatihan/{pelatihan}/peserta/{siswa}/nilai', [PelatihanController:
         Route::delete('lamaran/{lamaran}', [LamaranController::class, 'destroy'])->name('lamaran.destroy');
         
         // Pelatihan
-        Route::get('pelatihan', [PelatihanController::class, 'siswaPelatihan'])->name('pelatihan.index');
+        Route::get('pelatihan', [PelatihanController::class, 'mahasiswaPelatihan'])->name('pelatihan.index');
         Route::get('pelatihan/{pelatihan}', [PelatihanController::class, 'show'])->name('pelatihan.show');
         Route::post('pelatihan/{pelatihan}/daftar', [PelatihanController::class, 'daftar'])->name('pelatihan.daftar');
         Route::delete('pelatihan/{pelatihan}/batal', [PelatihanController::class, 'batalDaftar'])->name('pelatihan.batal');
@@ -190,8 +190,9 @@ Route::post('pelatihan/{pelatihan}/peserta/{siswa}/nilai', [PelatihanController:
         // Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
         
         // Kerjasama
-    //     Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatusPerusahaan'])->name('kerjasama.status'); 
-    //     Route::get('kerjasama', [KerjasamaIndustriController::class, 'perusahaanIndex'])->name('kerjasama.index');
-    //     Route::get('kerjasama/{kerjasama}', [KerjasamaIndustriController::class, 'show'])->name('kerjasama.show');
+        Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatusPerusahaan'])->name('kerjasama.status'); 
+        Route::get('kerjasama', [KerjasamaIndustriController::class, 'perusahaanIndex'])->name('kerjasama.index');
+        Route::get('kerjasama/{kerjasama}', [KerjasamaIndustriController::class, 'show'])->name('kerjasama.show');
+    
     });
 });

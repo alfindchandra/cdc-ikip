@@ -170,24 +170,24 @@
                 </div>
                 
                 <div class="divide-y divide-gray-100">
-                    @forelse($pelatihan->peserta()->latest()->take(10)->get() as $siswa)
+                    @forelse($pelatihan->peserta()->latest()->take(10)->get() as $mahasiswa)
                     <div class="px-6 py-4 hover:bg-gray-50 transition duration-100">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-4">
                                 <div class="w-10 h-10 flex-shrink-0 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-lg">
-                                    {{ substr($siswa->user->name, 0, 1) }}
+                                    {{ substr($mahasiswa->user->name, 0, 1) }}
                                 </div>
                                 <div>
-                                    <p class="font-semibold text-gray-900">{{ $siswa->user->name }}</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">{{ $siswa->kelas }} - {{ $siswa->jurusan }}</p>
+                                    <p class="font-semibold text-gray-900">{{ $mahasiswa->user->name }}</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">{{ $mahasiswa->kelas }} - {{ $mahasiswa->jurusan }}</p>
                                 </div>
                             </div>
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
-                                @if($siswa->pivot->status_pendaftaran == 'diterima') bg-green-100 text-green-800
-                                @elseif($siswa->pivot->status_pendaftaran == 'menunggu') bg-yellow-100 text-yellow-800
+                                @if($mahasiswa->pivot->status_pendaftaran == 'diterima') bg-green-100 text-green-800
+                                @elseif($mahasiswa->pivot->status_pendaftaran == 'menunggu') bg-yellow-100 text-yellow-800
                                 @else bg-red-100 text-red-800
                                 @endif">
-                                {{ ucfirst($siswa->pivot->status_pendaftaran) }}
+                                {{ ucfirst($mahasiswa->pivot->status_pendaftaran) }}
                             </span>
                         </div>
                     </div>
@@ -195,7 +195,7 @@
                     <div class="px-6 py-12 text-center text-gray-500">
                         <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                         <p class="font-medium">Belum ada peserta terdaftar.</p>
-                        <p class="text-sm mt-1">Siswa dapat mulai mendaftar ketika pelatihan berstatus **Published**.</p>
+                        <p class="text-sm mt-1">Mahasiswa dapat mulai mendaftar ketika pelatihan berstatus **Published**.</p>
                     </div>
                     @endforelse
                 </div>

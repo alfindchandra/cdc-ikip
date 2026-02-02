@@ -36,10 +36,10 @@ class PengaturanController extends Controller
             'avatar' => 'nullable|image|max:2048',
         ];
 
-        // Tambah validasi untuk siswa
-        if ($user->isSiswa()) {
+        // Tambah validasi untuk mahasiswa
+        if ($user->isMahasiswa()) {
             $rules = array_merge($rules, [
-                'nim' => 'nullable|string|max:20|unique:siswa,nim,' . $user->siswa->id,
+                'nim' => 'nullable|string|max:20|unique:mahasiswa,nim,' . $user->mahasiswa->id,
                 'tempat_lahir' => 'nullable|string|max:100',
                 'tanggal_lahir' => 'nullable|date',
                 'jenis_kelamin' => 'required|in:L,P',
@@ -77,9 +77,9 @@ class PengaturanController extends Controller
             $user->update(['password' => Hash::make($validated['password'])]);
         }
 
-        // Update siswa profile if user is siswa
-        if ($user->isSiswa()) {
-            $siswaData = [
+        // Update mahasiswa profile if user is mahasiswa
+        if ($user->isMahasiswa()) {
+            $mahasiswaData = [
                 'nim' => $validated['nim'] ?? null,
                 'tempat_lahir' => $validated['tempat_lahir'] ?? null,
                 'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
@@ -95,7 +95,7 @@ class PengaturanController extends Controller
                 'no_telp_ortu' => $validated['no_telp_ortu'] ?? null,
             ];
 
-            $user->siswa->update($siswaData);
+            $user->mahasiswa->update($mahasiswaData);
         }
 
         return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui');

@@ -47,12 +47,12 @@
                     <div class="space-y-1">
                         <p class="px-4 text-xs font-semibold text-blue-400 uppercase tracking-wider mt-6 mb-2">Data Master</p>
                         
-                        <a href="{{ route('admin.siswa.index') }}" 
-                           class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.siswa.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                        <a href="{{ route('admin.mahasiswa.index') }}" 
+                           class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.mahasiswa.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                             </svg>
-                            <span>Data Mahasiswa</span>
+                            <span>Data Mahamahasiswa</span>
                         </a>
 
                         <a href="{{ route('admin.perusahaan.index') }}" 
@@ -76,6 +76,13 @@
                             </svg>
                             <span>Lowongan Kerja</span>
                         </a>
+                        <a href="{{ route('admin.kerjasama.index') }}" 
+                           class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.lowongan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span>Kerjasama</span>
+                        </a>
 
                         <a href="{{ route('admin.pelatihan.index') }}" 
                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.pelatihan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
@@ -96,33 +103,33 @@
                     </div>
 
                     
-                @elseif(auth()->user()->isSiswa())
+                @elseif(auth()->user()->isMahasiswa())
                     
-                    <a href="{{ route('siswa.lowongan.index') }}" 
-                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('siswa.lowongan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                    <a href="{{ route('mahasiswa.lowongan.index') }}" 
+                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('mahasiswa.lowongan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         <span>Lowongan Kerja</span>
                     </a>
 
-                    <a href="{{ route('siswa.lamaran.index') }}" 
-                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('siswa.lamaran.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                    <a href="{{ route('mahasiswa.lamaran.index') }}" 
+                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('mahasiswa.lamaran.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         <span>Lamaran Saya</span>
                     </a>
 
-                    <a href="{{ route('siswa.pelatihan.index') }}" 
-                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('siswa.pelatihan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                    <a href="{{ route('mahasiswa.pelatihan.index') }}" 
+                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('mahasiswa.pelatihan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
                         <span>Pelatihan</span>
                     </a>
-                    <a href="{{ route('siswa.tracer-study.form') }}"
-                          class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('siswa.tracer-study.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                    <a href="{{ route('mahasiswa.tracer-study.form') }}"
+                          class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('mahasiswa.tracer-study.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
@@ -145,6 +152,13 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         <span>Lamaran Masuk</span>
+                    </a>
+                    <a href="{{ route('perusahaan.kerjasama.index') }}" 
+                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('perusahaan.lamaran.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>Kerjasama</span>
                     </a>
 
                 @endif
@@ -177,7 +191,7 @@
                             
                                 <div class="text-left hidden md:block">
                                     <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
-                                    <!-- <p class="text-xs text-gray-500">{{ ucfirst(auth()->user()->role) }}</p> -->
+                                    <p class="text-xs text-gray-500">User</p>
                                 </div>
                                 <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>

@@ -12,7 +12,7 @@ class TracerStudy extends Model
     protected $table = 'tracer_study';
 
     protected $fillable = [
-        'siswa_id',
+        'mahasiswa_id',
         'status_pekerjaan',
         
         // Data Pekerjaan
@@ -62,9 +62,9 @@ class TracerStudy extends Model
     ];
 
     // Relationships
-    public function siswa()
+    public function mahasiswa()
     {
-        return $this->belongsTo(Siswa::class);
+        return $this->belongsTo(Mahasiswa::class);
     }
 
     // Accessors

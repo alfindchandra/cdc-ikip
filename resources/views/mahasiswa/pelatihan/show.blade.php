@@ -6,7 +6,7 @@
 @section('content')
 <div class="max-w-5xl mx-auto space-y-6">
     <!-- Back Button -->
-    <a href="{{ route('siswa.pelatihan.index') }}" class="inline-flex items-center text-blue-600 hover:text-blue-700">
+    <a href="{{ route('mahasiswa.pelatihan.index') }}" class="inline-flex items-center text-blue-600 hover:text-blue-700">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
         </svg>
@@ -93,7 +93,7 @@
             <div class="card bg-blue-50 border-blue-200">
                 <div class="card-body">
                     @php
-                        $pendaftaran = auth()->user()->siswa->pelatihan()->where('pelatihan_id', $pelatihan->id)->first();
+                        $pendaftaran = auth()->user()->mahasiswa->pelatihan()->where('pelatihan_id', $pelatihan->id)->first();
                     @endphp
 
                     @if($pendaftaran)
@@ -139,7 +139,7 @@
                         @endif
 
                         @if($statusPendaftaran == 'pending' || $statusPendaftaran == 'ditolak')
-                        <form action="{{ route('siswa.pelatihan.batal', $pelatihan->id) }}" 
+                        <form action="{{ route('mahasiswa.pelatihan.batal', $pelatihan->id) }}" 
                               method="POST"
                               onsubmit="return confirm('Yakin ingin membatalkan pendaftaran?')">
                             @csrf
@@ -166,7 +166,7 @@
                             <p class="text-xs text-gray-500 mt-1">Semua slot telah terisi</p>
                         </div>
                     @else
-                        <form action="{{ route('siswa.pelatihan.daftar', $pelatihan->id) }}" method="POST">
+                        <form action="{{ route('mahasiswa.pelatihan.daftar', $pelatihan->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-primary w-full py-3 mb-3">
                                 <svg class="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">

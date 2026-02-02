@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Siswa extends Model
+class Mahasiswa extends Model
 {
-    protected $table = 'siswa';
+    protected $table = 'mahasiswa';
 
     protected $fillable = [
         'user_id', 'nim',  'tempat_lahir', 'tanggal_lahir',
@@ -53,7 +53,7 @@ class Siswa extends Model
     // Relasi ke Program Studi
     public function programStudi()
     {
-        // Asumsi foreign key di tabel Siswa adalah 'program_studi_id'
+        // Asumsi foreign key di tabel Mahasiswa adalah 'program_studi_id'
         return $this->belongsTo(Program_studi::class, 'program_studi_id');
     }
     public function tracerStudy()

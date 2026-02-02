@@ -109,7 +109,7 @@
                 @php
                     $stats = [
                         ['Lowongan Aktif', $perusahaan->lowonganKerja()->where('status','aktif')->count(), 'briefcase'],
-                        ['Siswa PKL', $perusahaan->pkl()->whereIn('status',['berlangsung','diterima'])->count(), 'user-graduate'],
+                        ['Mahasiswa PKL', $perusahaan->pkl()->whereIn('status',['berlangsung','diterima'])->count(), 'user-graduate'],
                         ['Kerjasama', $perusahaan->kerjasamaIndustri()->whereIn('status',['aktif','negosiasi'])->count(), 'handshake'],
                     ];
                 @endphp

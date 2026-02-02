@@ -16,8 +16,8 @@ return new class extends Migration
                   ->constrained('lowongan_kerja')
                   ->onUpdate('cascade')
                   ->onDelete('cascade');
-            $table->foreignId('siswa_id')
-                  ->constrained('siswa')
+            $table->foreignId('mahasiswa_id')
+                  ->constrained('mahasiswa')
                   ->onUpdate('cascade')
                   ->onDelete('cascade');
             $table->string('cv');          

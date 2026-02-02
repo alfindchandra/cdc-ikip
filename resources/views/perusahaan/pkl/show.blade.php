@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Detail PKL')
-@section('page-title', 'Detail PKL Siswa')
+@section('page-title', 'Detail PKL Mahasiswa')
 
 @section('content')
 <div class="space-y-8">
@@ -19,11 +19,11 @@
             <div class="flex items-center space-x-4">
                 <!-- Modern Avatar -->
                 <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-2xl font-bold flex-shrink-0">
-                    {{ substr($pkl->siswa->user->name, 0, 1) }}
+                    {{ substr($pkl->mahasiswa->user->name, 0, 1) }}
                 </div>
                 <div>
-                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-1">{{ $pkl->siswa->user->name }}</h2>
-                    <p class="text-sm md:text-base text-gray-600 mb-1">{{ $pkl->siswa->nim }} - {{ $pkl->siswa->programStudi->nama }}</p>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-1">{{ $pkl->mahasiswa->user->name }}</h2>
+                    <p class="text-sm md:text-base text-gray-600 mb-1">{{ $pkl->mahasiswa->nim }} - {{ $pkl->mahasiswa->programStudi->nama }}</p>
                     <p class="text-xs text-gray-500 font-medium">{{ $pkl->posisi ?? 'Peserta PKL' }}</p>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                 <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8h-6m14-8a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                Catatan (dari Siswa/Admin):
+                Catatan (dari Mahasiswa/Admin):
             </p>
             <p class="text-gray-600 whitespace-pre-line text-sm">{{ $pkl->catatan }}</p>
         </div>
@@ -225,7 +225,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Pembimbing</label>
-                                    <textarea name="catatan_pembimbing" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition py-2 px-3" placeholder="Berikan feedback untuk siswa..."></textarea>
+                                    <textarea name="catatan_pembimbing" rows="3" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition py-2 px-3" placeholder="Berikan feedback untuk mahasiswa..."></textarea>
                                 </div>
                             </div>
                             <div class="px-6 py-4 border-t border-gray-100 flex justify-end space-x-3">
@@ -246,7 +246,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
                 <p class="text-lg font-medium text-gray-700">Belum ada jurnal harian</p>
-                <p class="text-sm text-gray-500">Siswa belum mengirimkan catatan kegiatan.</p>
+                <p class="text-sm text-gray-500">Mahasiswa belum mengirimkan catatan kegiatan.</p>
             </div>
             @endforelse
         </div>
@@ -259,30 +259,30 @@
             <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 00.948-.684L10.74 2.164a1 1 0 01.442-.442l1.248-.705A1 1 0 0113 1h4a2 2 0 012 2v18a2 2 0 01-2 2H5a2 2 0 01-2-2V5z" />
             </svg>
-            Informasi Kontak Siswa
+            Informasi Kontak Mahasiswa
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-8">
             <div class="space-y-1">
                 <p class="text-sm text-gray-500">Email</p>
-                <a href="mailto:{{ $pkl->siswa->user->email }}" class="text-blue-600 hover:text-blue-700 font-semibold text-base transition-colors truncate block">
-                    {{ $pkl->siswa->user->email }}
+                <a href="mailto:{{ $pkl->mahasiswa->user->email }}" class="text-blue-600 hover:text-blue-700 font-semibold text-base transition-colors truncate block">
+                    {{ $pkl->mahasiswa->user->email }}
                 </a>
             </div>
             <div class="space-y-1">
-                <p class="text-sm text-gray-500">No. Telepon Siswa</p>
-                <a href="tel:{{ $pkl->siswa->no_telp }}" class="text-blue-600 hover:text-blue-700 font-semibold text-base transition-colors truncate block">
-                    {{ $pkl->siswa->no_telp ?? '-' }}
+                <p class="text-sm text-gray-500">No. Telepon Mahasiswa</p>
+                <a href="tel:{{ $pkl->mahasiswa->no_telp }}" class="text-blue-600 hover:text-blue-700 font-semibold text-base transition-colors truncate block">
+                    {{ $pkl->mahasiswa->no_telp ?? '-' }}
                 </a>
             </div>
             <div class="space-y-1">
                 <p class="text-sm text-gray-500">Alamat</p>
-                <p class="font-semibold text-gray-900 text-base break-words">{{ $pkl->siswa->alamat ?? '-' }}</p>
+                <p class="font-semibold text-gray-900 text-base break-words">{{ $pkl->mahasiswa->alamat ?? '-' }}</p>
             </div>
             <div class="space-y-1">
                 <p class="text-sm text-gray-500">Orang Tua/Wali</p>
-                <p class="font-semibold text-gray-900 text-base">{{ $pkl->siswa->nama_ortu ?? '-' }}</p>
-                @if($pkl->siswa->no_telp_ortu)
-                <p class="text-xs text-gray-500">{{ $pkl->siswa->no_telp_ortu }}</p>
+                <p class="font-semibold text-gray-900 text-base">{{ $pkl->mahasiswa->nama_ortu ?? '-' }}</p>
+                @if($pkl->mahasiswa->no_telp_ortu)
+                <p class="text-xs text-gray-500">{{ $pkl->mahasiswa->no_telp_ortu }}</p>
                 @endif
             </div>
         </div>

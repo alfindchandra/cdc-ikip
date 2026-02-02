@@ -32,7 +32,7 @@
                     <div>
                         <p class="text-sm text-gray-600">Pelatihan Diikuti</p>
                         <p class="text-2xl font-bold text-gray-900 mt-1">
-                            {{ auth()->user()->siswa->pelatihan()->wherePivot('status_pendaftaran', 'diterima')->count() }}
+                            {{ auth()->user()->mahasiswa->pelatihan()->wherePivot('status_pendaftaran', 'diterima')->count() }}
                         </p>
                     </div>
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -50,7 +50,7 @@
                     <div>
                         <p class="text-sm text-gray-600">Sertifikat Didapat</p>
                         <p class="text-2xl font-bold text-gray-900 mt-1">
-                            {{ auth()->user()->siswa->pelatihan()->wherePivotNotNull('sertifikat')->count() }}
+                            {{ auth()->user()->mahasiswa->pelatihan()->wherePivotNotNull('sertifikat')->count() }}
                         </p>
                     </div>
                     <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -148,13 +148,13 @@
                     </div>
                     
                     @php
-                        $sudahDaftar = auth()->user()->siswa->pelatihan()->where('pelatihan_id', $p->id)->exists();
+                        $sudahDaftar = auth()->user()->mahasiswa->pelatihan()->where('pelatihan_id', $p->id)->exists();
                     @endphp
 
                     @if($sudahDaftar)
                     <span class="badge badge-info">Terdaftar</span>
                     @else
-                    <a href="{{ route('siswa.pelatihan.show', $p->id) }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                    <a href="{{ route('mahasiswa.pelatihan.show', $p->id) }}" class="text-blue-600 hover:text-blue-700 font-medium text-sm">
                         Lihat Detail →
                     </a>
                     @endif

@@ -7,7 +7,7 @@
 <div class="max-w-7xl mx-auto">
     <div class="space-y-6">
         <!-- Back Button -->
-        <a href="{{ route('siswa.lowongan.index') }}" 
+        <a href="{{ route('mahasiswa.lowongan.index') }}" 
            class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition group">
             <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -135,7 +135,7 @@
             <div class="lg:col-span-1 space-y-6">
                 <!-- Apply Button Card -->
                 @php
-                    $sudahMelamar = auth()->user()->siswa->lamaran()->where('lowongan_id', $lowongan->id)->exists();
+                    $sudahMelamar = auth()->user()->mahasiswa->lamaran()->where('lowongan_id', $lowongan->id)->exists();
                 @endphp
 
                 <div class="bg-white rounded-3xl shadow-lg p-6 border-2 border-gray-100 sticky top-20">
@@ -150,7 +150,7 @@
                                 <p class="text-lg font-bold text-gray-900 mb-1">Lamaran Terkirim</p>
                                 <p class="text-sm text-gray-600">Anda sudah melamar pekerjaan ini</p>
                             </div>
-                            <a href="{{ route('siswa.lamaran.index') }}" 
+                            <a href="{{ route('mahasiswa.lamaran.index') }}" 
                                class="block w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-xl transition shadow-lg shadow-green-600/20">
                                 Lihat Status Lamaran →
                             </a>
@@ -169,7 +169,7 @@
                         </div>
                     @else
                         <div class="space-y-4">
-                            <a href="{{ route('siswa.lowongan.apply', $lowongan->id) }}" 
+                            <a href="{{ route('mahasiswa.lowongan.apply', $lowongan->id) }}" 
                                class="block w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-5 px-6 rounded-xl transition transform hover:scale-105 shadow-xl shadow-blue-600/30 text-center">
                                 <span class="flex items-center justify-center gap-2">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TracerStudy;
-use App\Models\Siswa;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Fakultas;
@@ -14,19 +14,19 @@ class TracerStudyController extends Controller
  
 public function index(Request $request)
 {
-    $query = TracerStudy::with(['siswa.user', 'siswa.fakultas', 'siswa.programStudi']);
+    $query = TracerStudy::with(['mahasiswa.user', 'mahasiswa.fakultas', 'mahasiswa.programStudi']);
 
     // 1. Filter Pencarian (Search)
     if ($request->has('search') && $request->search != '') {
         $search = $request->search;
         // PENTING: Bungkus semua kondisi OR (Nama ATAU NIM) dalam satu where() closure
         $query->where(function($q_search) use ($search) {
-            // Mencari berdasarkan Nama Alumni (Siswa -> User -> Name)
-            $q_search->whereHas('siswa.user', function($q) use ($search) {
+            // Mencari berdasarkan Nama Alumni (Mahasiswa -> User -> Name)
+            $q_search->whereHas('mahasiswa.user', function($q) use ($search) {
                 $q->where('name', 'like', "%$search%");
             })
-            // ATAU Mencari berdasarkan NIM (Siswa -> NIM)
-            ->orWhereHas('siswa', function($q) use ($search) {
+            // ATAU Mencari berdasarkan NIM (Mahasiswa -> NIM)
+            ->orWhereHas('mahasiswa', function($q) use ($search) {
                 $q->where('nim', 'like', "%$search%");
             });
         });
@@ -39,21 +39,21 @@ public function index(Request $request)
 
     // 3. Filter Tahun Lulus
     if ($request->has('tahun_lulus') && $request->tahun_lulus != '') {
-        $query->whereHas('siswa', function($q) use ($request) {
+        $query->whereHas('mahasiswa', function($q) use ($request) {
             $q->where('tahun_lulus', $request->tahun_lulus);
         });
     }
     
     // 4. Filter Fakultas (Menambahkan logika cek empty string)
     if ($request->has('fakultas_id') && $request->fakultas_id != '') {
-        $query->whereHas('siswa', function($q) use ($request) {
+        $query->whereHas('mahasiswa', function($q) use ($request) {
             $q->where('fakultas_id', $request->fakultas_id); 
         });
     }
     
     // 5. Filter Program Studi (TAMBAHAN, jika Anda ingin menyertakannya)
     if ($request->has('program_studi_id') && $request->program_studi_id != '') {
-        $query->whereHas('siswa', function($q) use ($request) {
+        $query->whereHas('mahasiswa', function($q) use ($request) {
             $q->where('program_studi_id', $request->program_studi_id);
         });
     }
@@ -74,8 +74,8 @@ public function index(Request $request)
 
     public function create()
     {
-        // Ambil siswa yang sudah lulus dan belum mengisi tracer study
-        $alumni = Siswa::where('status', 'lulus')
+        // Ambil mahasiswa yang sudah lulus dan belum mengisi tracer study
+        $alumni = Mahasiswa::where('status', 'lulus')
                       ->whereDoesntHave('tracerStudy')
                       ->with('user')
                       ->get();
@@ -86,7 +86,7 @@ public function index(Request $request)
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'siswa_id' => 'required|exists:siswa,id|unique:tracer_study,siswa_id',
+            'mahasiswa_id' => 'required|exists:mahasiswa,id|unique:tracer_study,mahasiswa_id',
             'status_pekerjaan' => 'required|in:bekerja,wirausaha,melanjutkan_studi,belum_bekerja',
             
             // Data Pekerjaan/Usaha
@@ -135,7 +135,7 @@ public function index(Request $request)
 
     public function show(TracerStudy $tracerStudy)
     {
-        $tracerStudy->load(['siswa.user', 'siswa.fakultas', 'siswa.programStudi']);
+        $tracerStudy->load(['mahasiswa.user', 'mahasiswa.fakultas', 'mahasiswa.programStudi']);
         return view('admin.tracer-study.show', compact('tracerStudy'));
     }
 
@@ -193,16 +193,16 @@ public function index(Request $request)
         $tahunLulus = $request->get('tahun_lulus', date('Y'));
         $fakultasId = $request->get('fakultas_id');
 
-        $query = TracerStudy::with(['siswa.fakultas', 'siswa.programStudi']);
+        $query = TracerStudy::with(['mahasiswa.fakultas', 'mahasiswa.programStudi']);
 
         if ($tahunLulus) {
-            $query->whereHas('siswa', function($q) use ($tahunLulus) {
+            $query->whereHas('mahasiswa', function($q) use ($tahunLulus) {
                 $q->where('tahun_lulus', $tahunLulus);
             });
         }
 
         if ($fakultasId) {
-            $query->whereHas('siswa', function($q) use ($fakultasId) {
+            $query->whereHas('mahasiswa', function($q) use ($fakultasId) {
                 $q->where('fakultas_id', $fakultasId);
             });
         }
@@ -241,26 +241,26 @@ public function index(Request $request)
         // return Excel::download(new TracerStudyExport($request->all()), 'tracer-study.xlsx');
     }
 
-    // Siswa/Alumni Methods
+    // Mahasiswa/Alumni Methods
     public function alumniForm()
     {
-        $siswa = auth()->user()->siswa;
+        $mahasiswa = auth()->user()->mahasiswa;
         
-        // Cek apakah siswa sudah lulus
-        if ($siswa->status !== 'lulus') {
+        // Cek apakah mahasiswa sudah lulus
+        if ($mahasiswa->status !== 'lulus') {
             return redirect()->route('dashboard')
                            ->with('error', 'Fitur ini hanya untuk alumni yang sudah lulus');
         }
 
         // Cek apakah sudah mengisi
-        $tracerStudy = TracerStudy::where('siswa_id', $siswa->id)->first();
+        $tracerStudy = TracerStudy::where('mahasiswa_id', $mahasiswa->id)->first();
 
-        return view('siswa.tracer-study.form', compact('tracerStudy'));
+        return view('mahasiswa.tracer-study.form', compact('tracerStudy'));
     }
 
     public function alumniStore(Request $request)
     {
-        $siswa = auth()->user()->siswa;
+        $mahasiswa = auth()->user()->mahasiswa;
 
         $validated = $request->validate([
             'status_pekerjaan' => 'required|in:bekerja,wirausaha,melanjutkan_studi,belum_bekerja',
@@ -291,7 +291,7 @@ public function index(Request $request)
             'linkedin' => 'nullable|url',
         ]);
 
-        $validated['siswa_id'] = $siswa->id;
+        $validated['mahasiswa_id'] = $mahasiswa->id;
         $validated['tanggal_isi'] = now();
 
         if (isset($validated['kompetensi_yang_digunakan'])) {
@@ -299,11 +299,11 @@ public function index(Request $request)
         }
 
         TracerStudy::updateOrCreate(
-            ['siswa_id' => $siswa->id],
+            ['mahasiswa_id' => $mahasiswa->id],
             $validated
         );
 
-        return redirect()->route('siswa.tracer-study.form')
+        return redirect()->route('mahasiswa.tracer-study.form')
                         ->with('success', 'Terima kasih telah mengisi tracer study!');
     }
 
@@ -311,7 +311,7 @@ public function index(Request $request)
     private function getStatistik()
     {
         return [
-            'total_alumni' => Siswa::where('status', 'lulus')->count(),
+            'total_alumni' => Mahasiswa::where('status', 'lulus')->count(),
             'total_responden' => TracerStudy::count(),
             'bekerja' => TracerStudy::where('status_pekerjaan', 'bekerja')->count(),
             'wirausaha' => TracerStudy::where('status_pekerjaan', 'wirausaha')->count(),

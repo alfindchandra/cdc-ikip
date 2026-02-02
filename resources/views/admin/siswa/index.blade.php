@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Data Mahasiswa')
-@section('page-title', 'Data Mahasiswa')
+@section('title', 'Data Mahamahasiswa')
+@section('page-title', 'Data Mahamahasiswa')
 
 @section('content')
 <div class="space-y-8">
     <div class="bg-white shadow-md rounded-2xl p-6 border border-gray-100">
-    <form method="GET" action="{{ route('admin.siswa.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+    <form method="GET" action="{{ route('admin.mahasiswa.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div class="col-span-1 md:col-span-2">
             <input 
                 type="text" 
@@ -52,7 +52,7 @@
                 </svg>
                 Filter/Cari
             </button>
-            <a href="{{ route('admin.siswa.index') }}" 
+            <a href="{{ route('admin.mahasiswa.index') }}" 
                class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg px-4 py-2 text-center transition flex items-center justify-center">
                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11.418 5a8.001 8.001 0 01-15.356 2A8.001 8.001 0 0119.418 15m0 0H15"></path></svg>
                 Reset
@@ -64,7 +64,7 @@
     <!-- Actions -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h3 class="text-lg font-semibold text-gray-800">
-            Total: <span class="text-blue-600">{{ $siswa->total() }}</span> Mahasiswa
+            Total: <span class="text-blue-600">{{ $mahasiswa->total() }}</span> Mahamahasiswa
         </h3>
         <div class="flex flex-wrap gap-3">
             
@@ -88,7 +88,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-gray-700">
-                    @forelse($siswa as $s)
+                    @forelse($mahasiswa as $s)
                     <tr class="hover:bg-gray-50 transition">
                         <td class="px-6 py-4 font-medium">{{ $s->nim }}</td>
                         <td class="px-6 py-4">
@@ -116,7 +116,7 @@
                         </td>
                         <td class="px-6 py-4 text-center">
                             <div class="flex items-center justify-center space-x-3">
-                                <a href="{{ route('admin.siswa.show', $s->id) }}" class="text-blue-600 hover:text-blue-800" title="Detail">
+                                <a href="{{ route('admin.mahasiswa.show', $s->id) }}" class="text-blue-600 hover:text-blue-800" title="Detail">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                               d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -124,13 +124,13 @@
                                               d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                     </svg>
                                 </a>
-                                <a href="{{ route('admin.siswa.edit', $s->id) }}" class="text-yellow-500 hover:text-yellow-600" title="Edit">
+                                <a href="{{ route('admin.mahasiswa.edit', $s->id) }}" class="text-yellow-500 hover:text-yellow-600" title="Edit">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                               d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
                                 </a>
-                                <form action="{{ route('admin.siswa.destroy', $s->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                <form action="{{ route('admin.mahasiswa.destroy', $s->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-600 hover:text-red-700" title="Hapus">
@@ -150,8 +150,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                       d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                             </svg>
-                            <p class="text-lg font-medium">Tidak ada data Mahasiswa</p>
-                            <p class="text-sm text-gray-500">Silakan tambah data mahasiswa baru</p>
+                            <p class="text-lg font-medium">Tidak ada data Mahamahasiswa</p>
+                            <p class="text-sm text-gray-500">Silakan tambah data mahamahasiswa baru</p>
                         </td>
                     </tr>
                     @endforelse
@@ -159,9 +159,9 @@
             </table>
         </div>
 
-        @if($siswa->hasPages())
+        @if($mahasiswa->hasPages())
         <div class="px-6 py-4 border-t border-gray-100">
-            {{ $siswa->links() }}
+            {{ $mahasiswa->links() }}
         </div>
         @endif
     </div>

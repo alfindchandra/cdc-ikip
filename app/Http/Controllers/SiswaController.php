@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Siswa;
+use App\Models\Mahasiswa;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Fakultas;
 use App\Models\Program_studi;
 
-class SiswaController extends Controller
+class MahasiswaController extends Controller
 {
-// app/Http/Controllers/Admin/SiswaController.php (Asumsi)
+// app/Http/Controllers/Admin/MahasiswaController.php (Asumsi)
 
 public function index(Request $request)
 {
     // 1. Inisialisasi Query dengan Eager Loading
-    $query = Siswa::with(['user', 'fakultas', 'programStudi']); 
+    $query = Mahasiswa::with(['user', 'fakultas', 'programStudi']); 
 
     // 2. Filter Pencarian (Search) - NIM atau Nama User
     if ($request->has('search') && $request->search != '') {
@@ -35,13 +35,13 @@ public function index(Request $request)
 
     // 3. Filter Fakultas
     if ($request->has('fakultas') && $request->fakultas != '') {
-        // Menggunakan nama field yang benar di tabel Siswa untuk relasi Fakultas (e.g., fakultas_id)
+        // Menggunakan nama field yang benar di tabel Mahasiswa untuk relasi Fakultas (e.g., fakultas_id)
         $query->where('fakultas_id', $request->fakultas); 
     }
 
     // 4. Filter Program Studi
     if ($request->has('program_studi') && $request->program_studi != '') {
-        // Menggunakan nama field yang benar di tabel Siswa untuk relasi Program Studi (e.g., program_studi_id)
+        // Menggunakan nama field yang benar di tabel Mahasiswa untuk relasi Program Studi (e.g., program_studi_id)
         $query->where('program_studi_id', $request->program_studi);
     }
     
@@ -53,19 +53,19 @@ public function index(Request $request)
     // 6. Eksekusi Query dan Pagination
     // **PERBAIKAN UTAMA:** Gunakan withQueryString() agar semua parameter filter (search, fakultas, dll.) 
     // tetap ada saat berpindah halaman (pagination).
-    $siswa = $query->latest()->paginate(20)->withQueryString(); 
+    $mahasiswa = $query->latest()->paginate(20)->withQueryString(); 
     
     // 7. Ambil Data Lain untuk Form Filter
     $fakultas = Fakultas::all();
     $program_studi = Program_studi::all();
 
-    return view('admin.siswa.index', compact('siswa', 'fakultas', 'program_studi'));
+    return view('admin.mahasiswa.index', compact('mahasiswa', 'fakultas', 'program_studi'));
 }
     public function create()
     {
         $fakultas = Fakultas::orderBy('nama')->get();
         $programStudis = Program_studi::orderBy('nama')->get();
-        return view('admin.siswa.create', compact('fakultas', 'programStudis'));
+        return view('admin.mahasiswa.create', compact('fakultas', 'programStudis'));
     }
 
     public function store(Request $request)
@@ -74,7 +74,7 @@ public function index(Request $request)
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'nim' => 'required|string|max:20|unique:siswa,nim',
+            'nim' => 'required|string|max:20|unique:mahasiswa,nim',
             'tempat_lahir' => 'required|string|max:100',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
@@ -93,11 +93,11 @@ public function index(Request $request)
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'siswa',
+            'role' => 'mahasiswa',
             'is_active' => true,
         ]);
 
-        Siswa::create([
+        Mahasiswa::create([
             'user_id' => $user->id,
             'nim' => $validated['nim'],
             'tempat_lahir' => $validated['tempat_lahir'],
@@ -117,33 +117,33 @@ public function index(Request $request)
 
        
 
-        return redirect()->route('admin.siswa.index')->with('success', 'Registrasi siswa berhasil! Selamat datang.');
+        return redirect()->route('admin.mahasiswa.index')->with('success', 'Registrasi mahasiswa berhasil! Selamat datang.');
     }
 
-    public function show(Siswa $siswa)
+    public function show(Mahasiswa $mahasiswa)
     {
-        $siswa->load(['user', 'pkl.perusahaan', 'lamaran.lowongan', 'pelatihan']);
-        return view('admin.siswa.show', compact('siswa'));
+        $mahasiswa->load(['user', 'pkl.perusahaan', 'lamaran.lowongan', 'pelatihan']);
+        return view('admin.mahasiswa.show', compact('mahasiswa'));
     }
 
-    public function edit(Siswa $siswa)
+    public function edit(Mahasiswa $mahasiswa)
     {
         $fakultas = Fakultas::all();
         $program_studi = Program_studi::all();
-        return view('admin.siswa.edit', compact('siswa', 'fakultas', 'program_studi'));
+        return view('admin.mahasiswa.edit', compact('mahasiswa', 'fakultas', 'program_studi'));
     }
 
-    public function update(Request $request, Siswa $siswa)
+    public function update(Request $request, Mahasiswa $mahasiswa)
 {
     // 1. VALIDASI DATA
     $validated = $request->validate([
         // Data User
         'name'      => 'required|string|max:255',
-        'email'     => 'required|email|unique:users,email,' . $siswa->user_id,
+        'email'     => 'required|email|unique:users,email,' . $mahasiswa->user_id,
         'password'  => 'nullable|string|min:6', // Tambahkan validasi minimal karakter password
         
-        // Data Siswa
-        'nim'            => 'required|unique:siswa,nim,' . $siswa->id,
+        // Data Mahasiswa
+        'nim'            => 'required|unique:mahasiswa,nim,' . $mahasiswa->id,
         'tempat_lahir'   => 'nullable|string',
         'tanggal_lahir'  => 'nullable|date',
         'jenis_kelamin'  => 'required|in:L,P',
@@ -174,10 +174,10 @@ public function index(Request $request)
         $userData['password'] = Hash::make($request->password);
     }
 
-    $siswa->user->update($userData);
+    $mahasiswa->user->update($userData);
 
-    // 3. UPDATE DATA SISWA (Profile)
-    $siswa->update([
+    // 3. UPDATE DATA MAHASISWA (Profile)
+    $mahasiswa->update([
         'nim'              => $request->nim,
         'tempat_lahir'     => $request->tempat_lahir,
         'tanggal_lahir'    => $request->tanggal_lahir,
@@ -187,8 +187,8 @@ public function index(Request $request)
         'no_telp'          => $request->no_telp,
         
         // PERBAIKAN DI SINI (Simpan ID ke kolom foreign key)
-        'fakultas_id'      => $request->fakultas_id,      // Pastikan kolom di DB siswa bernama 'fakultas_id'
-        'program_studi_id' => $request->program_studi_id, // Pastikan kolom di DB siswa bernama 'program_studi_id'
+        'fakultas_id'      => $request->fakultas_id,      // Pastikan kolom di DB mahasiswa bernama 'fakultas_id'
+        'program_studi_id' => $request->program_studi_id, // Pastikan kolom di DB mahasiswa bernama 'program_studi_id'
         
         'tahun_masuk'      => $request->tahun_masuk,
         'nama_ortu'        => $request->nama_ortu,
@@ -199,16 +199,16 @@ public function index(Request $request)
     ]);
 
     // 4. REDIRECT
-    // Pastikan route ini sesuai dengan route list Anda (biasanya admin.siswa.index)
-    return redirect()->route('admin.siswa.index')
-                     ->with('success', 'Data siswa berhasil diperbarui');
+    // Pastikan route ini sesuai dengan route list Anda (biasanya admin.mahasiswa.index)
+    return redirect()->route('admin.mahasiswa.index')
+                     ->with('success', 'Data mahasiswa berhasil diperbarui');
 }
 
-    public function destroy(Siswa $siswa)
+    public function destroy(Mahasiswa $mahasiswa)
     {
-        $siswa->user->delete(); // Will cascade delete siswa
+        $mahasiswa->user->delete(); // Will cascade delete mahasiswa
         
-        return redirect()->route('siswa.index')
-                        ->with('success', 'Data siswa berhasil dihapus');
+        return redirect()->route('mahasiswa.index')
+                        ->with('success', 'Data mahasiswa berhasil dihapus');
     }
 }

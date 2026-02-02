@@ -9,7 +9,7 @@ class Pkl extends Model
     protected $table = 'pkl';
 
     protected $fillable = [
-        'siswa_id', 'perusahaan_id', 'pembimbing_sekolah',
+        'mahasiswa_id', 'perusahaan_id', 'pembimbing_sekolah',
         'pembimbing_industri', 'tanggal_mulai', 'tanggal_selesai',
         'posisi', 'divisi', 'status', 'nilai_akhir',
         'sertifikat', 'laporan_pkl', 'catatan'
@@ -21,9 +21,9 @@ class Pkl extends Model
         'nilai_akhir' => 'decimal:2',
     ];
 
-    public function siswa()
+    public function mahasiswa()
     {
-        return $this->belongsTo(Siswa::class);
+        return $this->belongsTo(Mahasiswa::class);
     }
 
     public function perusahaan()

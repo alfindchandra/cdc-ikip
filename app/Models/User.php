@@ -24,9 +24,9 @@ class User extends Authenticatable
         'is_active' => 'boolean',
     ];
 
-    public function siswa()
+    public function mahasiswa()
     {
-        return $this->hasOne(Siswa::class);
+        return $this->hasOne(Mahasiswa::class);
     }
 
     public function perusahaan()
@@ -49,9 +49,9 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function isSiswa()
+    public function isMahasiswa()
     {
-        return $this->role === 'siswa';
+        return $this->role === 'mahasiswa';
     }
 
     public function isPerusahaan()

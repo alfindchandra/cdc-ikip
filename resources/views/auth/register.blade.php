@@ -91,13 +91,13 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-3">Daftar Sebagai</label>
                         <div class="grid grid-cols-2 gap-4">
                             <label class="relative flex flex-col items-center justify-center p-5 border-2 border-gray-300 rounded-xl cursor-pointer hover:border-blue-500 hover:shadow-md transition-all group">
-                                <input type="radio" name="role" value="siswa" class="sr-only peer" checked>
+                                <input type="radio" name="role" value="mahasiswa" class="sr-only peer" checked>
                                 <div class="w-14 h-14 bg-gradient-to-br from-blue-50 to-blue-100 rounded-full flex items-center justify-center mb-3 group-hover:from-blue-100 group-hover:to-blue-200 transition-all peer-checked:from-blue-600 peer-checked:to-blue-700">
                                     <svg class="w-7 h-7 text-blue-600 peer-checked:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                     </svg>
                                 </div>
-                                <span class="text-sm font-semibold text-gray-700 peer-checked:text-blue-600">Siswa</span>
+                                <span class="text-sm font-semibold text-gray-700 peer-checked:text-blue-600">Mahasiswa</span>
                                 <span class="text-xs text-gray-500 mt-1">Mencari pekerjaan</span>
                                 <div class="absolute inset-0 border-2 border-blue-600 rounded-xl opacity-0 peer-checked:opacity-100 transition-opacity"></div>
                                 <div class="absolute top-2 right-2 w-6 h-6 bg-blue-600 rounded-full items-center justify-center hidden peer-checked:flex">

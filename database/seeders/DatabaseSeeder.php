@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB; 
 use App\Models\User;
-use App\Models\Siswa;
+use App\Models\Mahasiswa;
 use App\Models\Perusahaan;
 use App\Models\Pengaturan;
 use Database\Seeders\FakultasSeeder;
@@ -45,16 +45,16 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        $siswaUser1 = User::create([
+        $mahasiswaUser1 = User::create([
            'name' => 'Siti Nurhaliza',
            'email' => 'siti.nurhaliza@gmail.com',
            'password' => Hash::make('password'),
-           'role' => 'siswa',
+           'role' => 'mahasiswa',
            'is_active' => true,
            'email_verified_at' => now(),
         ]);
-        Siswa::create([
-            'user_id' => $siswaUser1->id,
+        Mahasiswa::create([
+            'user_id' => $mahasiswaUser1->id,
             'nim' => '2024001',
             'tempat_lahir' => 'Bojonegoro',
             'tanggal_lahir' => '2006-05-15',
@@ -74,17 +74,17 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
 
-        // Siswa 2: Salsabilla Zetia Ramadhani
-        $siswaUser2 = User::create([
+        // Mahasiswa 2: Salsabilla Zetia Ramadhani
+        $mahasiswaUser2 = User::create([
             'name' => 'Salsabilla Zetia Ramadhani',
             'email' => 'salsabilla@gmail.com',
             'password' => Hash::make('password'),
-            'role' => 'siswa',
+            'role' => 'mahasiswa',
             'is_active' => true,
             'email_verified_at' => now(),
         ]);
-        Siswa::create([
-            'user_id' => $siswaUser2->id,
+        Mahasiswa::create([
+            'user_id' => $mahasiswaUser2->id,
             'nim' => '2024002',
             'tempat_lahir' => 'Bojonegoro',
             'tanggal_lahir' => '2006-08-20',
@@ -104,17 +104,17 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
         
-        // Siswa 3: Ahmad Rizki
-        $siswaUser3 = User::create([
+        // Mahasiswa 3: Ahmad Rizki
+        $mahasiswaUser3 = User::create([
             'name' => 'Ahmad Rizki',
             'email' => 'ahmad.rizki@gmail.com',
             'password' => Hash::make('password'),
-            'role' => 'siswa',
+            'role' => 'mahasiswa',
             'is_active' => true,
             'email_verified_at' => now(),
         ]);
-        Siswa::create([
-            'user_id' => $siswaUser3->id,
+        Mahasiswa::create([
+            'user_id' => $mahasiswaUser3->id,
             'nim' => '2024003',
             'tempat_lahir' => 'Bojonegoro',
             'tanggal_lahir' => '2005-01-10',

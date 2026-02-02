@@ -29,8 +29,8 @@
                 </div>
                 <div class="p-6">
                     <div class="text-center mb-6">
-                        @if($tracerStudy->siswa->user->avatar)
-                            <img src="{{ asset('storage/' . $tracerStudy->siswa->user->avatar) }}" 
+                        @if($tracerStudy->mahasiswa->user->avatar)
+                            <img src="{{ asset('storage/' . $tracerStudy->mahasiswa->user->avatar) }}" 
                                 class="rounded-full mx-auto w-32 h-32 object-cover border-4 border-blue-200" alt="Avatar">
                         @else
                             <div class="rounded-full bg-gray-300 mx-auto flex items-center justify-center w-32 h-32">
@@ -42,12 +42,12 @@
                     <dl class="space-y-3 text-sm">
                         @php
                             $alumniData = [
-                                'Nama' => $tracerStudy->siswa->user->name,
-                                'NIM' => $tracerStudy->siswa->nim,
-                                'Fakultas' => $tracerStudy->siswa->fakultas->nama ?? '-',
-                                'Program Studi' => $tracerStudy->siswa->programStudi->nama ?? '-',
-                                'Tahun Masuk' => $tracerStudy->siswa->tahun_masuk,
-                                'Tahun Lulus' => $tracerStudy->siswa->tahun_lulus ?? '-',
+                                'Nama' => $tracerStudy->mahasiswa->user->name,
+                                'NIM' => $tracerStudy->mahasiswa->nim,
+                                'Fakultas' => $tracerStudy->mahasiswa->fakultas->nama ?? '-',
+                                'Program Studi' => $tracerStudy->mahasiswa->programStudi->nama ?? '-',
+                                'Tahun Masuk' => $tracerStudy->mahasiswa->tahun_masuk,
+                                'Tahun Lulus' => $tracerStudy->mahasiswa->tahun_lulus ?? '-',
                                 'Tanggal Isi' => $tracerStudy->tanggal_isi ? $tracerStudy->tanggal_isi->format('d F Y') : '-',
                             ];
                         @endphp

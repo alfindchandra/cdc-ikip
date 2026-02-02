@@ -104,7 +104,7 @@
                     </span>
                 </div>
 
-                <a href="{{ route('siswa.lowongan.show',$l->id) }}"
+                <a href="{{ route('mahasiswa.lowongan.show',$l->id) }}"
                    class="text-blue-600 font-semibold hover:underline">
                     Detail →
                 </a>

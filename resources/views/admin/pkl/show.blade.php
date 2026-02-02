@@ -43,27 +43,27 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         
-        <!-- Data Siswa -->
+        <!-- Data Mahasiswa -->
         <div class="bg-white rounded-xl shadow-xl overflow-hidden h-full">
             <div class="bg-blue-600 p-4">
                 <h2 class="text-xl font-semibold text-white flex items-center">
-                    <i class="fas fa-user-graduate mr-2"></i> Data Siswa
+                    <i class="fas fa-user-graduate mr-2"></i> Data Mahasiswa
                 </h2>
             </div>
             <div class="p-6">
                 <dl class="space-y-3 text-sm">
                     @php
-                        $siswaData = [
-                            'Nama' => $pkl->siswa->user->name,
-                            'NIM' => $pkl->siswa->nim,
-                            'Fakultas' => $pkl->siswa->fakultas->nama ?? '-',
-                            'Program Studi' => $pkl->siswa->programStudi->nama ?? '-',
-                            'No. Telp' => $pkl->siswa->no_telp,
-                            'Email' => $pkl->siswa->user->email,
+                        $mahasiswaData = [
+                            'Nama' => $pkl->mahasiswa->user->name,
+                            'NIM' => $pkl->mahasiswa->nim,
+                            'Fakultas' => $pkl->mahasiswa->fakultas->nama ?? '-',
+                            'Program Studi' => $pkl->mahasiswa->programStudi->nama ?? '-',
+                            'No. Telp' => $pkl->mahasiswa->no_telp,
+                            'Email' => $pkl->mahasiswa->user->email,
                         ];
                     @endphp
 
-                    @foreach($siswaData as $label => $value)
+                    @foreach($mahasiswaData as $label => $value)
                         <div class="flex items-start">
                             <dt class="font-medium text-gray-500 w-1/3">{{ $label }}</dt>
                             <dd class="font-semibold text-gray-900 w-2/3">: {{ $value }}</dd>

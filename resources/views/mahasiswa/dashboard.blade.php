@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
-@section('page-title', 'Dashboard Mahasiswa')
+@section('page-title', 'Dashboard Mahamahasiswa')
 
 @section('content')
 <div class="space-y-6">
@@ -52,7 +52,7 @@
                 <h3 class="text-sm font-medium text-gray-600 mb-1">Lamaran Pending</h3>
                 <p class="text-2xl font-bold text-gray-900">{{ $lamaran_pending }}</p>
                 <p class="text-xs text-gray-500 mt-1">Menunggu respon</p>
-                <a href="{{ route('siswa.lamaran.index') }}" class="text-sm text-blue-600 hover:text-blue-700 mt-2 inline-block">
+                <a href="{{ route('mahasiswa.lamaran.index') }}" class="text-sm text-blue-600 hover:text-blue-700 mt-2 inline-block">
                     Lihat Lamaran →
                 </a>
             </div>
@@ -71,7 +71,7 @@
                 <h3 class="text-sm font-medium text-gray-600 mb-1">Pelatihan Diikuti</h3>
                 <p class="text-2xl font-bold text-gray-900">{{ $pelatihan_terdaftar }}</p>
                 <p class="text-xs text-gray-500 mt-1">Program terdaftar</p>
-                <a href="{{ route('siswa.pelatihan.index') }}" class="text-sm text-blue-600 hover:text-blue-700 mt-2 inline-block">
+                <a href="{{ route('mahasiswa.pelatihan.index') }}" class="text-sm text-blue-600 hover:text-blue-700 mt-2 inline-block">
                     Lihat Pelatihan →
                 </a>
             </div>
@@ -89,11 +89,11 @@
                 </div>
                 <h3 class="text-sm font-medium text-gray-600 mb-1">Kelengkapan Profil</h3>
                 @php
-                    $siswa = auth()->user()->siswa;
+                    $mahasiswa = auth()->user()->mahasiswa;
                     $fields = ['tempat_lahir', 'tanggal_lahir', 'alamat', 'no_telp', 'nama_ortu'];
                     $filled = 0;
                     foreach($fields as $field) {
-                        if(!empty($siswa->$field)) $filled++;
+                        if(!empty($mahasiswa->$field)) $filled++;
                     }
                     $percentage = round(($filled / count($fields)) * 100);
                 @endphp
@@ -116,7 +116,7 @@
             <div class="card-header">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-gray-900">Lowongan Terbaru</h3>
-                    <a href="{{ route('siswa.lowongan.index') }}" class="text-sm text-blue-600 hover:text-blue-700">
+                    <a href="{{ route('mahasiswa.lowongan.index') }}" class="text-sm text-blue-600 hover:text-blue-700">
                         Lihat Semua →
                     </a>
                 </div>
@@ -143,7 +143,7 @@
                                 <span class="text-xs text-gray-500">{{ $lowongan->jumlah_pelamar }} pelamar</span>
                             </div>
                         </div>
-                        <a href="{{ route('siswa.lowongan.show', $lowongan->id) }}" class="text-blue-600 hover:text-blue-700 flex-shrink-0">
+                        <a href="{{ route('mahasiswa.lowongan.show', $lowongan->id) }}" class="text-blue-600 hover:text-blue-700 flex-shrink-0">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
@@ -166,7 +166,7 @@
             <div class="card-header">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-gray-900">Pelatihan Tersedia</h3>
-                    <a href="{{ route('siswa.pelatihan.index') }}" class="text-sm text-blue-600 hover:text-blue-700">
+                    <a href="{{ route('mahasiswa.pelatihan.index') }}" class="text-sm text-blue-600 hover:text-blue-700">
                         Lihat Semua →
                     </a>
                 </div>
@@ -214,7 +214,7 @@
                                 @endif
                             </div>
                         </div>
-                        <a href="{{ route('siswa.pelatihan.show', $pelatihan->id) }}" class="text-blue-600 hover:text-blue-700 ml-4">
+                        <a href="{{ route('mahasiswa.pelatihan.show', $pelatihan->id) }}" class="text-blue-600 hover:text-blue-700 ml-4">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
@@ -240,7 +240,7 @@
         </div>
         <div class="card-body">
             <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                <a href="{{ route('siswa.lowongan.index') }}" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition group">
+                <a href="{{ route('mahasiswa.lowongan.index') }}" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition group">
                     <svg class="w-10 h-10 text-gray-400 group-hover:text-blue-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
@@ -249,7 +249,7 @@
 
                 
 
-                <a href="{{ route('siswa.pelatihan.index') }}" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition group">
+                <a href="{{ route('mahasiswa.pelatihan.index') }}" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition group">
                     <svg class="w-10 h-10 text-gray-400 group-hover:text-blue-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>

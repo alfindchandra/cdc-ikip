@@ -211,13 +211,13 @@
                             <tr class="hover:bg-indigo-50 transition duration-150 ease-in-out">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $loop->iteration + $tracerStudy->firstItem() - 1 }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <div class="text-gray-900 font-semibold">{{ $item->siswa->user->name ?? '-' }}</div>
-                                    <div class="text-xs text-gray-500">Lulus: {{ $item->siswa->tahun_lulus ?? '-' }}</div>
+                                    <div class="text-gray-900 font-semibold">{{ $item->mahasiswa->user->name ?? '-' }}</div>
+                                    <div class="text-xs text-gray-500">Lulus: {{ $item->mahasiswa->tahun_lulus ?? '-' }}</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->siswa->nim ?? '-' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $item->mahasiswa->nim ?? '-' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <div class="text-gray-900 font-medium">{{ Str::words($item->siswa->fakultas->nama ?? '-', 3, '...') }}</div>
-                                    <div class="text-xs text-gray-500">{{ Str::words($item->siswa->programStudi->nama ?? '-', 3, '...') }}</div>
+                                    <div class="text-gray-900 font-medium">{{ Str::words($item->mahasiswa->fakultas->nama ?? '-', 3, '...') }}</div>
+                                    <div class="text-xs text-gray-500">{{ Str::words($item->mahasiswa->programStudi->nama ?? '-', 3, '...') }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     @php

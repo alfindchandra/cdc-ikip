@@ -10,10 +10,10 @@ use App\Models\Kerjasamaindustri;
 
 class PklController extends Controller
 {
-    // Siswa Methods
-    public function siswaPkl()
+    // Mahasiswa Methods
+    public function mahasiswaPkl()
     {
-        return view('siswa.pkl.index');
+        return view('mahasiswa.pkl.index');
     }
 
     public function daftar(Request $request)
@@ -26,10 +26,10 @@ class PklController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
-        $siswa = auth()->user()->siswa;
+        $mahasiswa = auth()->user()->mahasiswa;
 
         // Check if already has active PKL
-        $hasActivePkl = Pkl::where('siswa_id', $siswa->id)
+        $hasActivePkl = Pkl::where('mahasiswa_id', $mahasiswa->id)
                           ->whereIn('status', ['pengajuan', 'diterima', 'berlangsung'])
                           ->exists();
 
@@ -38,7 +38,7 @@ class PklController extends Controller
         }
 
         Pkl::create([
-            'siswa_id' => $siswa->id,
+            'mahasiswa_id' => $mahasiswa->id,
             'perusahaan_id' => $validated['perusahaan_id'],
             'tanggal_mulai' => $validated['tanggal_mulai'],
             'tanggal_selesai' => $validated['tanggal_selesai'],
@@ -52,14 +52,14 @@ class PklController extends Controller
 
    public function show(Pkl $pkl)
     {
-        $pkl->load(['siswa.user', 'perusahaan', 'jurnalPkl']);
+        $pkl->load(['mahasiswa.user', 'perusahaan', 'jurnalPkl']);
         
         // Authorization check
         if (auth()->user()->isAdmin()) {
             return view('admin.pkl.show', compact('pkl'));
 
-        } elseif (auth()->user()->isSiswa() && $pkl->siswa_id == auth()->user()->siswa->id) {
-            return view('siswa.pkl.show', compact('pkl'));
+        } elseif (auth()->user()->isMahasiswa() && $pkl->mahasiswa_id == auth()->user()->mahasiswa->id) {
+            return view('mahasiswa.pkl.show', compact('pkl'));
 
         } elseif (auth()->user()->isPerusahaan() && $pkl->perusahaan_id == auth()->user()->perusahaan->id) {
             
@@ -157,11 +157,11 @@ class PklController extends Controller
     // Admin Methods
     public function index(Request $request)
     {
-        $query = Pkl::with(['siswa.user', 'perusahaan']);
+        $query = Pkl::with(['mahasiswa.user', 'perusahaan']);
 
         if ($request->has('search')) {
             $search = $request->search;
-            $query->whereHas('siswa.user', function($q) use ($search) {
+            $query->whereHas('mahasiswa.user', function($q) use ($search) {
                 $q->where('name', 'like', "%$search%");
             })->orWhereHas('perusahaan', function($q) use ($search) {
                 $q->where('nama_perusahaan', 'like', "%$search%");
@@ -247,7 +247,7 @@ class PklController extends Controller
     {
         $perusahaan = auth()->user()->perusahaan;
         $pkl = Pkl::where('perusahaan_id', $perusahaan->id)
-                  ->with('siswa.user')
+                  ->with('mahasiswa.user')
                   ->latest()
                   ->paginate(20);
 

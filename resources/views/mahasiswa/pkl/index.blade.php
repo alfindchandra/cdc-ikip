@@ -8,7 +8,7 @@
     <div class="space-y-8">
         @php
             // Memastikan data PKL aktif sudah tersedia
-            $pklAktif = auth()->user()->siswa->pkl()
+            $pklAktif = auth()->user()->mahasiswa->pkl()
                 ->whereIn('status', ['berlangsung', 'diterima', 'pengajuan'])
                 ->first();
             
@@ -67,7 +67,7 @@
             </div>
 
             <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-                <a href="{{ route('siswa.pkl.show', $pklAktif->id) }}" class="inline-flex items-center justify-center px-5 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition duration-150 ease-in-out">
+                <a href="{{ route('mahasiswa.pkl.show', $pklAktif->id) }}" class="inline-flex items-center justify-center px-5 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition duration-150 ease-in-out">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -107,7 +107,7 @@
             </div>
             <div class="p-6">
                 <div class="space-y-4">
-                    @forelse(auth()->user()->siswa->pkl()->latest()->get() as $pkl)
+                    @forelse(auth()->user()->mahasiswa->pkl()->latest()->get() as $pkl)
                     @php
                         $historyStatus = $statusMap[$pkl->status] ?? $statusMap['selesai']; // Gunakan 'selesai' sebagai default jika status tidak terdefinisi
                     @endphp
@@ -129,7 +129,7 @@
                                 <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold {{ $historyStatus[0] }} mb-2">
                                     {{ ucfirst($pkl->status) }}
                                 </span>
-                                <a href="{{ route('siswa.pkl.show', $pkl->id) }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium mt-1">
+                                <a href="{{ route('mahasiswa.pkl.show', $pkl->id) }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium mt-1">
                                     Lihat Detail →
                                 </a>
                             </div>
@@ -146,7 +146,7 @@
 
 <div id="modalDaftarPKL" class="fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full z-50 hidden" onclick="if(event.target === this) this.classList.add('hidden')">
     <div class="relative top-20 mx-auto p-5 border w-full sm:max-w-xl shadow-lg rounded-xl bg-white transition-all duration-300">
-        <form action="{{ route('siswa.pkl.daftar') }}" method="POST">
+        <form action="{{ route('mahasiswa.pkl.daftar') }}" method="POST">
             @csrf
             <div class="px-6 py-4 border-b">
                 <div class="flex items-center justify-between">
@@ -207,7 +207,7 @@
 @if($pklAktif)
 <div id="modalUploadLaporan" class="fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full z-50 hidden" onclick="if(event.target === this) this.classList.add('hidden')">
     <div class="relative top-20 mx-auto p-5 border w-full sm:max-w-xl shadow-lg rounded-xl bg-white transition-all duration-300">
-        <form action="{{ route('siswa.pkl.laporan', $pklAktif->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('mahasiswa.pkl.laporan', $pklAktif->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="px-6 py-4 border-b">
                 <div class="flex items-center justify-between">

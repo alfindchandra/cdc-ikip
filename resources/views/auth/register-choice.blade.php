@@ -38,8 +38,8 @@
 
         <!-- Card Options -->
         <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <!-- Siswa Card -->
-            <a href="{{ route('register.siswa') }}" class="group">
+            <!-- Mahasiswa Card -->
+            <a href="{{ route('register.mahasiswa') }}" class="group">
                 <div class="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-100 hover:border-blue-500 hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
                     <div class="text-center">
                         <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full mb-6 group-hover:from-blue-600 group-hover:to-blue-700 transition-all duration-300">
@@ -47,8 +47,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                             </svg>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-900 mb-3">Mahasiswa</h2>
-                        <p class="text-gray-600 mb-6">Daftar sebagai mahasiswa untuk mencari lowongan pekerjaan dan magang</p>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-3">Mahamahasiswa</h2>
+                        <p class="text-gray-600 mb-6">Daftar sebagai mahamahasiswa untuk mencari lowongan pekerjaan dan magang</p>
 
                         <ul class="text-left space-y-3 mb-8">
                             <li class="flex items-start">
@@ -72,7 +72,7 @@
                         </ul>
 
                         <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold py-3 px-6 rounded-xl group-hover:from-blue-700 group-hover:to-blue-800 transition-all flex items-center justify-center space-x-2">
-                            <span>Daftar Sebagai Mahasiswa</span>
+                            <span>Daftar Sebagai Mahamahasiswa</span>
                             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                             </svg>

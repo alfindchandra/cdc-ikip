@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class LowonganKerjaController extends Controller
 {
-    // Siswa Methods
+    // Mahasiswa Methods
     public function index(Request $request)
 {
     $query = LowonganKerja::with('perusahaan');
@@ -31,7 +31,7 @@ class LowonganKerjaController extends Controller
   
     $lowongan = $query->latest()->paginate(20)->withQueryString();
 
-    return view('siswa.lowongan.index', compact('lowongan'));
+    return view('mahasiswa.lowongan.index', compact('lowongan'));
 }
 
        
@@ -42,8 +42,8 @@ class LowonganKerjaController extends Controller
         
         if (auth()->user()->isAdmin()) {
             return view('admin.lowongan.show', compact('lowongan'));
-        } elseif (auth()->user()->isSiswa()) {
-            return view('siswa.lowongan.show', compact('lowongan'));
+        } elseif (auth()->user()->isMahasiswa()) {
+            return view('mahasiswa.lowongan.show', compact('lowongan'));
         }
 
         return view('perusahaan.lowongan.show', compact('lowongan'));
@@ -51,14 +51,14 @@ class LowonganKerjaController extends Controller
 
     public function pelamar(LowonganKerja $lowongan)
     {
-        $lowongan->load(['lamaran.siswa']);
+        $lowongan->load(['lamaran.mahasiswa']);
 
         return view('perusahaan.lowongan.pelamar', compact('lowongan'));
     }
    
     public function adminShow(LowonganKerja $lowongan)
     {
-        $lowongan->load('perusahaan', 'lamaran.siswa');
+        $lowongan->load('perusahaan', 'lamaran.mahasiswa');
 
         return view('admin.lowongan.show', compact('lowongan'));
     }

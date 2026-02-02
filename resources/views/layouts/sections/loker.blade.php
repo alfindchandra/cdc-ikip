@@ -103,7 +103,7 @@
         <div class="grid md:grid-cols-2 gap-6">
             @forelse($lowonganTerbaru as $lowongan)
             <a 
-                href="{{ route('siswa.lowongan.show', $lowongan->id) }}" 
+                href="{{ route('mahasiswa.lowongan.show', $lowongan->id) }}" 
                 x-data="{ hover: false }"
                 @mouseenter="hover = true" 
                 @mouseleave="hover = false"

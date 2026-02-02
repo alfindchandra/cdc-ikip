@@ -53,9 +53,9 @@
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
                                         {{ ucfirst(auth()->user()->role) }}
                                     </span>
-                                    @if(auth()->user()->isSiswa())
+                                    @if(auth()->user()->isMahasiswa())
                                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-100">
-                                            Status: {{ ucfirst(auth()->user()->siswa->status) }}
+                                            Status: {{ ucfirst(auth()->user()->mahasiswa->status) }}
                                         </span>
                                     @endif
                                 </div>
@@ -74,14 +74,14 @@
             </div>
         </div>
 
-        @if(auth()->user()->isSiswa())
-        @php $siswa = auth()->user()->siswa; @endphp
+        @if(auth()->user()->isMahasiswa())
+        @php $mahasiswa = auth()->user()->mahasiswa; @endphp
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             @foreach([
-                ['count' => $siswa->pkl()->count(), 'label' => 'Total PKL', 'icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'color' => 'blue'],
-                ['count' => $siswa->lamaran()->count(), 'label' => 'Lamaran Terkirim', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'color' => 'emerald'],
-                ['count' => $siswa->pelatihan()->count(), 'label' => 'Pelatihan Selesai', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'color' => 'purple']
+                ['count' => $mahasiswa->pkl()->count(), 'label' => 'Total PKL', 'icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'color' => 'blue'],
+                ['count' => $mahasiswa->lamaran()->count(), 'label' => 'Lamaran Terkirim', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'color' => 'emerald'],
+                ['count' => $mahasiswa->pelatihan()->count(), 'label' => 'Pelatihan Selesai', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'color' => 'purple']
             ] as $stat)
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-{{ $stat['color'] }}-50 flex items-center justify-center text-{{ $stat['color'] }}-600 shrink-0">
@@ -107,25 +107,25 @@
                         <div class="grid grid-cols-1 gap-y-5">
                             <div>
                                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">NIM</p>
-                                <p class="text-slate-800 font-semibold">{{ $siswa->nim }}</p>
+                                <p class="text-slate-800 font-semibold">{{ $mahasiswa->nim }}</p>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tgl Lahir</p>
-                                    <p class="text-slate-800">{{ $siswa->tanggal_lahir ? $siswa->tanggal_lahir->format('d M Y') : '-' }}</p>
+                                    <p class="text-slate-800">{{ $mahasiswa->tanggal_lahir ? $mahasiswa->tanggal_lahir->format('d M Y') : '-' }}</p>
                                 </div>
                                 <div>
                                     <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Gender</p>
-                                    <p class="text-slate-800">{{ $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
+                                    <p class="text-slate-800">{{ $mahasiswa->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
                                 </div>
                             </div>
                             <div>
                                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Alamat</p>
-                                <p class="text-slate-800 leading-relaxed">{{ $siswa->alamat ?? '-' }}</p>
+                                <p class="text-slate-800 leading-relaxed">{{ $mahasiswa->alamat ?? '-' }}</p>
                             </div>
                             <div>
                                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Kontak</p>
-                                <p class="text-slate-800">{{ $siswa->no_telp ?? '-' }}</p>
+                                <p class="text-slate-800">{{ $mahasiswa->no_telp ?? '-' }}</p>
                             </div>
                         </div>
                     </div>
@@ -138,20 +138,20 @@
                     <div class="p-6 space-y-4">
                         <div>
                             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Fakultas</p>
-                            <p class="text-slate-800 font-medium">{{ $siswa->fakultas->nama ?? '-' }}</p>
+                            <p class="text-slate-800 font-medium">{{ $mahasiswa->fakultas->nama ?? '-' }}</p>
                         </div>
                         <div>
                             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Program Studi</p>
-                            <p class="text-slate-800 font-medium">{{ $siswa->programStudi->nama ?? '-' }}</p>
+                            <p class="text-slate-800 font-medium">{{ $mahasiswa->programStudi->nama ?? '-' }}</p>
                         </div>
                         <div>
                             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Tahun Masuk</p>
-                            <p class="text-slate-800 font-medium">{{ $siswa->tahun_masuk ?? '-' }}</p>
+                            <p class="text-slate-800 font-medium">{{ $mahasiswa->tahun_masuk ?? '-' }}</p>
                         </div>
                     </div>
                 </div>
 
-                @if($siswa->nama_ortu)
+                @if($mahasiswa->nama_ortu)
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-50 bg-slate-50/50">
                         <h3 class="font-bold text-slate-800">Orang Tua / Wali</h3>
@@ -159,12 +159,12 @@
                     <div class="p-6 space-y-4">
                         <div>
                             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Nama</p>
-                            <p class="text-slate-800 font-medium">{{ $siswa->nama_ortu }}</p>
+                            <p class="text-slate-800 font-medium">{{ $mahasiswa->nama_ortu }}</p>
                         </div>
-                        @if($siswa->no_telp_ortu)
+                        @if($mahasiswa->no_telp_ortu)
                         <div>
                             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Kontak</p>
-                            <p class="text-slate-800 font-medium">{{ $siswa->no_telp_ortu }}</p>
+                            <p class="text-slate-800 font-medium">{{ $mahasiswa->no_telp_ortu }}</p>
                         </div>
                         @endif
                     </div>
@@ -183,10 +183,10 @@
                             </span>
                             <h3 class="font-bold text-lg text-slate-800">Pelatihan Terbaru</h3>
                         </div>
-                        <a href="{{ route('siswa.pelatihan.index') }}" class="text-sm font-medium text-green-600 hover:text-green-700 hover:underline">Lihat Semua</a>
+                        <a href="{{ route('mahasiswa.pelatihan.index') }}" class="text-sm font-medium text-green-600 hover:text-green-700 hover:underline">Lihat Semua</a>
                     </div>
                     <div class="p-6 grid gap-4">
-                        @forelse($siswa->pelatihan()->latest()->take(3)->get() as $pelatihan)
+                        @forelse($mahasiswa->pelatihan()->latest()->take(3)->get() as $pelatihan)
                         <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-100 hover:border-green-200 hover:shadow-sm transition-all bg-white">
                             <div class="w-12 h-12 rounded-lg bg-green-50 flex items-center justify-center text-green-600 shrink-0 font-bold text-sm">
                                 {{ $pelatihan->tanggal_mulai->format('d M') }}
@@ -218,7 +218,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             @foreach([
                 ['count' => $perusahaan->lowonganKerja()->where('status', 'aktif')->count(), 'label' => 'Loker Aktif', 'icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'color' => 'blue'],
-                ['count' => $perusahaan->pkl()->where('status', 'berlangsung')->count(), 'label' => 'Siswa Magang', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'color' => 'emerald'],
+                ['count' => $perusahaan->pkl()->where('status', 'berlangsung')->count(), 'label' => 'Mahasiswa Magang', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'color' => 'emerald'],
                 ['count' => $perusahaan->kerjasamaIndustri()->count(), 'label' => 'Kerjasama', 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', 'color' => 'purple']
             ] as $stat)
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow flex items-center gap-4">
