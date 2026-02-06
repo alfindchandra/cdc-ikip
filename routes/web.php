@@ -113,19 +113,9 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
         Route::get('laporan/{laporan}/download', [LaporanController::class, 'download'])->name('laporan.download');
         Route::post('laporan/{laporan}/publish', [LaporanController::class, 'publish'])->name('laporan.publish');
         
-         Route::prefix('tracer-study')->name('tracer-study.')->group(function () {
-        Route::get('/', [TracerStudyController::class, 'index'])->name('index');
-        Route::get('/create', [TracerStudyController::class, 'create'])->name('create');
-        Route::post('/', [TracerStudyController::class, 'store'])->name('store');
-        Route::get('/{tracerStudy}', [TracerStudyController::class, 'show'])->name('show');
-        Route::get('/{tracerStudy}/edit', [TracerStudyController::class, 'edit'])->name('edit');
-        Route::put('/{tracerStudy}', [TracerStudyController::class, 'update'])->name('update');
-        Route::delete('/{tracerStudy}', [TracerStudyController::class, 'destroy'])->name('destroy');
-        
-        // Laporan & Analisis
-        Route::get('/laporan/analisis', [TracerStudyController::class, 'laporan'])->name('laporan');
-        Route::get('/laporan/export', [TracerStudyController::class, 'exportExcel'])->name('export');
-    });
+          Route::resource('tracer-study', TracerStudyController::class);
+    Route::get('tracer-study-laporan', [TracerStudyController::class, 'laporan'])->name('tracer-study.laporan');
+    Route::get('tracer-study-export', [TracerStudyController::class, 'exportExcel'])->name('tracer-study.export');
         // Pengaturan
         Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
         Route::put('pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');

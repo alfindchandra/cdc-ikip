@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - CDC {{ config('app.ikip') }}</title>
     @vite(['resources/css/app.css'])
-        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-<link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
@@ -25,13 +25,10 @@
 </head>
 <body class="bg-gradient-to-br from-blue-50 via-white to-blue-50 min-h-screen flex items-center justify-center p-4 bg-pattern">
     <div class="w-full flex items-center justify-center">
-        
-        
-        <!-- Right Side - Login Form -->
+        <!-- Login Card -->
         <div class="max-w-md w-full mx-auto">
             <!-- Logo & Header (Mobile) -->
             <div class="text-center mb-8 lg:hidden">
-                
                 <h1 class="text-2xl font-bold text-gray-900">Login</h1>
                 <p class="text-gray-600 mt-1 text-sm">CDC IKIP PGRI Bojonegoro</p>
             </div>
@@ -48,7 +45,11 @@
                     <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                     </svg>
-                    <p class="text-sm font-medium">{{ $errors->first() }}</p>
+                    <div>
+                        @foreach($errors->all() as $error)
+                            <p class="text-sm font-medium">{{ $error }}</p>
+                        @endforeach
+                    </div>
                 </div>
                 @endif
 
@@ -61,7 +62,7 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                <form method="POST" action="{{ route('login') }}" class="space-y-6" id="loginForm">
                     @csrf
 
                     <!-- Email -->
@@ -138,10 +139,17 @@
                                    class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer">
                             <span class="ml-2 text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Ingat saya</span>
                         </label>
-                        <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
-                            Lupa password?
-                        </a>
+
+                        
                     </div>
+
+                    <!-- reCAPTCHA -->
+                    <div class="flex justify-center">
+                        <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.sitekey') }}"></div>
+                    </div>
+                    @error('g-recaptcha-response')
+                        <p class="text-sm text-red-600 text-center">{{ $message }}</p>
+                    @enderror
 
                     <!-- Submit Button -->
                     <button type="submit" 
@@ -176,7 +184,7 @@
 
             <!-- Footer -->
             <p class="text-center text-sm text-gray-500 mt-8">
-                &copy; {{ date('Y') }}{{ config('app.ikip') }}. All rights reserved.
+                &copy; {{ date('Y') }} {{ config('app.ikip') }}. All rights reserved.
             </p>
         </div>
     </div>

@@ -9,12 +9,15 @@
     {{-- Header & Aksi --}}
     <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-200 pb-4">
         <h1 class="text-3xl font-extrabold text-gray-900 flex items-center mb-3 sm:mb-0">
-            <i class="fas fa-chart-line mr-3 text-indigo-600"></i><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Tracer Study</span>
+            <i class="fas fa-chart-line mr-3 text-indigo-600"></i>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Tracer Study</span>
         </h1>
         <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
             <a href="{{ route('admin.tracer-study.laporan') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:scale-105">
                 <i class="fas fa-file-alt mr-2"></i>Laporan Analisis
             </a>
+            
+           
         </div>
     </header>
 
@@ -61,7 +64,7 @@
             <div class="p-5 border-b border-gray-100 bg-gray-50">
                 <h2 class="text-xl font-bold text-indigo-700">Status Alumni <i class="fas fa-chart-pie ml-2 text-indigo-400"></i></h2>
             </div>
-            <div class="p-6 h-96 flex items-center justify-center"> {{-- Menambahkan flex dan tinggi tetap --}}
+            <div class="p-6 h-96 flex items-center justify-center">
                 <canvas id="statusChart" class="max-h-full"></canvas>
             </div>
         </div>
@@ -79,6 +82,7 @@
                         'wirausaha' => ['icon' => 'fas fa-store', 'color' => 'blue', 'label' => 'Wirausaha'],
                         'melanjutkan_studi' => ['icon' => 'fas fa-book', 'color' => 'cyan', 'label' => 'Melanjutkan Studi'],
                         'belum_bekerja' => ['icon' => 'fas fa-user-clock', 'color' => 'amber', 'label' => 'Belum Bekerja'],
+                        'belum_memungkinkan_bekerja' => ['icon' => 'fas fa-pause-circle', 'color' => 'gray', 'label' => 'Belum Memungkinkan'],
                     ];
                 @endphp
 
@@ -116,80 +120,76 @@
         
         <div class="p-6">
             {{-- Filter Form --}}
-           {{-- Filter Form --}}
-<form method="GET" action="{{ route('admin.tracer-study.index') }}" class="mb-6 space-y-4" x-show="openFilter || window.innerWidth >= 1024" x-collapse.duration.500ms>
-    {{-- Grid diubah menjadi 7 kolom (2 search, 1 status, 1 tahun, 1 fakultas, 1 prodi, 1 aksi) --}}
-    <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4"> 
-        {{-- Pencarian --}}
-        <div class="col-span-full md:col-span-2 lg:col-span-2">
-            <label for="search" class="sr-only">Cari nama/NIM...</label>
-            <div class="relative">
-                <input type="text" name="search" id="search" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition duration-150" placeholder="Cari nama/NIM..." value="{{ request('search') }}">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-gray-400"></i>
+            <form method="GET" action="{{ route('admin.tracer-study.index') }}" class="mb-6 space-y-4" x-show="openFilter || window.innerWidth >= 1024" x-collapse.duration.500ms>
+                <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4"> 
+                    {{-- Pencarian --}}
+                    <div class="col-span-full md:col-span-2 lg:col-span-2">
+                        <label for="search" class="sr-only">Cari nama/NIM...</label>
+                        <div class="relative">
+                            <input type="text" name="search" id="search" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition duration-150" placeholder="Cari nama/NIM..." value="{{ request('search') }}">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Filter Status --}}
+                    <div class="col-span-full sm:col-span-1 lg:col-span-1">
+                        <label for="status_pekerjaan" class="sr-only">Status</label>
+                        <select name="status_pekerjaan" id="status_pekerjaan" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 appearance-none bg-white">
+                            <option value="">Semua Status</option>
+                            <option value="bekerja" {{ request('status_pekerjaan') == 'bekerja' ? 'selected' : '' }}>Bekerja</option>
+                            <option value="wirausaha" {{ request('status_pekerjaan') == 'wirausaha' ? 'selected' : '' }}>Wirausaha</option>
+                            <option value="melanjutkan_studi" {{ request('status_pekerjaan') == 'melanjutkan_studi' ? 'selected' : '' }}>Melanjutkan Studi</option>
+                            <option value="belum_bekerja" {{ request('status_pekerjaan') == 'belum_bekerja' ? 'selected' : '' }}>Belum Bekerja</option>
+                            <option value="belum_memungkinkan_bekerja" {{ request('status_pekerjaan') == 'belum_memungkinkan_bekerja' ? 'selected' : '' }}>Belum Memungkinkan</option>
+                        </select>
+                    </div>
+
+                    {{-- Filter Tahun Lulus --}}
+                    <div class="col-span-full sm:col-span-1 lg:col-span-1">
+                        <label for="tahun_lulus" class="sr-only">Tahun Lulus</label>
+                        <select name="tahun_lulus" id="tahun_lulus" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 appearance-none bg-white">
+                            <option value="">Semua Tahun</option>
+                            @for($year = date('Y'); $year >= date('Y') - 10; $year--)
+                                <option value="{{ $year }}" {{ request('tahun_lulus') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    
+                    {{-- FILTER FAKULTAS --}}
+                    <div class="col-span-full sm:col-span-1 lg:col-span-1">
+                        <label for="fakultas_id" class="sr-only">Fakultas</label>
+                        <select name="fakultas_id" id="fakultas_id" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 appearance-none bg-white">
+                            <option value="">Semua Fakultas</option>
+                            @foreach($fakultas as $f)
+                                <option value="{{ $f->id }}" {{ request('fakultas_id') == $f->id ? 'selected' : '' }}>{{ $f->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- FILTER PROGRAM STUDI --}}
+                    <div class="col-span-full sm:col-span-1 lg:col-span-1">
+                        <label for="program_studi_id" class="sr-only">Program Studi</label>
+                        <select name="program_studi_id" id="program_studi_id" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 appearance-none bg-white">
+                            <option value="">Semua Prodi</option>
+                            @foreach($program_studi as $ps)
+                                <option value="{{ $ps->id }}" {{ request('program_studi_id') == $ps->id ? 'selected' : '' }}>{{ $ps->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Tombol Filter dan Reset --}}
+                    <div class="col-span-full md:col-span-2 lg:col-span-1 flex space-x-2">
+                        <button type="submit" class="flex-1 flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out transform hover:scale-[1.03]">
+                            <i class="fas fa-search mr-2"></i>Filter
+                        </button>
+                        <a href="{{ route('admin.tracer-study.index') }}" class="flex-1 flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-xl shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                            <i class="fas fa-redo mr-2"></i>Reset
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-        {{-- Filter Status (tetap 1 kolom) --}}
-        <div class="col-span-full sm:col-span-1 lg:col-span-1">
-            <label for="status_pekerjaan" class="sr-only">Status</label>
-            <select name="status_pekerjaan" id="status_pekerjaan" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 appearance-none bg-white">
-                <option value="">Semua Status</option>
-                <option value="bekerja" {{ request('status_pekerjaan') == 'bekerja' ? 'selected' : '' }}>Bekerja</option>
-                <option value="wirausaha" {{ request('status_pekerjaan') == 'wirausaha' ? 'selected' : '' }}>Wirausaha</option>
-                <option value="melanjutkan_studi" {{ request('status_pekerjaan') == 'melanjutkan_studi' ? 'selected' : '' }}>Melanjutkan Studi</option>
-                <option value="belum_bekerja" {{ request('status_pekerjaan') == 'belum_bekerja' ? 'selected' : '' }}>Belum Bekerja</option>
-            </select>
-        </div>
-
-        {{-- Filter Tahun Lulus (tetap 1 kolom) --}}
-        <div class="col-span-full sm:col-span-1 lg:col-span-1">
-            <label for="tahun_lulus" class="sr-only">Tahun Lulus</label>
-            <select name="tahun_lulus" id="tahun_lulus" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 appearance-none bg-white">
-                <option value="">Semua Tahun</option>
-                @for($year = date('Y'); $year >= date('Y') - 10; $year--)
-                    <option value="{{ $year }}" {{ request('tahun_lulus') == $year ? 'selected' : '' }}>{{ $year }}</option>
-                @endfor
-            </select>
-        </div>
-        
-        {{-- FILTER FAKULTAS (TAMBAHAN) --}}
-        <div class="col-span-full sm:col-span-1 lg:col-span-1">
-            <label for="fakultas_id" class="sr-only">Fakultas</label>
-            <select name="fakultas_id" id="fakultas_id" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 appearance-none bg-white">
-                <option value="">Semua Fakultas</option>
-                {{-- Pastikan variabel $fakultas sudah di-compact dari controller --}}
-                @foreach($fakultas as $f)
-                    <option value="{{ $f->id }}" {{ request('fakultas_id') == $f->id ? 'selected' : '' }}>{{ $f->nama }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        {{-- FILTER PROGRAM STUDI (OPSIONAL) --}}
-        {{-- Jika Anda ingin menambahkan filter Prodi, gunakan kode di bawah ini:
-        <div class="col-span-full sm:col-span-1 lg:col-span-1">
-            <label for="program_studi_id" class="sr-only">Program Studi</label>
-            <select name="program_studi_id" id="program_studi_id" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 appearance-none bg-white">
-                <option value="">Semua Prodi</option>
-                @foreach($program_studi as $ps)
-                    <option value="{{ $ps->id }}" {{ request('program_studi_id') == $ps->id ? 'selected' : '' }}>{{ $ps->nama }}</option>
-                @endforeach
-            </select>
-        </div>
-        --}}
-
-        {{-- Tombol Filter dan Reset (Digabungkan ke 2 kolom terakhir) --}}
-        <div class="col-span-full md:col-span-2 lg:col-span-2 flex space-x-4">
-            <button type="submit" class="flex-1 flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out transform hover:scale-[1.03]">
-                <i class="fas fa-search mr-2"></i>Filter
-            </button>
-            <a href="{{ route('admin.tracer-study.index') }}" class="flex-1 flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-xl shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
-                <i class="fas fa-redo mr-2"></i>Reset
-            </a>
-        </div>
-    </div>
-</form>
+            </form>
 
             {{-- Data Table --}}
             <div class="overflow-x-auto">
@@ -226,10 +226,19 @@
                                             'wirausaha' => 'bg-blue-100 text-blue-800',
                                             'melanjutkan_studi' => 'bg-cyan-100 text-cyan-800',
                                             'belum_bekerja' => 'bg-amber-100 text-amber-800',
+                                            'belum_memungkinkan_bekerja' => 'bg-gray-100 text-gray-800',
                                         ][$item->status_pekerjaan] ?? 'bg-gray-100 text-gray-800';
+                                        
+                                        $statusLabel = [
+                                            'bekerja' => 'Bekerja',
+                                            'wirausaha' => 'Wirausaha',
+                                            'melanjutkan_studi' => 'Studi Lanjut',
+                                            'belum_bekerja' => 'Belum Bekerja',
+                                            'belum_memungkinkan_bekerja' => 'Belum Memungkinkan',
+                                        ][$item->status_pekerjaan] ?? $item->status_pekerjaan;
                                     @endphp
                                     <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClass }}">
-                                        {{ $item->status_pekerjaan_label }}
+                                        {{ $statusLabel }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500">
@@ -253,12 +262,21 @@
                                     <div class="flex items-center justify-center space-x-2">
                                         <a href="{{ route('admin.tracer-study.show', $item) }}" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-full hover:bg-indigo-100 transition duration-150 transform hover:scale-110" title="Detail">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                            </svg>
                                         </a>
+                                        <button onclick="confirmDelete({{ $item->id }})" class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-100 transition duration-150 transform hover:scale-110" title="Hapus">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                        </button>
+                                        <form id="delete-form-{{ $item->id }}" action="{{ route('admin.tracer-study.destroy', $item) }}" method="POST" class="hidden">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -283,28 +301,30 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{{-- Memastikan Alpine.js tersedia (jika belum ada di layouts.app) --}}
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // Ambil nilai dari PHP dan pastikan default ke 0 jika tidak ada
+    // Chart.js - Status Alumni
     const dataBekerja = {{ $statistik['bekerja'] ?? 0 }};
     const dataWirausaha = {{ $statistik['wirausaha'] ?? 0 }};
     const dataStudi = {{ $statistik['melanjutkan_studi'] ?? 0 }};
     const dataBelumBekerja = {{ $statistik['belum_bekerja'] ?? 0 }};
+    const dataBelumMemungkinkan = {{ $statistik['belum_memungkinkan_bekerja'] ?? 0 }};
 
     const ctx = document.getElementById('statusChart').getContext('2d');
     new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Bekerja', 'Wirausaha', 'Melanjutkan Studi', 'Belum Bekerja'],
+            labels: ['Bekerja', 'Wirausaha', 'Melanjutkan Studi', 'Belum Bekerja', 'Belum Memungkinkan'],
             datasets: [{
-                data: [dataBekerja, dataWirausaha, dataStudi, dataBelumBekerja],
+                data: [dataBekerja, dataWirausaha, dataStudi, dataBelumBekerja, dataBelumMemungkinkan],
                 backgroundColor: [
                     'rgba(16, 185, 129, 0.9)', // Green-500
                     'rgba(59, 130, 246, 0.9)', // Blue-500
                     'rgba(6, 182, 212, 0.9)',  // Cyan-500
-                    'rgba(245, 158, 11, 0.9)'  // Amber-500
+                    'rgba(245, 158, 11, 0.9)', // Amber-500
+                    'rgba(156, 163, 175, 0.9)' // Gray-400
                 ],
                 borderColor: 'rgba(255, 255, 255, 1)',
                 borderWidth: 3,
@@ -351,6 +371,24 @@
             }
         }
     });
+
+    // Delete Confirmation
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data tracer study akan dihapus permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
+    }
 </script>
 @endpush
 @endsection

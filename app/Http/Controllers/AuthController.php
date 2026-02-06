@@ -10,6 +10,7 @@ use App\Models\Program_studi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
@@ -23,9 +24,31 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+            'g-recaptcha-response' => 'required',
+        ], [
+            'g-recaptcha-response.required' => 'Silakan verifikasi bahwa Anda bukan robot.',
         ]);
 
-        if (Auth::attempt($credentials, $request->filled('remember'))) {
+        // Validasi reCAPTCHA
+        $recaptchaResponse = $request->input('g-recaptcha-response');
+        $recaptchaSecret = config('services.recaptcha.secret');
+        
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $recaptchaSecret,
+            'response' => $recaptchaResponse,
+            'remoteip' => $request->ip()
+        ]);
+
+        $recaptchaResult = $response->json();
+
+        if (!$recaptchaResult['success']) {
+            return back()->withErrors([
+                'g-recaptcha-response' => 'Verifikasi reCAPTCHA gagal. Silakan coba lagi.',
+            ])->onlyInput('email');
+        }
+
+        // Proses login
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->filled('remember'))) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }
