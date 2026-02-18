@@ -37,7 +37,7 @@
                 <div>
                     <p class="text-sm font-medium text-gray-600">Total Mahaiswa Aktif</p>
                     <p class="text-3xl font-bold text-gray-900 mt-2">{{ $total_mahasiswa }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Mahamahasiswa terdaftar</p>
+                    <p class="text-xs text-gray-500 mt-1">Mahasiswa terdaftar</p>
                 </div>
                 <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,7 +70,7 @@
                 <div>
                     <p class="text-sm font-medium text-gray-600">Lowongan Aktif</p>
                     <p class="text-3xl font-bold text-gray-900 mt-2">{{ $lowongan_aktif }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Tersedia untuk Mahamahasiswa</p>
+                    <p class="text-xs text-gray-500 mt-1">Tersedia untuk Mahasiswa</p>
                 </div>
                 <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

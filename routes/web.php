@@ -16,6 +16,9 @@ use App\Http\Controllers\CatatanController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\TracerStudyController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+
 
 // Guest routes
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
@@ -26,11 +29,26 @@ Route::get('/pelatihan/{pelatihan}', [WelcomeController::class, 'pelatihanShow']
 Route::get('/kerjasama', [WelcomeController::class, 'kerjasama'])->name('index.kerjasama');
 Route::get('/kerjasama/{kerjasama}', [WelcomeController::class, 'kerjasamaShow'])->name('show.kerjasama');
 Route::get('/tracer-study', [WelcomeController::class, 'tracerStudy'])->name('index.tracer-study');
+ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/dashboard')->with('success', 'Email berhasil diverifikasi!');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Link verifikasi telah dikirim!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 Route::middleware('guest')->group(function () {
     // Login
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+   
     
     // Register - Pilihan Role
     Route::get('/register', [AuthController::class, 'showRegisterChoice'])->name('register');
@@ -48,8 +66,9 @@ Route::middleware('guest')->group(function () {
 // Authenticated routes
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');    
     // Profile
     Route::get('/profile', [PengaturanController::class, 'profile'])->name('profile');
     Route::get('/profile/edit', [PengaturanController::class, 'profileEdit'])->name('profile.edit');

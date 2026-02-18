@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Data Mahamahasiswa')
-@section('page-title', 'Data Mahamahasiswa')
+@section('title', 'Data Mahasiswa')
+@section('page-title', 'Data Mahasiswa')
 
 @section('content')
 <div class="space-y-8">
@@ -64,7 +64,7 @@
     <!-- Actions -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h3 class="text-lg font-semibold text-gray-800">
-            Total: <span class="text-blue-600">{{ $mahasiswa->total() }}</span> Mahamahasiswa
+            Total: <span class="text-blue-600">{{ $mahasiswa->total() }}</span> Mahasiswa
         </h3>
         <div class="flex flex-wrap gap-3">
             
@@ -150,8 +150,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                       d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                             </svg>
-                            <p class="text-lg font-medium">Tidak ada data Mahamahasiswa</p>
-                            <p class="text-sm text-gray-500">Silakan tambah data mahamahasiswa baru</p>
+                            <p class="text-lg font-medium">Tidak ada data Mahasiswa</p>
+                            <p class="text-sm text-gray-500">Silakan tambah data mahasiswa baru</p>
                         </td>
                     </tr>
                     @endforelse

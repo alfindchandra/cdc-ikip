@@ -101,37 +101,39 @@
 
         <div class="lg:col-span-2 space-y-6">
             
-            <div class="card bg-white shadow-lg rounded-xl overflow-hidden">
-                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H2m3 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-2a7 7 0 00-7-7h14a7 7 0 00-7 7v2"/></svg>
-                        Riwayat PKL (Praktik Kerja Lapangan)
-                    </h3>
-                </div>
-                <div class="p-6 divide-y divide-gray-100">
-                    @forelse($mahasiswa->pkl as $pkl)
-                    <div class="py-4 flex items-start justify-between space-x-4">
-                        <div class="border-l-4 border-blue-500 pl-4">
-                            <p class="font-bold text-lg text-gray-900">{{ $pkl->perusahaan->nama_perusahaan }}</p>
-                            <p class="text-sm text-gray-700 mt-1 font-semibold">{{ $pkl->posisi ?? 'Peserta PKL' }}</p>
-                            <p class="text-xs text-gray-500 mt-1">
-                                <span class="text-blue-600">Periode:</span> {{ $pkl->tanggal_mulai->format('d M Y') }} - {{ $pkl->tanggal_selesai->format('d M Y') }}
-                            </p>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="px-6 py-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            </span>
+                            <h3 class="font-bold text-lg text-slate-800">Pelatihan Terbaru</h3>
                         </div>
-                        <span class="flex-shrink-0 inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold h-6
-                            @if($pkl->status == 'selesai') bg-green-100 text-green-800
-                            @elseif($pkl->status == 'berlangsung') bg-indigo-100 text-indigo-800
-                            @elseif($pkl->status == 'diterima') bg-blue-100 text-blue-800
-                            @else bg-yellow-100 text-yellow-800
-                            @endif">
-                            {{ ucfirst($pkl->status) }}
-                        </span>
+                        <a href="{{ route('admin.pelatihan.index') }}" class="text-sm font-medium text-green-600 hover:text-green-700 hover:underline">Lihat Semua</a>
                     </div>
-                    @empty
-                    <p class="text-center text-gray-500 py-8 italic">Belum ada riwayat Praktik Kerja Lapangan.</p>
-                    @endforelse
+                    <div class="p-6 grid gap-4">
+                        @forelse($mahasiswa->pelatihan()->latest()->take(3)->get() as $pelatihan)
+                        <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-100 hover:border-green-200 hover:shadow-sm transition-all bg-white">
+                            <div class="w-12 h-12 rounded-lg bg-green-50 flex items-center justify-center text-green-600 shrink-0 font-bold text-sm">
+                                {{ $pelatihan->tanggal_mulai->format('d M') }}
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-slate-900">{{ $pelatihan->judul }}</h4>
+                                <p class="text-sm text-slate-500 mb-2">{{ ucfirst(str_replace('_', ' ', $pelatihan->jenis)) }}</p>
+                                @if($pelatihan->pivot->nilai)
+                                    <span class="inline-flex items-center px-2 py-1 bg-yellow-50 text-yellow-700 text-xs font-bold rounded">
+                                        Nilai: {{ $pelatihan->pivot->nilai }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        @empty
+                            <div class="text-center py-10 text-slate-400">
+                                <p>Belum ada data pelatihan.</p>
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
-            </div>
 
             <div class="card bg-white shadow-lg rounded-xl overflow-hidden">
                 <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">

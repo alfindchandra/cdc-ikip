@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Data Mahamahasiswa')
-@section('page-title', 'Edit Data Mahamahasiswa')
+@section('title', 'Edit Data Mahasiswa')
+@section('page-title', 'Edit Data Mahasiswa')
 
 @section('content')
 <div class="py-8 px-4 sm:px-6 lg:px-8">
@@ -9,7 +9,7 @@
         <div class="bg-white shadow-xl rounded-lg overflow-hidden">
             <div class="px-6 py-5 border-b border-gray-200">
                 <h3 class="text-xl font-bold text-gray-900 flex items-center">
-                    <i class="fas fa-user-edit mr-3 text-indigo-600"></i>Form Edit Data Mahamahasiswa
+                    <i class="fas fa-user-edit mr-3 text-indigo-600"></i>Form Edit Data Mahasiswa
                 </h3>
             </div>
             

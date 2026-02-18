@@ -8,6 +8,7 @@ use App\Models\Perusahaan;
 use App\Models\Fakultas;
 use App\Models\Program_studi;
 use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;

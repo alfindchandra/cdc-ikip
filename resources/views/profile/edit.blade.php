@@ -134,7 +134,7 @@
                                 <input type="text" id="nim" name="nim" 
                                        value="{{ old('nim', auth()->user()->mahasiswa->nim ?? '') }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                                       placeholder="Nomor Induk Mahamahasiswa">
+                                       placeholder="Nomor Induk Mahasiswa">
                                 @error('nim')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror

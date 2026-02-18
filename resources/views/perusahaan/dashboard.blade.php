@@ -213,7 +213,7 @@
                 <div class="flex-1">
                     <h3 class="text-lg font-bold text-gray-900 mb-2">💼 Tips untuk Perusahaan</h3>
                     <p class="text-gray-700 mb-3">
-                        Pastikan deskripsi lowongan kerja Anda jelas dan detail. Semakin lengkap informasi yang Anda berikan, semakin mudah bagi Mahamahasiswa untuk memahami posisi yang ditawarkan.
+                        Pastikan deskripsi lowongan kerja Anda jelas dan detail. Semakin lengkap informasi yang Anda berikan, semakin mudah bagi Mahasiswa untuk memahami posisi yang ditawarkan.
                     </p>
                     <ul class="space-y-2 text-sm text-gray-700">
                         <li class="flex items-start">

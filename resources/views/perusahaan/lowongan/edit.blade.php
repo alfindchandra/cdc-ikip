@@ -136,7 +136,7 @@
                     </div>
                     <div class="ml-3">
                         <p class="text-sm text-yellow-700">
-                            <strong>Perhatian:</strong> Pastikan semua informasi yang dimasukkan sudah benar. Perubahan akan langsung terlihat oleh mahasiswa/mahamahasiswa yang mengakses lowongan ini.
+                            <strong>Perhatian:</strong> Pastikan semua informasi yang dimasukkan sudah benar. Perubahan akan langsung terlihat oleh mahasiswa/mahasiswa yang mengakses lowongan ini.
                         </p>
                     </div>
                 </div>
