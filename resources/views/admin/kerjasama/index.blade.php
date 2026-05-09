@@ -17,12 +17,12 @@
                            name="search"
                            value="{{ request('search') }}"
                            placeholder="Judul atau perusahaan..."
-                           class="form-input w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                           class="form-input p-2 w-full rounded-lg border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
 
                 <div>
                     <label for="jenis-select" class="block text-sm font-medium text-gray-700 mb-1">Jenis</label>
-                    <select id="jenis-select" name="jenis" class="form-select w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="jenis-select" name="jenis" class="form-select p-2 w-full rounded-lg border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">Semua Jenis</option>
                         <option value="pkl" {{ request('jenis') == 'pkl' ? 'selected' : '' }}>PKL</option>
                         <option value="rekrutmen" {{ request('jenis') == 'rekrutmen' ? 'selected' : '' }}>Rekrutmen</option>
@@ -35,7 +35,7 @@
 
                 <div>
                     <label for="status-select" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select id="status-select" name="status" class="form-select w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="status-select" name="status" class="form-select p-2 w-full rounded-lg border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">Semua Status</option>
                         <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                         <option value="proposal" {{ request('status') == 'proposal' ? 'selected' : '' }}>Proposal</option>
@@ -57,7 +57,6 @@
         </div>
     </div>
 
-    ---
 
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         @php
@@ -84,12 +83,12 @@
         @endforeach
     </div>
 
-    ---
+
 
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div>
             <h3 class="text-xl font-semibold text-gray-800">
-                Total: **{{ $kerjasama->total() }}** Kerjasama
+                Total: {{ $kerjasama->total() }} Kerjasama
             </h3>
         </div>
         <div class="mt-4 sm:mt-0">
@@ -100,9 +99,7 @@
         </div>
     </div>
 
-    ---
-
-    <div class="card bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -148,10 +145,10 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 hidden lg:table-cell">
                             <div class="space-y-1">
                                 @if($k->pic_sekolah)
-                                <p><span class="text-xs text-gray-500">Sekolah:</span> **{{ $k->pic_sekolah }}**</p>
+                                <p><span class="text-xs text-gray-500">Sekolah:</span> {{ $k->pic_sekolah }}</p>
                                 @endif
                                 @if($k->pic_industri)
-                                <p><span class="text-xs text-gray-500">Industri:</span> **{{ $k->pic_industri }}**</p>
+                                <p><span class="text-xs text-gray-500">Industri:</span> {{ $k->pic_industri }}</p>
                                 @endif
                                 @if(!$k->pic_sekolah && !$k->pic_industri)
                                 <p class="text-gray-500 italic">-</p>
