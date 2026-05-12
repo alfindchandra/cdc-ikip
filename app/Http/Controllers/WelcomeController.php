@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LowonganKerja;
 use App\Models\Perusahaan;
 use App\Models\Pelatihan;
+use App\Models\KerjasamaIndustri;
 use Illuminate\Http\Request;
 use App\Models\TracerStudy;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,6 @@ class WelcomeController extends Controller
             $keyword = $request->keyword;
             $query->where(function($q) use ($keyword) {
                 $q->where('posisi', 'like', "%{$keyword}%")
-                  ->orWhere('judul', 'like', "%{$keyword}%")
                   ->orWhere('deskripsi', 'like', "%{$keyword}%")
                   ->orWhereHas('perusahaan', function($q) use ($keyword) {
                       $q->where('nama_perusahaan', 'like', "%{$keyword}%");
@@ -59,6 +59,14 @@ class WelcomeController extends Controller
             ->where('tanggal_mulai', '>=', now())
             ->latest()
             ->take(3)
+            ->get();
+
+        // Ambil kerjasama yang aktif
+        $kerjasamaTerbaru = KerjasamaIndustri::with('perusahaan')
+            ->where('status', 'aktif')
+            ->where('tanggal_berakhir', '>=', now())
+            ->latest()
+            ->take(6)
             ->get();
 
         // Statistik
@@ -168,6 +176,7 @@ class WelcomeController extends Controller
             'lowonganTerbaru',
             'perusahaanMitra',
             'pelatihanTerbaru',
+            'kerjasamaTerbaru',
             'statistik',
             'kesesuaianBidang',
             'topCompanies',
@@ -184,12 +193,21 @@ class WelcomeController extends Controller
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
             $query->where(function($q) use ($keyword) {
-                $q->where('judul', 'like', "%{$keyword}%")
+                $q->where('posisi', 'like', "%{$keyword}%")
                   ->orWhere('deskripsi', 'like', "%{$keyword}%")
                   ->orWhereHas('perusahaan', function($q) use ($keyword) {
                       $q->where('nama_perusahaan', 'like', "%{$keyword}%");
                   });
             });
+        }
+         // Filter berdasarkan lokasi
+        if ($request->filled('lokasi')) {
+            $query->where('lokasi', $request->lokasi);
+        }
+
+        // Filter berdasarkan tipe pekerjaan
+        if ($request->filled('tipe')) {
+            $query->where('tipe_pekerjaan', $request->tipe);
         }
          $lowonganTerbaru = $query->latest()
             ->take(8)
@@ -201,6 +219,43 @@ class WelcomeController extends Controller
     {
         return view('index.lowonganshow', compact('lowongan'));
     }
+
+    public function kerjasama(Request $request)
+    {
+        $query = KerjasamaIndustri::with('perusahaan')
+            ->where('status', 'aktif')
+            ->where('tanggal_berakhir', '>=', now());
+
+        // Filter berdasarkan keyword
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $query->where(function($q) use ($keyword) {
+                $q->where('judul', 'like', "%{$keyword}%")
+                  ->orWhere('deskripsi', 'like', "%{$keyword}%")
+                  ->orWhere('jenis_kerjasama', 'like', "%{$keyword}%")
+                  ->orWhereHas('perusahaan', function($q) use ($keyword) {
+                      $q->where('nama_perusahaan', 'like', "%{$keyword}%");
+                  });
+            });
+        }
+
+        // Filter berdasarkan jenis kerjasama
+        if ($request->filled('jenis')) {
+            $query->where('jenis_kerjasama', $request->jenis);
+        }
+
+        $kerjasamaTerbaru = $query->latest()
+            ->paginate(12);
+
+        return view('index.kerjasama', compact('kerjasamaTerbaru'));
+    }
+
+    public function kerjasamaShow(KerjasamaIndustri $kerjasama)
+    {
+        $kerjasama->load('perusahaan');
+        return view('index.kerjasamashow', compact('kerjasama'));
+    }
+
     public function tracerStudy()
    {
     // Statistik Umum 

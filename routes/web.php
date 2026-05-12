@@ -60,6 +60,11 @@ Route::middleware('guest')->group(function () {
     // Register Perusahaan
     Route::get('/register/perusahaan', [AuthController::class, 'showRegisterPerusahaan'])->name('register.perusahaan');
     Route::post('/register/perusahaan', [AuthController::class, 'registerPerusahaan']);
+
+    // OTP Verification
+    Route::get('/otp/verify', [AuthController::class, 'showOtpVerify'])->name('otp.verify.show');
+    Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
+    Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
 });
 
 

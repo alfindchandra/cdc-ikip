@@ -44,6 +44,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Catatan::class);
     }
 
+    public function otps()
+    {
+        return $this->hasMany(Otp::class);
+    }
+
     public function isAdmin()
     {
         return $this->role === 'admin';

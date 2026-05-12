@@ -148,6 +148,7 @@
         </div>
     </section>
 
+    @include('layouts.sections.kerjasama')
     @include('index.tracer-study')
     @include('layouts.sections.perusahaan')
 
