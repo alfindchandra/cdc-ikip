@@ -90,14 +90,10 @@
             <h3 class="text-xl font-semibold text-gray-800">
                 Total: {{ $kerjasama->total() }} Kerjasama
             </h3>
-        </div>
-        <div class="mt-4 sm:mt-0">
-            <a href="{{ route('admin.kerjasama.create') }}" class="btn btn-primary bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg shadow-md flex items-center transition duration-150">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Tambah Kerjasama Baru
-            </a>
+            <p class="text-sm text-gray-500 mt-1">Daftar pengajuan kerjasama yang dikirim oleh perusahaan. Gunakan <strong>Ubah Status</strong> untuk menyetujui (ACC) atau menolak pengajuan.</p>
         </div>
     </div>
+
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200">
         <div class="overflow-x-auto">
@@ -175,7 +171,7 @@
 
                                 <div class="relative">
                                     <button @click="open = !open" type="button" class="text-xs text-indigo-600 hover:text-indigo-800 flex items-center transition duration-150 focus:outline-none">
-                                        Ubah Status
+                                        ACC / Ubah Status
                                         <svg class="w-3 h-3 ml-1 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                     </button>
                                     <div x-show="open"
@@ -224,6 +220,22 @@
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 </a>
                                 @endif
+                                @if($k->dokumen_moa)
+                                <a href="{{ Storage::url($k->dokumen_moa) }}"
+                                   target="_blank"
+                                   class="text-emerald-600 hover:text-emerald-800 p-1 rounded-full hover:bg-emerald-50 transition duration-150"
+                                   title="Lihat Dokumen MoA">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                </a>
+                                @endif
+                                @if($k->dokumen_kontrak)
+                                <a href="{{ Storage::url($k->dokumen_kontrak) }}"
+                                   target="_blank"
+                                   class="text-amber-600 hover:text-amber-800 p-1 rounded-full hover:bg-amber-50 transition duration-150"
+                                   title="Lihat Dokumen Kontrak">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                </a>
+                                @endif
                                 <form action="{{ route('admin.kerjasama.destroy', $k->id) }}"
                                       method="POST"
                                       onsubmit="return confirm('Yakin ingin menghapus kerjasama ini? Tindakan ini tidak dapat dibatalkan.')">
@@ -245,7 +257,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10m0-10l4-2m-4 2l-4-2m0 0v10l4 2m4-2v10l-4 2"/>
                             </svg>
                             <p class="text-lg font-semibold">Belum ada data kerjasama yang ditemukan</p>
-                            <p class="text-sm mt-1">Gunakan tombol **Tambah Kerjasama Baru** untuk memulai.</p>
+                            <p class="text-sm mt-1">Pengajuan kerjasama akan muncul di sini setelah perusahaan mengirimkannya.</p>
                         </td>
                     </tr>
                     @endforelse

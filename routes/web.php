@@ -129,8 +129,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
         Route::get('pelatihan/{pelatihan}/peserta', [PelatihanController::class, 'peserta'])->name('pelatihan.peserta');
         Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/status', [PelatihanController::class, 'updateStatusPeserta'])->name('pelatihan.peserta.status');
 Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanController::class, 'inputNilai'])->name('pelatihan.peserta.nilai');
-        // Kerjasama Industri
-        Route::resource('kerjasama', KerjasamaIndustriController::class);
+        // Kerjasama Industri (Admin hanya mengelola & meng-ACC pengajuan dari perusahaan)
+        Route::resource('kerjasama', KerjasamaIndustriController::class)->except(['create', 'store']);
         Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
         
         // Laporan
@@ -203,10 +203,12 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
         // Route::get('pkl/{pkl}/jurnal', [PklController::class, 'showJurnal'])->name('pkl.jurnal');
         // Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
         
-        // Kerjasama
-        Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatusPerusahaan'])->name('kerjasama.status'); 
+        // Kerjasama (Perusahaan MENGAJUKAN/mengirim kerja sama, admin yang meng-ACC)
         Route::get('kerjasama', [KerjasamaIndustriController::class, 'perusahaanIndex'])->name('kerjasama.index');
+        Route::get('kerjasama/create', [KerjasamaIndustriController::class, 'createPerusahaan'])->name('kerjasama.create');
+        Route::post('kerjasama', [KerjasamaIndustriController::class, 'storePerusahaan'])->name('kerjasama.store');
         Route::get('kerjasama/{kerjasama}', [KerjasamaIndustriController::class, 'show'])->name('kerjasama.show');
+        Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatusPerusahaan'])->name('kerjasama.status');
     
     });
 });

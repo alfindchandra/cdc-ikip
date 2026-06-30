@@ -13,14 +13,20 @@
                 <h2 class="text-3xl font-extrabold mb-2">Kerjasama Industri</h2>
                 <p class="text-white/90">Program kerjasama antara {{ auth()->user()->perusahaan->nama_perusahaan }} dengan sekolah</p>
             </div>
-            <div class="mt-4 md:mt-0 grid grid-cols-2 gap-4">
-                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
-                    <p class="text-sm font-medium text-white/80">Total Kerjasama</p>
-                    <p class="text-3xl font-extrabold mt-1">{{ $kerjasama->total() }}</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
-                    <p class="text-sm font-medium text-white/80">Aktif</p>
-                    <p class="text-3xl font-extrabold mt-1">{{ $kerjasama->where('status', 'aktif')->count() }}</p>
+            <div class="mt-4 md:mt-0 flex flex-col items-end gap-4">
+                <a href="{{ route('perusahaan.kerjasama.create') }}" class="inline-flex items-center px-5 py-2.5 bg-white text-indigo-700 font-bold rounded-lg shadow-md hover:bg-gray-50 transition duration-150">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Ajukan Kerjasama Baru
+                </a>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
+                        <p class="text-sm font-medium text-white/80">Total Kerjasama</p>
+                        <p class="text-3xl font-extrabold mt-1">{{ $kerjasama->total() }}</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
+                        <p class="text-sm font-medium text-white/80">Aktif</p>
+                        <p class="text-3xl font-extrabold mt-1">{{ $kerjasama->where('status', 'aktif')->count() }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,7 +154,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10m0-10l4-2m-4 2l-4-2m0 0v10l4 2m4-2v10l-4 2"/>
                             </svg>
                             <p class="text-lg font-semibold">Belum ada data kerjasama</p>
-                            <p class="text-sm mt-1">Data kerjasama akan muncul di sini setelah admin menambahkan kerjasama untuk perusahaan Anda.</p>
+                            <p class="text-sm mt-1">Klik <strong>Ajukan Kerjasama Baru</strong> untuk mengirim penawaran kerjasama ke sekolah.</p>
                         </td>
                     </tr>
                     @endforelse

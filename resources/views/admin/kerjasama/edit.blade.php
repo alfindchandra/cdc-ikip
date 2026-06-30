@@ -155,6 +155,69 @@
                                 <span class="mt-1 text-xs text-gray-500">PDF max. 10MB</span>
                             </label>
                         </div>
+                        @error('dokumen_mou')<p class="mt-2 text-xs text-red-500">{{ $message }}</p>@enderror
+                    </div>
+
+                    <!-- Dokumen MoA Card -->
+                    <div class="p-6 bg-emerald-50 rounded-2xl border border-emerald-100">
+                        <h4 class="text-sm font-bold text-emerald-900 uppercase tracking-wider mb-4">Dokumen MoA</h4>
+
+                        @if($kerjasama->dokumen_moa)
+                        <div class="mb-4 flex items-center p-3 bg-white rounded-xl shadow-sm border border-emerald-200">
+                            <div class="p-2 bg-red-100 text-red-600 rounded-lg mr-3">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 012-2h4.586A1 1 0 0111.293 2.707l4 4a1 1 0 01.293.707V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/></svg>
+                            </div>
+                            <div class="overflow-hidden">
+                                <p class="text-xs font-bold text-gray-900 truncate">Dokumen_MoA.pdf</p>
+                                <a href="{{ Storage::url($kerjasama->dokumen_moa) }}" target="_blank" class="text-emerald-600 hover:underline text-[10px] font-semibold">LIHAT DOKUMEN</a>
+                            </div>
+                        </div>
+                        @endif
+
+                        <div class="relative group">
+                            <input type="file" id="dokumen_moa" name="dokumen_moa" accept=".pdf" class="hidden">
+                            <label for="dokumen_moa" class="flex flex-col items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-emerald-300 border-dashed rounded-xl appearance-none cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 focus:outline-none">
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                    </svg>
+                                    <span class="font-medium text-gray-600">{{ $kerjasama->dokumen_moa ? 'Ganti Dokumen' : 'Upload Dokumen' }}</span>
+                                </span>
+                                <span class="mt-1 text-xs text-gray-500">PDF max. 10MB</span>
+                            </label>
+                        </div>
+                        @error('dokumen_moa')<p class="mt-2 text-xs text-red-500">{{ $message }}</p>@enderror
+                    </div>
+
+                    <!-- Dokumen Kontrak Card -->
+                    <div class="p-6 bg-amber-50 rounded-2xl border border-amber-100">
+                        <h4 class="text-sm font-bold text-amber-900 uppercase tracking-wider mb-4">Dokumen Kontrak</h4>
+
+                        @if($kerjasama->dokumen_kontrak)
+                        <div class="mb-4 flex items-center p-3 bg-white rounded-xl shadow-sm border border-amber-200">
+                            <div class="p-2 bg-red-100 text-red-600 rounded-lg mr-3">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 012-2h4.586A1 1 0 0111.293 2.707l4 4a1 1 0 01.293.707V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/></svg>
+                            </div>
+                            <div class="overflow-hidden">
+                                <p class="text-xs font-bold text-gray-900 truncate">Dokumen_Kontrak.pdf</p>
+                                <a href="{{ Storage::url($kerjasama->dokumen_kontrak) }}" target="_blank" class="text-amber-600 hover:underline text-[10px] font-semibold">LIHAT DOKUMEN</a>
+                            </div>
+                        </div>
+                        @endif
+
+                        <div class="relative group">
+                            <input type="file" id="dokumen_kontrak" name="dokumen_kontrak" accept=".pdf" class="hidden">
+                            <label for="dokumen_kontrak" class="flex flex-col items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-amber-300 border-dashed rounded-xl appearance-none cursor-pointer hover:border-amber-500 hover:bg-amber-50 focus:outline-none">
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                    </svg>
+                                    <span class="font-medium text-gray-600">{{ $kerjasama->dokumen_kontrak ? 'Ganti Dokumen' : 'Upload Dokumen' }}</span>
+                                </span>
+                                <span class="mt-1 text-xs text-gray-500">PDF max. 10MB</span>
+                            </label>
+                        </div>
+                        @error('dokumen_kontrak')<p class="mt-2 text-xs text-red-500">{{ $message }}</p>@enderror
                     </div>
 
                     <!-- PIC Info -->

@@ -157,23 +157,43 @@
             <!-- Right Column - Sidebar -->
             <div class="lg:col-span-1 space-y-6">
                 
-                <!-- Status Update Card -->
+                <!-- Status Update / ACC Card -->
                 <div class="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
                     <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100">
-                        <h3 class="text-lg font-bold text-indigo-900">Ubah Status</h3>
+                        <h3 class="text-lg font-bold text-indigo-900">ACC / Ubah Status Pengajuan</h3>
                     </div>
                     <div class="p-6">
+                        @if(in_array($kerjasama->status, ['proposal', 'negosiasi', 'draft']))
+                        <div class="flex space-x-3 mb-5">
+                            <form action="{{ route('admin.kerjasama.status', $kerjasama->id) }}" method="POST" class="flex-1">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="status" value="aktif">
+                                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg transition duration-150">
+                                    ✓ Setujui (ACC)
+                                </button>
+                            </form>
+                            <form action="{{ route('admin.kerjasama.status', $kerjasama->id) }}" method="POST" class="flex-1">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="status" value="batal">
+                                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition duration-150">
+                                    ✕ Tolak
+                                </button>
+                            </form>
+                        </div>
+                        @endif
                         <form action="{{ route('admin.kerjasama.status', $kerjasama->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <label class="block text-sm font-medium text-gray-700 mb-2">Status Kerjasama</label>
                             <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 mb-4">
                                 <option value="draft" {{ $kerjasama->status == 'draft' ? 'selected' : '' }}>Draft</option>
-                                <option value="proposal" {{ $kerjasama->status == 'proposal' ? 'selected' : '' }}>Proposal</option>
+                                <option value="proposal" {{ $kerjasama->status == 'proposal' ? 'selected' : '' }}>Proposal (Menunggu ACC)</option>
                                 <option value="negosiasi" {{ $kerjasama->status == 'negosiasi' ? 'selected' : '' }}>Negosiasi</option>
-                                <option value="aktif" {{ $kerjasama->status == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                <option value="aktif" {{ $kerjasama->status == 'aktif' ? 'selected' : '' }}>Aktif (Disetujui)</option>
                                 <option value="selesai" {{ $kerjasama->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                <option value="batal" {{ $kerjasama->status == 'batal' ? 'selected' : '' }}>Batal</option>
+                                <option value="batal" {{ $kerjasama->status == 'batal' ? 'selected' : '' }}>Batal (Ditolak)</option>
                             </select>
                             <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg transition duration-150">
                                 Perbarui Status
@@ -211,7 +231,7 @@
                 @if($kerjasama->dokumen_mou)
                 <div class="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
                     <div class="bg-green-50 px-6 py-4 border-b border-green-100">
-                        <h3 class="text-lg font-bold text-green-900">Dokumen</h3>
+                        <h3 class="text-lg font-bold text-green-900">Dokumen MoU</h3>
                     </div>
                     <div class="p-6">
                         <a href="{{ Storage::url($kerjasama->dokumen_mou) }}" 
@@ -221,6 +241,44 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                             <span>Download MoU</span>
+                        </a>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Dokumen MoA -->
+                @if($kerjasama->dokumen_moa)
+                <div class="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
+                    <div class="bg-emerald-50 px-6 py-4 border-b border-emerald-100">
+                        <h3 class="text-lg font-bold text-emerald-900">Dokumen MoA</h3>
+                    </div>
+                    <div class="p-6">
+                        <a href="{{ Storage::url($kerjasama->dokumen_moa) }}" 
+                           target="_blank"
+                           class="flex items-center justify-center space-x-2 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-lg transition duration-150">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span>Download MoA</span>
+                        </a>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Dokumen Kontrak -->
+                @if($kerjasama->dokumen_kontrak)
+                <div class="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
+                    <div class="bg-amber-50 px-6 py-4 border-b border-amber-100">
+                        <h3 class="text-lg font-bold text-amber-900">Dokumen Kontrak</h3>
+                    </div>
+                    <div class="p-6">
+                        <a href="{{ Storage::url($kerjasama->dokumen_kontrak) }}" 
+                           target="_blank"
+                           class="flex items-center justify-center space-x-2 w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-lg transition duration-150">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span>Download Kontrak</span>
                         </a>
                     </div>
                 </div>
