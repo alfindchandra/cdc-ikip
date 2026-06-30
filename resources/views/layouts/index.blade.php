@@ -18,8 +18,11 @@
 </head>
 
 <body>
+    @include('layouts.navbarhome')
 
-    @yield('content')
+    <main class="container mx-auto mt-10">
+        @yield('home')
+    </main>
 </body>
 
 </html>

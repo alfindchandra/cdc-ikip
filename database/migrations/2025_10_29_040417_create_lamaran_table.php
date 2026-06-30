@@ -22,7 +22,11 @@ return new class extends Migration
                   ->onDelete('cascade');
             $table->string('cv');          
             $table->string('surat_lamaran'); 
-            $table->string('portofolio')->nullable(); 
+            $table->string('Ijazah'); 
+            $table->string('ktp'); 
+            $table->string('foto'); 
+            $table->string('sertifikat')->nullable(); 
+
 
           
             $table->enum('status', ['dikirim', 'dilihat', 'diproses', 'diterima', 'ditolak'])

@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 
 // Guest routes
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+Route::get('/lowonganhome', [LowonganKerjaController::class, 'lowonganhome'])->name('index.lowonganhome');
 Route::get('/lowongan', [WelcomeController::class, 'lowongan'])->name('index.lowongan');
 Route::get('/lowongan/{lowongan}', [WelcomeController::class, 'lowonganShow'])->name('lowongan.show');
 Route::get('/pelatihan', [WelcomeController::class, 'pelatihan'])->name('index.pelatihan');
@@ -132,10 +133,9 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
         Route::resource('kerjasama', KerjasamaIndustriController::class);
         Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
         
-        // Laporan & Arsip
-        Route::resource('laporan', LaporanController::class);
-        Route::get('laporan/{laporan}/download', [LaporanController::class, 'download'])->name('laporan.download');
-        Route::post('laporan/{laporan}/publish', [LaporanController::class, 'publish'])->name('laporan.publish');
+        // Laporan
+        Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+        Route::get('laporan/download', [LaporanController::class, 'download'])->name('laporan.download');
         
           Route::resource('tracer-study', TracerStudyController::class);
     Route::get('tracer-study-laporan', [TracerStudyController::class, 'laporan'])->name('tracer-study.laporan');

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_berakhir')->nullable();
             $table->string('dokumen_mou')->nullable(); 
+            $table->string('dokumen_moa')->nullable(); 
+            $table->string('dokumen_kontrak')->nullable(); 
             $table->enum('status', ['aktif','nonaktif','selesai','draft','negosiasi','proposal','batal'])->default('aktif');
             $table->string('pic_sekolah', 150)->nullable();
             $table->string('pic_industri', 150)->nullable();

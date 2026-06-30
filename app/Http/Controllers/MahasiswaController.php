@@ -208,7 +208,7 @@ public function index(Request $request)
     {
         $mahasiswa->user->delete(); // Will cascade delete mahasiswa
         
-        return redirect()->route('mahasiswa.index')
+        return redirect()->route('admin.mahasiswa.index')
                         ->with('success', 'Data mahasiswa berhasil dihapus');
     }
 }

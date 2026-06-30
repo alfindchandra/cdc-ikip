@@ -9,6 +9,13 @@
     @vite(['resources/css/app.css'])
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -69,88 +76,11 @@
 
 
     <!-- Search Section -->
-    @include('layouts.sections.loker')
+    @include('home.lowonganhome')
 
-
-
-
-
-    <!-- Training Section -->
-    <section id="pelatihan" class="py-16 bg-gray-50">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">Pelatihan & Pengembangan</h2>
-                <p class="text-gray-600">Tingkatkan skill-mu dengan pelatihan berkualitas</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-                @forelse($pelatihanTerbaru as $pelatihan)
-                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
-                    @if($pelatihan->thumbnail)
-                    <img src="{{ asset('storage/' . $pelatihan->thumbnail) }}" alt="{{ $pelatihan->judul }}"
-                        class="w-full h-48 object-cover">
-                    @else
-                    <div class="w-full h-48 gradient-secondary flex items-center justify-center">
-                        <i class="fas fa-chalkboard-teacher text-white text-5xl"></i>
-                    </div>
-                    @endif
-
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-xs font-semibold">
-                                {{ ucfirst(str_replace('_', ' ', $pelatihan->jenis)) }}
-                            </span>
-                            @if($pelatihan->biaya > 0)
-                            <span class="text-sm font-semibold text-gray-700">
-                                Rp {{ number_format($pelatihan->biaya, 0, ',', '.') }}
-                            </span>
-                            @else
-                            <span class="text-sm font-semibold text-green-600">GRATIS</span>
-                            @endif
-                        </div>
-
-                        <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2">
-                            {{ $pelatihan->judul }}
-                        </h3>
-
-                        <p class="text-sm text-gray-600 mb-4 line-clamp-3">
-                            {{ $pelatihan->deskripsi }}
-                        </p>
-
-                        <div class="space-y-2 mb-4">
-                            <div class="flex items-center text-sm text-gray-600">
-                                <i class="fas fa-calendar w-4 mr-2"></i>
-                                {{ \Carbon\Carbon::parse($pelatihan->tanggal_mulai)->format('d M Y') }}
-                            </div>
-                            <div class="flex items-center text-sm text-gray-600">
-                                <i class="fas fa-map-marker-alt w-4 mr-2"></i>
-                                {{ $pelatihan->tempat ?? 'Online' }}
-                            </div>
-                            <div class="flex items-center text-sm text-gray-600">
-                                <i class="fas fa-users w-4 mr-2"></i>
-                                {{ $pelatihan->jumlah_peserta }}/{{ $pelatihan->kuota }} Peserta
-                            </div>
-                        </div>
-
-                        <a href="{{ route('mahasiswa.pelatihan.show', $pelatihan->id) }}"
-                            class="block w-full text-center bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
-                            Daftar Sekarang
-                        </a>
-                    </div>
-                </div>
-                @empty
-                <div class="col-span-full text-center py-12">
-                    <i class="fas fa-chalkboard-teacher text-gray-300 text-6xl mb-4"></i>
-                    <p class="text-gray-500">Belum ada pelatihan tersedia</p>
-                </div>
-                @endforelse
-            </div>
-        </div>
-    </section>
-
-    @include('layouts.sections.kerjasama')
-    @include('index.tracer-study')
-    @include('layouts.sections.perusahaan')
+    @include('home.layanan')
+    @include('home.tracerstudyhome')
+    @include('home.lokasi')
 
     <footer class="bg-gray-900 text-white py-12">
         <div class="container mx-auto px-4">

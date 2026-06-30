@@ -7,33 +7,38 @@
     <title>@yield('title') - {{ config('app.ikip') }} Career Center</title>
     <link rel="icon" href="{{ asset('images/xlogo.png') }}" type="image/png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-<link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <style>
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div class="min-h-screen flex">
-        <!-- Sidebar -->
-        <aside class="fixed inset-y-0 left-0 w-64 bg-blue-900 text-white transform transition-transform duration-200 ease-in-out z-30" 
-               x-data="{ open: true }"
-               :class="open ? 'translate-x-0' : '-translate-x-full'">
+<body class="bg-gray-50 min-h-screen text-gray-800" x-data="{ sidebarOpen: false }">
+    
+    <div class="flex">
+        <div x-show="sidebarOpen" 
+             @click="sidebarOpen = false" 
+             x-cloak 
+             class="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity">
+        </div>
+
+        <aside class="fixed inset-y-0 left-0 w-64 bg-blue-900 text-white z-50 transform transition-transform duration-200 ease-in-out
+                      md:translate-x-0"
+               :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
             
-            <!-- Logo -->
             <div class="flex items-center justify-between px-6 py-5 border-b border-blue-800">
                 <div class="flex items-center space-x-3">
-                    
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-full h-15 object-contain">
-                    
-                    
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-full h-15 object-contain">
                 </div>
+                <button @click="sidebarOpen = false" class="md:hidden text-blue-200 hover:text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
             </div>
 
-            <!-- Navigation -->
-            <nav class="px-4 py-6 space-y-2">
+            <nav class="px-4 py-6 space-y-2 overflow-y-auto max-h-[calc(100vh-80px)]">
                 <a href="{{ route('dashboard') }}" 
                    class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('dashboard') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,7 +48,6 @@
                 </a>
 
                 @if(auth()->user()->isAdmin())
-                    <!-- Admin Menu -->
                     <div class="space-y-1">
                         <p class="px-4 text-xs font-semibold text-blue-400 uppercase tracking-wider mt-6 mb-2">Data Master</p>
                         
@@ -67,8 +71,6 @@
                     <div class="space-y-1">
                         <p class="px-4 text-xs font-semibold text-blue-400 uppercase tracking-wider mt-6 mb-2">Program</p>
                         
-                        
-
                         <a href="{{ route('admin.lowongan.index') }}" 
                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.lowongan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,8 +78,9 @@
                             </svg>
                             <span>Lowongan Kerja</span>
                         </a>
+
                         <a href="{{ route('admin.kerjasama.index') }}" 
-                           class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.lowongan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                           class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.kerjasama.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
@@ -92,7 +95,6 @@
                             <span>Pelatihan</span>
                         </a>
 
-                       
                         <a href="{{ route('admin.tracer-study.index') }}" 
                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.tracer-study.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,9 +102,16 @@
                             </svg>
                             <span>Tracer Study</span>
                         </a>
+
+                        <a href="{{ route('admin.laporan.index') }}" 
+                           class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.laporan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span>Kelola Laporan</span>
+                        </a>
                     </div>
 
-                    
                 @elseif(auth()->user()->isMahasiswa())
                     
                     <a href="{{ route('mahasiswa.lowongan.index') }}" 
@@ -128,16 +137,16 @@
                         </svg>
                         <span>Pelatihan</span>
                     </a>
+
                     <a href="{{ route('mahasiswa.tracer-study.form') }}"
-                          class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('mahasiswa.tracer-study.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            <span>Tracer Study</span>
+                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('mahasiswa.tracer-study.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>Tracer Study</span>
                     </a>
 
                 @elseif(auth()->user()->isPerusahaan())
-                    <!-- Perusahaan Menu -->
                     <a href="{{ route('perusahaan.lowongan.index') }}" 
                        class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('perusahaan.lowongan.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,56 +162,58 @@
                         </svg>
                         <span>Lamaran Masuk</span>
                     </a>
+
                     <a href="{{ route('perusahaan.kerjasama.index') }}" 
-                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('perusahaan.lamaran.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
+                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition {{ request()->routeIs('perusahaan.kerjasama.*') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         <span>Kerjasama</span>
                     </a>
-
                 @endif
-
-                
             </nav>
         </aside>
 
-        <!-- Main Content -->
-        <div class="flex-1 ml-64">
-            <!-- Top Navigation -->
-            <header class="bg-white shadow-sm sticky top-0 z-20">
-                <div class="flex items-center justify-between px-6 py-4">
-                    <div class="flex items-center space-x-4">
-                        <h2 class="text-xl font-semibold text-gray-800">@yield('page-title', 'Dashboard')</h2>
+        <div class="flex-1 min-h-screen flex flex-col w-full md:ml-64 transition-all duration-200">
+            
+            <header class="bg-white shadow-sm sticky top-0 z-30">
+                <div class="flex items-center justify-between px-4 py-4 md:px-6">
+                    
+                    <div class="flex items-center space-x-3">
+                        <button @click="sidebarOpen = !sidebarOpen" class="text-gray-600 hover:text-gray-900 focus:outline-none md:hidden p-1 rounded-md hover:bg-gray-100">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
+                        <h2 class="text-lg md:text-xl font-semibold text-gray-800">@yield('page-title', 'Dashboard')</h2>
                     </div>
 
                     <div class="flex items-center space-x-4">
-
-                        <!-- User Menu -->
                         <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition">
-                             @if(auth()->user()->avatar)
-                                <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover">
-                            @else
-                                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
-                                    {{ substr(auth()->user()->name, 0, 1) }}
+                            <button @click="open = !open" class="flex items-center space-x-2 md:space-x-3 p-2 rounded-lg hover:bg-gray-100 transition focus:outline-none">
+                                @if(auth()->user()->avatar)
+                                    <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover">
+                                @else
+                                    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold text-sm">
+                                        {{ substr(auth()->user()->name, 0, 1) }}
+                                    </div>
+                                @endif    
+                                
+                                <div class="text-left hidden sm:block">
+                                    <p class="text-sm font-medium text-gray-900 leading-tight">{{ auth()->user()->name }}</p>
+                                    <p class="text-xs text-gray-500">
+                                        @if(auth()->user()->isAdmin()) Admin @elseif(auth()->user()->isMahasiswa()) Mahasiswa @else Perusahaan @endif
+                                    </p>
                                 </div>
-                            @endif    
-                            
-                                <div class="text-left hidden md:block">
-                                    <p class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</p>
-                                    <p class="text-xs text-gray-500">User</p>
-                                </div>
-                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 text-gray-600 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                 </svg>
                             </button>
 
-                            <!-- User Dropdown -->
                             <div x-show="open" 
                                  @click.away="open = false"
                                  x-cloak
-                                 class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1">
+                                 class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1 origin-top-right transition">
                                 <a href="{{ route('profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     Profil Saya
                                 </a>
@@ -218,17 +229,16 @@
                 </div>
             </header>
 
-            <!-- Page Content -->
-            <main class="p-6">
+            <main class="p-4 md:p-6 flex-grow">
                 @if(session('success'))
-                <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center justify-between">
+                <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center justify-between shadow-sm">
                     <div class="flex items-center space-x-2">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                         </svg>
-                        <span>{{ session('success') }}</span>
+                        <span class="text-sm">{{ session('success') }}</span>
                     </div>
-                    <button onclick="this.parentElement.remove()" class="text-green-600 hover:text-green-800">
+                    <button onclick="this.parentElement.remove()" class="text-green-600 hover:text-green-800 focus:outline-none">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
                         </svg>
@@ -237,14 +247,14 @@
                 @endif
 
                 @if(session('error'))
-                <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-center justify-between">
+                <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-center justify-between shadow-sm">
                     <div class="flex items-center space-x-2">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-5 h-5 fill-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                         </svg>
-                        <span>{{ session('error') }}</span>
+                        <span class="text-sm">{{ session('error') }}</span>
                     </div>
-                    <button onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800">
+                    <button onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800 focus:outline-none">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
                         </svg>
@@ -255,16 +265,12 @@
                 @yield('content')
             </main>
 
-            <!-- Footer -->
-            <footer class="bg-white border-t border-gray-200 py-4 px-6 mt-auto">
-                <div class="text-center text-sm text-gray-600">
-                    &copy; {{ date('Y') }} CDC {{ config('app.ikip') }}. All rights reserved.
-                </div>
+            <footer class="bg-white border-t border-gray-200 py-4 px-6 text-center text-sm text-gray-600">
+                &copy; {{ date('Y') }} CDC {{ config('app.ikip') }}. All rights reserved.
             </footer>
         </div>
     </div>
 
-    <!-- Alpine.js -->
     <script src="//unpkg.com/alpinejs" defer></script>
     
     @stack('scripts')
