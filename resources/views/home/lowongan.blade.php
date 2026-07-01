@@ -102,7 +102,7 @@
             deskripsi: `{!! nl2br(e($lowongan->deskripsi)) !!}`,
             persyaratan: `{!! nl2br(e($lowongan->persyaratan)) !!}`,
             kualifikasi: `{!! nl2br(e($lowongan->kualifikasi)) !!}`,
-            jumlah_posisi: '{{ $lowongan->jumlah_posisi }}',
+            jumlah_pelamar: '{{ $lowongan->kuota ?? '-' }}', 
             detail_url: '{{ route('lowongan.show', $lowongan->id) }}',
             apply_url: '{{ route('mahasiswa.lowongan.show', $lowongan->id) }}?action=apply'
         },
@@ -153,7 +153,7 @@
                                     <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-50 text-red-700 font-bold border border-red-100/50" x-text="item.pendidikan "></span>
                                     <span class="text-slate-500 font-medium ml-auto flex items-center gap-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                                        <span x-text="item.jumlah_posisi ? item.jumlah_posisi + ' Kebutuhan' : '-'"></span>
+                                        <span x-text="item.jumlah_pelamar ? item.jumlah_pelamar + ' Kebutuhan' : '-'"></span>
                                     </span>
                                 </div>
                             </div>
@@ -217,7 +217,7 @@
                                 <div class="rounded-xl bg-white border border-gray-200/80 p-3 flex flex-col items-center text-center hover:shadow-sm transition-shadow">
                                     <span class="flex h-7 w-7 items-center justify-center rounded-full bg-blue-50 text-blue-600 mb-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
                                     <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Kebutuhan</div>
-                                    <p class="mt-0.5 text-xs font-bold text-gray-700" x-text="item.jumlah_posisi ? item.jumlah_posisi + ' Orang' : '-'"></p>
+                                    <p class="mt-0.5 text-xs font-bold text-gray-700" x-text="item.jumlah_pelamar ? item.jumlah_pelamar + ' Orang' : '-'"></p>
                                 </div>
                                 <div class="rounded-xl bg-white border border-gray-200/80 p-3 flex flex-col items-center text-center hover:shadow-sm transition-shadow">
                                     <span class="flex h-7 w-7 items-center justify-center rounded-full bg-blue-50 text-blue-600 mb-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path><rect width="20" height="14" x="2" y="6" rx="2"></rect></svg></span>

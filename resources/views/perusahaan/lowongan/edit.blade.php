@@ -44,6 +44,31 @@
                     <input type="text" name="posisi" value="{{ old('posisi', $lowongan->posisi) }}" class="w-full rounded-lg p-3 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Contoh: Full Stack Developer" required>
                     @error('posisi')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kategori *</label>
+                    <select name="category" class="w-full rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm p-2" required>
+                        <option value="">Pilih Kategori</option>
+                        @foreach(['Teknologi & IT', 'Pendidikan', 'Marketing & Sales', 'Keuangan & Akuntansi', 'Administrasi & SDM', 'Kesehatan', 'Teknik & Engineering', 'Media & Kreatif', 'Lainnya'] as $cat)
+                            <option value="{{ $cat }}" {{ old('category', $lowongan->category) == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                        @endforeach
+                    </select>
+                    @error('category')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            <!-- Pendidikan -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Pendidikan *</label>
+                <select name="pendidikan" class="w-full rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm p-2" required>
+                    <option value="">Pilih Tipe</option>
+                    <option value="SMA/SMK" {{ old('pendidikan', $lowongan->pendidikan) == 'SMA/SMK' ? 'selected' : '' }}>SMA/SMK</option>
+                    <option value="D1" {{ old('pendidikan', $lowongan->pendidikan) == 'D1' ? 'selected' : '' }}>D1</option>
+                    <option value="D3" {{ old('pendidikan', $lowongan->pendidikan) == 'D3' ? 'selected' : '' }}>D3</option>
+                    <option value="S1" {{ old('pendidikan', $lowongan->pendidikan) == 'S1' ? 'selected' : '' }}>S1</option>
+                    <option value="S2" {{ old('pendidikan', $lowongan->pendidikan) == 'S2' ? 'selected' : '' }}>S2</option>
+                    <option value="S3" {{ old('pendidikan', $lowongan->pendidikan) == 'S3' ? 'selected' : '' }}>S3</option>
+                </select>
+                @error('pendidikan')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
             </div>
 
             <!-- Deskripsi dan Kualifikasi -->
@@ -108,6 +133,12 @@
                     <input type="number" name="kuota" value="{{ old('kuota', $lowongan->kuota) }}" class="w-full p-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="5">
                     <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ada batasan</p>
                     @error('kuota')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ganti Thumbnail</label>
+                    <input type="file" name="thumbnail" accept="image/*" class="w-full text-sm p-2.5 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti. JPG/PNG/WEBP, maks. 2MB</p>
+                    @error('thumbnail')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
                 
             </div>

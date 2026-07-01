@@ -32,6 +32,16 @@
                     <input type="text" name="posisi" value="{{ old('posisi') }}" class="w-full border-2 rounded-lg p-3 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Contoh: Full Stack Developer" required>
                     @error('posisi')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kategori *</label>
+                    <select name="category" class="w-full rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm p-2" required>
+                        <option value="">Pilih Kategori</option>
+                        @foreach(['Teknologi & IT', 'Pendidikan', 'Marketing & Sales', 'Keuangan & Akuntansi', 'Administrasi & SDM', 'Kesehatan', 'Teknik & Engineering', 'Media & Kreatif', 'Lainnya'] as $cat)
+                            <option value="{{ $cat }}" {{ old('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                        @endforeach
+                    </select>
+                    @error('category')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                </div>
             </div>
 
             <!-- Deskripsi dan Kualifikasi -->
@@ -109,6 +119,12 @@
                     <input type="number" name="kuota" value="{{ old('kuota') }}" class="w-full p-3 rounded-lg border-gray-300 border-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="5">
                     <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ada batasan</p>
                     @error('kuota')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Thumbnail</label>
+                    <input type="file" name="thumbnail" accept="image/*" class="w-full text-sm p-2.5 border-2 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <p class="text-xs text-gray-500 mt-1">JPG/PNG/WEBP, maks. 2MB</p>
+                    @error('thumbnail')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
               
             </div>

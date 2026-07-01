@@ -14,7 +14,7 @@
 
     @if($lowongan->thumbnail)
     <div class="overflow-hidden rounded-xl shadow-lg border border-gray-100">
-        <img src="{{ Storage::url($lowongan->thumbnail) }}" alt="{{ $lowongan->judul }}" class="w-full h-64 object-cover">
+        <img src="{{ Storage::url($lowongan->thumbnail) }}" alt="{{ $lowongan->posisi }}" class="w-full h-64 object-cover">
     </div>
     @endif
 
@@ -25,7 +25,7 @@
                 
                 <div class="border-b pb-4">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                        <h1 class="text-3xl font-extrabold text-gray-900 mb-2 sm:mb-0">{{ $lowongan->judul }}</h1>
+                        <h1 class="text-3xl font-extrabold text-gray-900 mb-2 sm:mb-0">{{ $lowongan->posisi }}</h1>
                         
                         {{-- Status Badge --}}
                         @php
@@ -39,7 +39,7 @@
                             {{ ucfirst($lowongan->status) }}
                         </span>
                     </div>
-                    <p class="text-xl text-gray-600 mt-1">{{ $lowongan->posisi }}</p>
+                    <p class="text-xl text-gray-600 mt-1">{{ $lowongan->category }}</p>
                 </div>
 
                 <div class="flex flex-wrap gap-3">
@@ -147,7 +147,7 @@
                         </button>
                     </form>
 
-                    <form action="{{ route('perusahaan.lowongan.destroy', $lowongan->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus lowongan {{ $lowongan->judul }}? Aksi ini tidak dapat dibatalkan.')">
+                    <form action="{{ route('perusahaan.lowongan.destroy', $lowongan->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus lowongan {{ $lowongan->posisi }}? Aksi ini tidak dapat dibatalkan.')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="w-full justify-center bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg transition duration-150 ease-in-out flex items-center shadow-md">

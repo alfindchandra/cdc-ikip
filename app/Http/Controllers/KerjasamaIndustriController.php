@@ -9,7 +9,17 @@ use Illuminate\Support\Facades\Storage;
 
 class KerjasamaIndustriController extends Controller
 {
-    // Admin Methods
+    /**
+     * Alur kerja sama (lihat juga KerjasamaIndustri::tahapanLabel()):
+     *
+     *  1. Perusahaan mengajukan & mengirim dokumen MoU      -> status: proposal
+     *  2. Admin (kampus) meninjau & meng-ACC / menolak MoU  -> status: mou_disetujui / batal
+     *  3. Admin membuat & mengunggah dokumen MoA + Kontrak  -> status: menunggu_persetujuan_perusahaan
+     *  4. Perusahaan meninjau & menyetujui / menolak         -> status: aktif / negosiasi
+     */
+
+    // ===================== Admin Methods =====================
+
     public function index(Request $request)
     {
         $query = KerjasamaIndustri::with('perusahaan');
@@ -97,23 +107,90 @@ class KerjasamaIndustriController extends Controller
     }
 
     /**
-     * Admin meng-ACC (menyetujui) atau memproses status pengajuan kerjasama
-     * yang dikirim oleh perusahaan. Hanya admin yang berwenang mengubah
-     * status menjadi aktif/selesai/batal/dll.
+     * [Tahap 2] Admin meng-ACC (menyetujui) dokumen MoU yang dikirim perusahaan.
+     * Setelah disetujui, admin diarahkan untuk mengunggah dokumen MoA & Kontrak.
+     */
+    public function approveMou(KerjasamaIndustri $kerjasama)
+    {
+        if (!in_array($kerjasama->status, ['draft', 'proposal', 'negosiasi'])) {
+            return back()->with('error', 'MoU pada pengajuan ini sudah diproses sebelumnya.');
+        }
+
+        $kerjasama->update([
+            'status' => 'mou_disetujui',
+            'mou_disetujui_at' => now(),
+            'alasan_penolakan' => null,
+        ]);
+
+        return back()->with('success', 'MoU berhasil disetujui (ACC). Silakan lengkapi dan unggah dokumen MoA & Kontrak.');
+    }
+
+    /**
+     * [Tahap 2] Admin menolak dokumen MoU yang dikirim perusahaan.
+     */
+    public function rejectMou(Request $request, KerjasamaIndustri $kerjasama)
+    {
+        if (!in_array($kerjasama->status, ['draft', 'proposal', 'negosiasi'])) {
+            return back()->with('error', 'MoU pada pengajuan ini sudah diproses sebelumnya.');
+        }
+
+        $validated = $request->validate([
+            'alasan_penolakan' => 'nullable|string',
+        ]);
+
+        $kerjasama->update([
+            'status' => 'batal',
+            'alasan_penolakan' => $validated['alasan_penolakan'] ?? null,
+        ]);
+
+        return back()->with('success', 'Pengajuan MoU telah ditolak.');
+    }
+
+    /**
+     * [Tahap 3] Admin (kampus) membuat & mengunggah dokumen MoA dan Kontrak
+     * setelah MoU disetujui. Setelah diunggah, menunggu persetujuan (ACC) perusahaan.
+     */
+    public function storeMoaKontrak(Request $request, KerjasamaIndustri $kerjasama)
+    {
+        if ($kerjasama->status !== 'mou_disetujui') {
+            return back()->with('error', 'MoA & Kontrak hanya dapat diunggah setelah MoU disetujui.');
+        }
+
+        $validated = $request->validate([
+            'dokumen_moa' => 'required|file|mimes:pdf|max:10240',
+            'dokumen_kontrak' => 'required|file|mimes:pdf|max:10240',
+            'pic_sekolah' => 'nullable|string',
+            'nilai_kontrak' => 'nullable|numeric',
+        ]);
+
+        foreach (['dokumen_moa', 'dokumen_kontrak'] as $field) {
+            if ($kerjasama->$field) {
+                Storage::disk('public')->delete($kerjasama->$field);
+            }
+            $validated[$field] = $request->file($field)->store('kerjasama/' . str_replace('dokumen_', '', $field), 'public');
+        }
+
+        $validated['status'] = 'menunggu_persetujuan_perusahaan';
+        $validated['moa_kontrak_diunggah_at'] = now();
+
+        $kerjasama->update($validated);
+
+        return back()->with('success', 'Dokumen MoA & Kontrak berhasil diunggah. Menunggu persetujuan (ACC) dari perusahaan.');
+    }
+
+    /**
+     * Pengaturan status lanjutan oleh admin di luar alur utama
+     * (mis. menandai Selesai atau Nonaktif).
      */
     public function updateStatus(Request $request, KerjasamaIndustri $kerjasama)
     {
         $validated = $request->validate([
-            'status' => 'required|in:draft,proposal,negosiasi,aktif,selesai,batal,nonaktif',
+            'status' => 'required|in:draft,proposal,negosiasi,mou_disetujui,menunggu_persetujuan_perusahaan,aktif,selesai,batal,nonaktif',
         ]);
 
         $kerjasama->update(['status' => $validated['status']]);
 
-        $pesan = $validated['status'] === 'aktif'
-            ? 'Pengajuan kerjasama telah disetujui (ACC) dan kini berstatus Aktif.'
-            : 'Status kerjasama berhasil diperbarui';
-
-        return back()->with('success', $pesan);
+        return back()->with('success', 'Status kerjasama berhasil diperbarui');
     }
 
     // ===================== Perusahaan Methods =====================
@@ -132,7 +209,9 @@ class KerjasamaIndustriController extends Controller
     }
 
     /**
-     * Form untuk perusahaan MENGAJUKAN (mengirim) penawaran kerjasama baru.
+     * Form untuk perusahaan MENGAJUKAN (mengirim) penawaran kerjasama baru
+     * beserta dokumen MoU. Dokumen MoA & Kontrak akan disiapkan oleh
+     * kampus setelah MoU disetujui (ACC).
      */
     public function createPerusahaan()
     {
@@ -140,8 +219,8 @@ class KerjasamaIndustriController extends Controller
     }
 
     /**
-     * Menyimpan pengajuan kerjasama dari perusahaan.
-     * Status awal selalu 'proposal' (menunggu persetujuan/ACC admin).
+     * [Tahap 1] Menyimpan pengajuan kerjasama dari perusahaan beserta dokumen MoU.
+     * Status awal selalu 'proposal' (menunggu review/ACC MoU oleh admin).
      */
     public function storePerusahaan(Request $request)
     {
@@ -151,45 +230,34 @@ class KerjasamaIndustriController extends Controller
             'deskripsi' => 'nullable|string',
             'tanggal_mulai' => 'required|date',
             'tanggal_berakhir' => 'nullable|date|after:tanggal_mulai',
-            'dokumen_mou' => 'nullable|file|mimes:pdf|max:10240',
-            'dokumen_moa' => 'nullable|file|mimes:pdf|max:10240',
-            'dokumen_kontrak' => 'nullable|file|mimes:pdf|max:10240',
+            'dokumen_mou' => 'required|file|mimes:pdf|max:10240',
             'pic_industri' => 'nullable|string',
             'nilai_kontrak' => 'nullable|numeric',
             'catatan' => 'nullable|string',
         ]);
 
-        foreach (['dokumen_mou', 'dokumen_moa', 'dokumen_kontrak'] as $field) {
-            if ($request->hasFile($field)) {
-                $validated[$field] = $request->file($field)->store('kerjasama/' . str_replace('dokumen_', '', $field), 'public');
-            }
-        }
-
+        $validated['dokumen_mou'] = $request->file('dokumen_mou')->store('kerjasama/mou', 'public');
         $validated['perusahaan_id'] = auth()->user()->perusahaan->id;
         // Pengajuan baru dari perusahaan selalu berstatus 'proposal'
-        // dan menunggu persetujuan (ACC) dari admin.
+        // dan menunggu persetujuan (ACC) MoU dari admin.
         $validated['status'] = 'proposal';
 
         KerjasamaIndustri::create($validated);
 
         return redirect()->route('perusahaan.kerjasama.index')
-                        ->with('success', 'Pengajuan kerjasama berhasil dikirim. Menunggu persetujuan (ACC) dari admin.');
+                        ->with('success', 'Dokumen MoU berhasil dikirim. Menunggu persetujuan (ACC) dari admin.');
     }
 
     /**
      * Perusahaan hanya dapat MEMBATALKAN pengajuannya sendiri selama
-     * belum disetujui (acc) oleh admin. Tidak diizinkan menyetujui
-     * statusnya sendiri (mis. mengubah ke 'aktif'/'selesai').
+     * MoU belum disetujui (ACC) oleh admin.
      */
     public function updateStatusPerusahaan(Request $request, KerjasamaIndustri $kerjasama)
     {
-        // Pastikan hanya perusahaan yang terkait yang bisa update
         if ($kerjasama->perusahaan_id != auth()->user()->perusahaan->id) {
             abort(403, 'Anda tidak memiliki akses untuk mengubah kerjasama ini.');
         }
 
-        // Perusahaan tidak boleh meng-ACC kerjasamanya sendiri,
-        // satu-satunya aksi yang diizinkan adalah membatalkan pengajuan.
         if (!in_array($kerjasama->status, ['draft', 'proposal', 'negosiasi'])) {
             return back()->with('error', 'Pengajuan ini sudah diproses oleh admin dan tidak dapat dibatalkan secara mandiri.');
         }
@@ -197,5 +265,54 @@ class KerjasamaIndustriController extends Controller
         $kerjasama->update(['status' => 'batal']);
 
         return back()->with('success', 'Pengajuan kerjasama berhasil dibatalkan.');
+    }
+
+    /**
+     * [Tahap 4] Perusahaan menyetujui (ACC) dokumen MoA & Kontrak
+     * yang telah disiapkan oleh kampus. Kerjasama menjadi Aktif.
+     */
+    public function approveByPerusahaan(KerjasamaIndustri $kerjasama)
+    {
+        if ($kerjasama->perusahaan_id != auth()->user()->perusahaan->id) {
+            abort(403, 'Anda tidak memiliki akses untuk mengubah kerjasama ini.');
+        }
+
+        if ($kerjasama->status !== 'menunggu_persetujuan_perusahaan') {
+            return back()->with('error', 'Tidak ada dokumen MoA/Kontrak yang sedang menunggu persetujuan Anda.');
+        }
+
+        $kerjasama->update([
+            'status' => 'aktif',
+            'disetujui_perusahaan_at' => now(),
+            'alasan_penolakan' => null,
+        ]);
+
+        return back()->with('success', 'MoA & Kontrak berhasil disetujui (ACC). Kerjasama kini berstatus Aktif.');
+    }
+
+    /**
+     * [Tahap 4] Perusahaan menolak dokumen MoA & Kontrak yang disiapkan kampus.
+     * Status dikembalikan ke 'negosiasi' agar admin dapat merevisi dokumen.
+     */
+    public function rejectByPerusahaan(Request $request, KerjasamaIndustri $kerjasama)
+    {
+        if ($kerjasama->perusahaan_id != auth()->user()->perusahaan->id) {
+            abort(403, 'Anda tidak memiliki akses untuk mengubah kerjasama ini.');
+        }
+
+        if ($kerjasama->status !== 'menunggu_persetujuan_perusahaan') {
+            return back()->with('error', 'Tidak ada dokumen MoA/Kontrak yang sedang menunggu persetujuan Anda.');
+        }
+
+        $validated = $request->validate([
+            'alasan_penolakan' => 'nullable|string',
+        ]);
+
+        $kerjasama->update([
+            'status' => 'negosiasi',
+            'alasan_penolakan' => $validated['alasan_penolakan'] ?? null,
+        ]);
+
+        return back()->with('success', 'Dokumen MoA & Kontrak ditolak. Admin akan meninjau kembali dan merevisi dokumen.');
     }
 }

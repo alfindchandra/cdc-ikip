@@ -132,6 +132,11 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
         // Kerjasama Industri (Admin hanya mengelola & meng-ACC pengajuan dari perusahaan)
         Route::resource('kerjasama', KerjasamaIndustriController::class)->except(['create', 'store']);
         Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
+        // Tahap 2: ACC / Tolak dokumen MoU yang dikirim perusahaan
+        Route::put('kerjasama/{kerjasama}/mou/approve', [KerjasamaIndustriController::class, 'approveMou'])->name('kerjasama.mou.approve');
+        Route::put('kerjasama/{kerjasama}/mou/reject', [KerjasamaIndustriController::class, 'rejectMou'])->name('kerjasama.mou.reject');
+        // Tahap 3: Admin mengunggah dokumen MoA & Kontrak setelah MoU disetujui
+        Route::post('kerjasama/{kerjasama}/moa-kontrak', [KerjasamaIndustriController::class, 'storeMoaKontrak'])->name('kerjasama.moa-kontrak.store');
         
         // Laporan
         Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
@@ -209,6 +214,9 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
         Route::post('kerjasama', [KerjasamaIndustriController::class, 'storePerusahaan'])->name('kerjasama.store');
         Route::get('kerjasama/{kerjasama}', [KerjasamaIndustriController::class, 'show'])->name('kerjasama.show');
         Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatusPerusahaan'])->name('kerjasama.status');
+        // Tahap 4: Perusahaan ACC / Tolak dokumen MoA & Kontrak yang disiapkan kampus
+        Route::post('kerjasama/{kerjasama}/approve', [KerjasamaIndustriController::class, 'approveByPerusahaan'])->name('kerjasama.approve');
+        Route::post('kerjasama/{kerjasama}/reject', [KerjasamaIndustriController::class, 'rejectByPerusahaan'])->name('kerjasama.reject');
     
     });
 });

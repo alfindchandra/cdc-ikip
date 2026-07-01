@@ -38,10 +38,13 @@
                     <select id="status-select" name="status" class="form-select p-2 w-full rounded-lg border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">Semua Status</option>
                         <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                        <option value="proposal" {{ request('status') == 'proposal' ? 'selected' : '' }}>Proposal</option>
+                        <option value="proposal" {{ request('status') == 'proposal' ? 'selected' : '' }}>Proposal (Menunggu Review MoU)</option>
                         <option value="negosiasi" {{ request('status') == 'negosiasi' ? 'selected' : '' }}>Negosiasi</option>
+                        <option value="mou_disetujui" {{ request('status') == 'mou_disetujui' ? 'selected' : '' }}>MoU Disetujui</option>
+                        <option value="menunggu_persetujuan_perusahaan" {{ request('status') == 'menunggu_persetujuan_perusahaan' ? 'selected' : '' }}>Menunggu ACC Perusahaan</option>
                         <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
                         <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                        <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                         <option value="batal" {{ request('status') == 'batal' ? 'selected' : '' }}>Batal</option>
                     </select>
                 </div>
@@ -155,7 +158,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex flex-col space-y-2 items-start" x-data="{ open: false }">
                                 @php
-                                    $status_map = ['aktif' => 'success', 'proposal' => 'warning', 'negosiasi' => 'warning', 'selesai' => 'info', 'batal' => 'danger', 'draft' => 'gray'];
+                                    $status_map = ['aktif' => 'success', 'proposal' => 'warning', 'negosiasi' => 'warning', 'mou_disetujui' => 'info', 'menunggu_persetujuan_perusahaan' => 'info', 'selesai' => 'info', 'batal' => 'danger', 'nonaktif' => 'gray', 'draft' => 'gray'];
                                     $status_color = $status_map[$k->status] ?? 'gray';
                                 @endphp
 
@@ -166,12 +169,18 @@
                                     @elseif($status_color == 'danger') bg-red-100 text-red-800
                                     @else bg-gray-100 text-gray-800
                                     @endif">
-                                    {{ ucfirst($k->status) }}
+                                    {{ $k->tahapanLabel() }}
                                 </span>
 
-                                <div class="relative">
-                                    <button @click="open = !open" type="button" class="text-xs text-indigo-600 hover:text-indigo-800 flex items-center transition duration-150 focus:outline-none">
-                                        ACC / Ubah Status
+                                <!-- <div class="flex items-center space-x-2">
+                                    <a href="{{ route('admin.kerjasama.show', $k->id) }}" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+                                        Tinjau / Proses →
+                                    </a>
+                                </div> -->
+
+                                <!-- <div class="relative">
+                                    <button @click="open = !open" type="button" class="text-xs text-gray-500 hover:text-gray-700 flex items-center transition duration-150 focus:outline-none">
+                                        Ubah Status Manual
                                         <svg class="w-3 h-3 ml-1 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                     </button>
                                     <div x-show="open"
@@ -183,20 +192,20 @@
                                          x-transition:leave-start="transform opacity-100 scale-100"
                                          x-transition:leave-end="transform opacity-0 scale-95"
                                          @click.away="open = false"
-                                         class="absolute z-20 mt-2 w-32 origin-top-right bg-white rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none right-0 lg:left-0">
+                                         class="absolute z-20 mt-2 w-56 origin-top-right bg-white rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none right-0 lg:left-0">
                                         <form action="{{ route('admin.kerjasama.status', $k->id) }}" method="POST" class="py-1">
                                             @csrf
-                                            @method('PUT') {{-- Assuming a PUT or PATCH method for status update --}}
-                                            @foreach(['draft', 'proposal', 'negosiasi', 'aktif', 'selesai', 'batal'] as $status_option)
+                                            @method('PUT')
+                                            @foreach(['draft', 'proposal', 'negosiasi', 'mou_disetujui', 'menunggu_persetujuan_perusahaan', 'aktif', 'selesai', 'nonaktif', 'batal'] as $status_option)
                                             <button type="submit" name="status" value="{{ $status_option }}"
                                                     class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-100
                                                         @if($k->status == $status_option) bg-indigo-50 text-indigo-600 font-semibold @endif">
-                                                {{ ucfirst($status_option) }}
+                                                {{ ucfirst(str_replace('_', ' ', $status_option)) }}
                                             </button>
                                             @endforeach
                                         </form>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </td>
 

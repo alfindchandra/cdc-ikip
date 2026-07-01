@@ -31,13 +31,16 @@
                                 'selesai' => 'bg-purple-500',
                                 'proposal' => 'bg-yellow-500',
                                 'negosiasi' => 'bg-orange-500',
+                                'mou_disetujui' => 'bg-cyan-500',
+                                'menunggu_persetujuan_perusahaan' => 'bg-blue-500',
                                 'batal' => 'bg-red-500',
+                                'nonaktif' => 'bg-gray-500',
                                 'draft' => 'bg-gray-500',
                             ];
                             $current_status_color = $status_color_map[$kerjasama->status] ?? 'bg-gray-500';
                         @endphp
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $current_status_color }}">
-                            {{ ucfirst($kerjasama->status) }}
+                            {{ $kerjasama->tahapanLabel() }}
                         </span>
                     </div>
                     <h1 class="text-3xl font-extrabold mb-2">{{ $kerjasama->judul }}</h1>
@@ -150,9 +153,14 @@
                         @if(in_array($kerjasama->status, ['draft', 'proposal', 'negosiasi']))
                             <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                                 <p class="text-sm text-yellow-800">
-                                    <strong>Menunggu Persetujuan (ACC) Admin.</strong> Pengajuan kerjasama Anda sedang ditinjau. Anda akan diberi tahu setelah admin menyetujui atau menolak.
+                                    <strong>Menunggu Persetujuan (ACC) MoU oleh Admin.</strong> Dokumen MoU yang Anda kirim sedang ditinjau. Anda akan diberi tahu setelah admin menyetujui atau menolak.
                                 </p>
                             </div>
+                            @if($kerjasama->alasan_penolakan && $kerjasama->status === 'negosiasi')
+                                <div class="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                                    <p class="text-sm text-orange-800"><strong>Catatan dari proses sebelumnya:</strong> {{ $kerjasama->alasan_penolakan }}</p>
+                                </div>
+                            @endif
                             <form action="{{ route('perusahaan.kerjasama.status', $kerjasama->id) }}" method="POST"
                                   onsubmit="return confirm('Yakin ingin membatalkan pengajuan kerjasama ini?')">
                                 @csrf
@@ -163,9 +171,39 @@
                                     Batalkan Pengajuan
                                 </button>
                             </form>
+
+                        @elseif($kerjasama->status === 'mou_disetujui')
+                            <div class="p-4 bg-cyan-50 border border-cyan-200 rounded-lg">
+                                <p class="text-sm text-cyan-800"><strong>MoU Anda telah disetujui (ACC).</strong> Pihak kampus sedang menyiapkan dokumen MoA & Kontrak untuk Anda tinjau.</p>
+                            </div>
+
+                        @elseif($kerjasama->status === 'menunggu_persetujuan_perusahaan')
+                            <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p class="text-sm text-blue-800"><strong>Dokumen MoA & Kontrak telah disiapkan kampus.</strong> Silakan tinjau dokumen di bawah, lalu setujui atau tolak.</p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <form action="{{ route('perusahaan.kerjasama.approve', $kerjasama->id) }}" method="POST" class="flex-1"
+                                      onsubmit="return confirm('Setujui MoA & Kontrak ini? Kerjasama akan berstatus Aktif.')">
+                                    @csrf
+                                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg transition duration-150">
+                                        ✓ Setujui (ACC)
+                                    </button>
+                                </form>
+                                <button type="button" onclick="document.getElementById('tolak-moa-form').classList.toggle('hidden')" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition duration-150">
+                                    ✕ Tolak
+                                </button>
+                            </div>
+                            <form id="tolak-moa-form" action="{{ route('perusahaan.kerjasama.reject', $kerjasama->id) }}" method="POST" class="hidden mt-4 space-y-3">
+                                @csrf
+                                <textarea name="alasan_penolakan" rows="2" placeholder="Alasan penolakan / revisi yang diminta (opsional)" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></textarea>
+                                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg transition duration-150">
+                                    Konfirmasi Tolak
+                                </button>
+                            </form>
+
                         @elseif($kerjasama->status === 'aktif')
                             <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                                <p class="text-sm text-green-800"><strong>Disetujui (ACC) oleh Admin.</strong> Kerjasama ini sedang aktif berjalan.</p>
+                                <p class="text-sm text-green-800"><strong>Kerjasama Aktif.</strong> MoU, MoA, dan Kontrak telah disetujui kedua belah pihak.</p>
                             </div>
                         @elseif($kerjasama->status === 'selesai')
                             <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
@@ -174,11 +212,14 @@
                         @elseif($kerjasama->status === 'batal')
                             <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
                                 <p class="text-sm text-red-800"><strong>Pengajuan dibatalkan/ditolak.</strong></p>
+                                @if($kerjasama->alasan_penolakan)
+                                    <p class="text-xs text-red-700 mt-2">Alasan: {{ $kerjasama->alasan_penolakan }}</p>
+                                @endif
                             </div>
                         @endif
                         <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                             <p class="text-xs text-blue-800">
-                                <strong>Catatan:</strong> Persetujuan (ACC) status kerjasama dilakukan oleh admin sekolah, bukan oleh perusahaan.
+                                <strong>Alur:</strong> Anda mengirim MoU → Admin meng-ACC MoU → Admin menyiapkan MoA & Kontrak → Anda meng-ACC MoA & Kontrak → Kerjasama Aktif.
                             </p>
                         </div>
                     </div>
@@ -275,12 +316,13 @@
                         <div class="text-sm text-blue-800">
                             <p class="font-bold mb-1">Panduan Status</p>
                             <ul class="list-disc list-inside space-y-1 mt-2">
-                                <li><strong>Draft:</strong> Rancangan awal</li>
-                                <li><strong>Proposal:</strong> Diajukan ke sekolah</li>
-                                <li><strong>Negosiasi:</strong> Dalam pembahasan</li>
-                                <li><strong>Aktif:</strong> Sedang berjalan</li>
+                                <li><strong>Proposal:</strong> MoU dikirim, menunggu review admin</li>
+                                <li><strong>Negosiasi:</strong> Revisi MoA/Kontrak diminta</li>
+                                <li><strong>MoU Disetujui:</strong> Admin sedang menyiapkan MoA & Kontrak</li>
+                                <li><strong>Menunggu ACC Perusahaan:</strong> MoA & Kontrak siap ditinjau Anda</li>
+                                <li><strong>Aktif:</strong> Kerja sama berjalan</li>
                                 <li><strong>Selesai:</strong> Sudah selesai</li>
-                                <li><strong>Batal:</strong> Dibatalkan</li>
+                                <li><strong>Batal:</strong> Dibatalkan/ditolak</li>
                             </ul>
                         </div>
                     </div>

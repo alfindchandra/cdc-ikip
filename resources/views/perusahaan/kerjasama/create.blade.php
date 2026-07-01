@@ -20,7 +20,10 @@
         <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
-        <p class="text-sm text-blue-800">Pengajuan ini akan dikirim sebagai <strong>{{ auth()->user()->perusahaan->nama_perusahaan }}</strong> dan berstatus <strong>Proposal</strong> sampai disetujui (ACC) oleh admin.</p>
+        <div class="text-sm text-blue-800">
+            <p>Pengajuan ini akan dikirim sebagai <strong>{{ auth()->user()->perusahaan->nama_perusahaan }}</strong> dengan melampirkan <strong>dokumen MoU</strong>, dan berstatus <strong>Proposal</strong> sampai disetujui (ACC) oleh admin.</p>
+            <p class="mt-2 text-xs text-blue-700">Setelah MoU disetujui, pihak kampus akan membuat dan mengunggah dokumen <strong>MoA & Kontrak</strong> untuk Anda setujui (ACC) selanjutnya.</p>
+        </div>
     </div>
 
     <form action="{{ route('perusahaan.kerjasama.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
@@ -104,7 +107,7 @@
                 </div>
 
                 <div>
-                    <label for="dokumen_mou" class="block text-sm font-semibold text-gray-700 mb-2">Dokumen MoU / Proposal (PDF)</label>
+                    <label for="dokumen_mou" class="block text-sm font-semibold text-gray-700 mb-2">Dokumen MoU (PDF) <span class="text-red-500">*</span></label>
                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-200 border-dashed rounded-xl hover:border-indigo-400 transition-colors cursor-pointer bg-gray-50/30">
                         <div class="space-y-1 text-center">
                             <svg class="mx-auto h-10 w-10 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -119,22 +122,9 @@
                             <p class="text-xs text-gray-400">PDF hingga 10MB</p>
                         </div>
                     </div>
-                    <input id="dokumen_mou_label" name="dokumen_mou" type="file" accept=".pdf" class="block w-full mt-2 text-sm text-gray-600">
+                    <input id="dokumen_mou_label" name="dokumen_mou" type="file" accept=".pdf" class="block w-full mt-2 text-sm text-gray-600" required>
                     @error('dokumen_mou')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label for="dokumen_moa" class="block text-sm font-semibold text-gray-700 mb-2">Dokumen MoA (PDF)</label>
-                    <input id="dokumen_moa" name="dokumen_moa" type="file" accept=".pdf" class="block w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-600 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all shadow-sm">
-                    <p class="mt-1 text-xs text-gray-400 italic">Opsional — bisa dilengkapi belakangan.</p>
-                    @error('dokumen_moa')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
-                </div>
-
-                <div>
-                    <label for="dokumen_kontrak" class="block text-sm font-semibold text-gray-700 mb-2">Dokumen Kontrak (PDF)</label>
-                    <input id="dokumen_kontrak" name="dokumen_kontrak" type="file" accept=".pdf" class="block w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-600 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all shadow-sm">
-                    <p class="mt-1 text-xs text-gray-400 italic">Opsional — bisa dilengkapi belakangan.</p>
-                    @error('dokumen_kontrak')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                    <p class="mt-1 text-xs text-gray-400 italic">Dokumen MoA dan Kontrak akan disiapkan oleh kampus setelah MoU ini disetujui.</p>
                 </div>
             </div>
         </div>
@@ -165,7 +155,7 @@
         <div class="flex items-center justify-end space-x-4 pt-4">
             <a href="{{ route('perusahaan.kerjasama.index') }}" class="px-6 py-3 text-sm font-semibold text-gray-600 hover:text-gray-800 transition-colors">Batal</a>
             <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all focus:ring-4 focus:ring-indigo-100">
-                Kirim Pengajuan Kerjasama
+                Kirim MoU & Ajukan Kerjasama
             </button>
         </div>
     </form>

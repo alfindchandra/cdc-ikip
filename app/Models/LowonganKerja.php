@@ -9,10 +9,10 @@ class LowonganKerja extends Model
     protected $table = 'lowongan_kerja';
 
     protected $fillable = [
-        'perusahaan_id', 'pendidikan', 'posisi', 'deskripsi',
+        'perusahaan_id', 'pendidikan', 'posisi', 'category', 'deskripsi',
         'kualifikasi', 'benefit', 'tipe_pekerjaan', 'lokasi',
         'gaji_min', 'gaji_max', 'kuota', 'tanggal_mulai',
-        'tanggal_berakhir', 'status', 'jumlah_pelamar', 
+        'tanggal_berakhir', 'status', 'jumlah_pelamar', 'thumbnail',
     ];
 
     protected $casts = [

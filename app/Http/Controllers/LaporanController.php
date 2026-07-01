@@ -9,6 +9,7 @@ use App\Models\Lamaran;
 use App\Models\Pelatihan;
 use App\Models\KerjasamaIndustri;
 use App\Models\Fakultas;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanController extends Controller
 {
@@ -90,34 +91,35 @@ class LaporanController extends Controller
     }
 
     /**
-     * Download CSV (bisa dibuka di Excel)
+     * Download PDF
      */
     public function download(Request $request)
     {
         $jenis   = $request->get('jenis', 'alumni');
         $filters = $request->except(['jenis', '_token', 'page']);
         $now     = now()->format('Y-m-d');
-        $filename = "laporan-{$jenis}-{$now}.csv";
+        $filename = "laporan-{$jenis}-{$now}.pdf";
 
-        $rows = $this->buildRows($jenis, $filters);
+        $judul = [
+            'alumni'    => 'Laporan Alumni',
+            'lowongan'  => 'Laporan Lowongan Kerja',
+            'lamaran'   => 'Laporan Lamaran',
+            'pelatihan' => 'Laporan Pelatihan',
+            'kerjasama' => 'Laporan Kerjasama Industri',
+        ][$jenis] ?? 'Laporan';
 
-        $callback = function () use ($rows) {
-            $handle = fopen('php://output', 'w');
-            // BOM untuk UTF-8 agar Excel bisa baca karakter Indonesia
-            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
-            foreach ($rows as $row) {
-                fputcsv($handle, $row, ';');
-            }
-            fclose($handle);
-        };
+        $rows     = $this->buildRows($jenis, $filters);
+        $headings = $rows[0] ?? [];
+        $data     = array_slice($rows, 1);
 
-        return response()->stream($callback, 200, [
-            'Content-Type'        => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Pragma'              => 'no-cache',
-            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires'             => '0',
-        ]);
+        $pdf = Pdf::loadView('admin.laporan.pdf', [
+            'judul'    => $judul,
+            'headings' => $headings,
+            'data'     => $data,
+            'tanggal'  => $now,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->download($filename);
     }
 
     private function buildRows(string $jenis, array $filters): array

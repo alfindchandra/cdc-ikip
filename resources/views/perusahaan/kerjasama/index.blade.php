@@ -114,7 +114,7 @@
 
                         <td class="px-6 py-4 whitespace-nowrap">
                             @php
-                                $status_map = ['aktif' => 'success', 'proposal' => 'warning', 'negosiasi' => 'warning', 'selesai' => 'info', 'batal' => 'danger', 'draft' => 'gray'];
+                                $status_map = ['aktif' => 'success', 'proposal' => 'warning', 'negosiasi' => 'warning', 'mou_disetujui' => 'info', 'menunggu_persetujuan_perusahaan' => 'info', 'selesai' => 'info', 'batal' => 'danger', 'nonaktif' => 'gray', 'draft' => 'gray'];
                                 $status_color = $status_map[$k->status] ?? 'gray';
                             @endphp
 
@@ -125,7 +125,7 @@
                                 @elseif($status_color == 'danger') bg-red-100 text-red-800
                                 @else bg-gray-100 text-gray-800
                                 @endif">
-                                {{ ucfirst($k->status) }}
+                                {{ $k->tahapanLabel() }}
                             </span>
                         </td>
 

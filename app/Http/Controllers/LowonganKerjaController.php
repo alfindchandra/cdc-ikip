@@ -128,10 +128,10 @@ public function lowonganhome(Request $request)
     public function store(Request $request)
     {
         $validated = $request->validate([
-      
-            'posisi' => 'required|string',
+            'posisi' => 'required|string|max:100',
+            'category' => 'required|string|max:100',
             'deskripsi' => 'required|string',
-            'pendidikan' => 'required|string',
+            'pendidikan' => 'required|string|max:100',
             'kualifikasi' => 'required|string',
             'benefit' => 'nullable|string',
             'tipe_pekerjaan' => 'required|in:full_time,part_time,kontrak,magang',
@@ -141,12 +141,15 @@ public function lowonganhome(Request $request)
             'kuota' => 'nullable|integer',
             'tanggal_mulai' => 'required|date',
             'tanggal_berakhir' => 'required|date|after:tanggal_mulai',
-           
+            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $perusahaan = auth()->user()->perusahaan;
 
-        
+        if ($request->hasFile('thumbnail')) {
+            $validated['thumbnail'] = $request->file('thumbnail')->store('lowongan-thumbnails', 'public');
+        }
+
         $validated['perusahaan_id'] = $perusahaan->id;
         $validated['status'] = 'aktif';
 
@@ -164,9 +167,10 @@ public function lowonganhome(Request $request)
     public function update(Request $request, LowonganKerja $lowongan)
     {
         $validated = $request->validate([
-     
-            'posisi' => 'required|string',
+            'posisi' => 'required|string|max:100',
+            'category' => 'required|string|max:100',
             'deskripsi' => 'required|string',
+            'pendidikan' => 'required|string|max:100',
             'kualifikasi' => 'required|string',
             'benefit' => 'nullable|string',
             'tipe_pekerjaan' => 'required|in:full_time,part_time,kontrak,magang',
@@ -176,10 +180,15 @@ public function lowonganhome(Request $request)
             'kuota' => 'nullable|integer',
             'tanggal_mulai' => 'required|date',
             'tanggal_berakhir' => 'required|date|after:tanggal_mulai',
-           
+            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-       
+        if ($request->hasFile('thumbnail')) {
+            if ($lowongan->thumbnail) {
+                Storage::disk('public')->delete($lowongan->thumbnail);
+            }
+            $validated['thumbnail'] = $request->file('thumbnail')->store('lowongan-thumbnails', 'public');
+        }
 
         $lowongan->update($validated);
 
