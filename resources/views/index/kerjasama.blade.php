@@ -1,6 +1,6 @@
 @extends('layouts.index')
 @section('title', 'Bentuk Kerjasama')
-@section('content')
+@section('home')
 
 <!-- Hero Section -->
 <section class="py-12 bg-gradient-to-r from-blue-600 to-indigo-600">

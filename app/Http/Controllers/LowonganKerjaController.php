@@ -35,17 +35,7 @@ class LowonganKerjaController extends Controller
 }
 
        
-public function lowonganhome(Request $request)
-    {
-        $lowonganTerbaru = LowonganKerja::with('perusahaan.user')
-        ->where('status', 'aktif')
-        ->where('tanggal_berakhir', '>=', now())
-        ->latest()
-        ->get();
 
-    // Mengirimkan data ke view daftar lowongan
-    return view('home.lowongan', compact('lowonganTerbaru'));
-    }
     public function show(LowonganKerja $lowongan)
     {
         $lowongan->load('perusahaan');

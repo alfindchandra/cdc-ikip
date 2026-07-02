@@ -38,13 +38,13 @@ class LamaranController extends Controller
             ->exists();
 
         if ($sudahMelamar) {
-            return redirect()->route('mahasiswa.lamaran.index')
+            return redirect()->route('lowongan.show', $lowongan)
                 ->with('info', 'Anda sudah melamar pekerjaan ini');
         }
 
         // Cek lowongan masih aktif
         if ($lowongan->tanggal_berakhir < now()) {
-            return redirect()->route('mahasiswa.lowongan.show', $lowongan)
+            return redirect()->route('lowongan.show', $lowongan)
                 ->with('error', 'Lowongan ini sudah ditutup');
         }
 
@@ -57,13 +57,21 @@ class LamaranController extends Controller
         $validated = $request->validate([
             'lowongan_id'     => 'required|exists:lowongan_kerja,id',
             'cv'              => 'required|file|mimes:pdf|max:5120',
-            'surat_lamaran'   => 'nullable|file|mimes:pdf|max:5120',
-            'portofolio'      => 'nullable|file|mimes:pdf,zip|max:10240',
+            'surat_lamaran'   => 'required|file|mimes:pdf|max:5120',
+            'Ijazah'          => 'required|file|mimes:pdf|max:5120',
+            'ktp'             => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'foto'            => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'sertifikat'      => 'nullable|file|mimes:pdf|max:10240',
             'catatan'         => 'nullable|string|max:1000',
         ], [
-            'cv.required' => 'CV wajib diupload',
-            'cv.mimes'    => 'CV harus berformat PDF',
-            'cv.max'      => 'Ukuran CV maksimal 5MB',
+            'cv.required'            => 'CV wajib diupload',
+            'cv.mimes'               => 'CV harus berformat PDF',
+            'cv.max'                 => 'Ukuran CV maksimal 5MB',
+            'surat_lamaran.required' => 'Surat lamaran wajib diupload',
+            'Ijazah.required'        => 'Ijazah wajib diupload',
+            'ktp.required'           => 'KTP wajib diupload',
+            'foto.required'          => 'Pas foto wajib diupload',
+            'foto.mimes'             => 'Pas foto harus berformat JPG atau PNG',
         ]);
 
         $mahasiswa = auth()->user()->mahasiswa;
@@ -79,22 +87,20 @@ class LamaranController extends Controller
 
         $data = [
             'lowongan_id'     => $validated['lowongan_id'],
-            'mahasiswa_id'        => $mahasiswa->id,
+            'mahasiswa_id'    => $mahasiswa->id,
             'status'          => 'dikirim',
             'catatan'         => $validated['catatan'] ?? null,
             'tanggal_melamar' => now(),
         ];
 
-        if ($request->hasFile('cv')) {
-            $data['cv'] = $request->file('cv')->store('lamaran/cv', 'public');
-        }
+        $data['cv']             = $request->file('cv')->store('lamaran/cv', 'public');
+        $data['surat_lamaran']  = $request->file('surat_lamaran')->store('lamaran/surat', 'public');
+        $data['Ijazah']         = $request->file('Ijazah')->store('lamaran/ijazah', 'public');
+        $data['ktp']            = $request->file('ktp')->store('lamaran/ktp', 'public');
+        $data['foto']           = $request->file('foto')->store('lamaran/foto', 'public');
 
-        if ($request->hasFile('surat_lamaran')) {
-            $data['surat_lamaran'] = $request->file('surat_lamaran')->store('lamaran/surat', 'public');
-        }
-
-        if ($request->hasFile('portofolio')) {
-            $data['portofolio'] = $request->file('portofolio')->store('lamaran/portofolio', 'public');
+        if ($request->hasFile('sertifikat')) {
+            $data['sertifikat'] = $request->file('sertifikat')->store('lamaran/sertifikat', 'public');
         }
 
         Lamaran::create($data);
@@ -103,7 +109,7 @@ class LamaranController extends Controller
         LowonganKerja::find($validated['lowongan_id'])
             ->increment('jumlah_pelamar');
 
-        return redirect()->route('mahasiswa.lamaran.index')
+        return redirect()->route('index.lowongan')
             ->with('success', 'Lamaran berhasil dikirim');
     }
 
@@ -142,7 +148,10 @@ class LamaranController extends Controller
 
         if ($lamaran->cv) Storage::disk('public')->delete($lamaran->cv);
         if ($lamaran->surat_lamaran) Storage::disk('public')->delete($lamaran->surat_lamaran);
-        if ($lamaran->portofolio) Storage::disk('public')->delete($lamaran->portofolio);
+        if ($lamaran->Ijazah) Storage::disk('public')->delete($lamaran->Ijazah);
+        if ($lamaran->ktp) Storage::disk('public')->delete($lamaran->ktp);
+        if ($lamaran->foto) Storage::disk('public')->delete($lamaran->foto);
+        if ($lamaran->sertifikat) Storage::disk('public')->delete($lamaran->sertifikat);
 
         // Kurangi jumlah pelamar
         $lamaran->lowongan->decrement('jumlah_pelamar');
