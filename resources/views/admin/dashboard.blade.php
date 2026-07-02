@@ -98,7 +98,7 @@
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
                             <p class="font-medium text-gray-900">{{ $lowongan->judul }}</p>
-                            <p class="text-sm text-gray-600 mt-1">{{ $lowongan->perusahaan->nama_perusahaan }}</p>
+                            <p class="text-sm text-gray-600 mt-1">{{ $lowongan->perusahaan?->nama_perusahaan ?? $lowongan->perusahaan?->nama ?? 'Perusahaan Tidak Tersedia' }}</p>
                             <div class="flex items-center space-x-4 mt-2">
                                 <span class="text-xs text-gray-500">{{ $lowongan->lokasi }}</span>
                                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
