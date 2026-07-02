@@ -57,7 +57,7 @@
 
                 <div class="flex flex-row gap-3 min-w-full lg:min-w-0">
                     @if(request()->hasAny(['keyword', 'lokasi', 'tipe']))
-                    <a href="{{ route('index.lowonganhome') }}"
+                    <a href="{{ route('index.lowongan') }}"
                         class="flex-1 lg:flex-none px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition flex items-center justify-center gap-2">
                         <i class="fas fa-redo text-xs"></i> Reset
                     </a>
@@ -262,7 +262,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-gray-300 mb-4"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path><rect width="20" height="14" x="2" y="6" rx="2"></rect></svg>
             <h3 class="text-xl font-bold text-gray-800 mb-1">Tidak Ada Formasi Ditemukan</h3>
             <p class="text-gray-500 text-sm mb-6">Belum ada formasi lowongan pekerjaan yang cocok dengan kriteria filter pencarian Anda.</p>
-            <a href="{{ route('index.lowonganhome') }}" class="inline-flex items-center space-x-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-all text-sm shadow-sm">
+            <a href="{{ route('index.lowongan') }}" class="inline-flex items-center space-x-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-all text-sm shadow-sm">
                 <span>Muat Ulang Halaman</span>
             </a>
         </div>
