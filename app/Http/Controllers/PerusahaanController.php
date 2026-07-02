@@ -14,7 +14,7 @@ public function index(Request $request)
 {
     $query = Perusahaan::with('user');
 
-    
+    // Pencarian text (Nama, Bidang Usaha, atau Kota)
     if ($request->has('search') && $request->search != '') {
         $search = $request->search;
         $query->where(function ($q) use ($search) {
@@ -24,20 +24,27 @@ public function index(Request $request)
         });
     }
 
-    
-    
- 
+    // Filter Khusus: Bidang Usaha (Dropdown)
+    if ($request->filled('bidang_usaha')) {
+        $query->where('bidang_usaha', $request->bidang_usaha);
+    }
+
+    // Filter Khusus: Status Kerjasama
     if ($request->has('status') && $request->status != '') { 
         $query->where('status_kerjasama', $request->status);
     }
 
-  
     $perusahaan = $query->latest()->paginate(20)->withQueryString();
 
-   
+    // Mengambil semua bidang usaha yang unik untuk opsi di filter dropdown
+    $list_bidang = Perusahaan::whereNotNull('bidang_usaha')
+                             ->where('bidang_usaha', '!=', '')
+                             ->distinct()
+                             ->pluck('bidang_usaha');
 
-    return view('admin.perusahaan.index', compact('perusahaan'));
+    return view('admin.perusahaan.index', compact('perusahaan', 'list_bidang'));
 }
+
     public function create()
     {
         return view('admin.perusahaan.create');

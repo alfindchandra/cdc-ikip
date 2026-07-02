@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="pt-2 flex flex-wrap gap-4">
-                    <a href="#" 
+                    <a href="{{ route('mahasiswa.tracer-study.form') }}" 
                        class="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-500 hover:to-teal-500 shadow-lg shadow-sky-600/10 hover:shadow-sky-600/20 transition-all transform active:scale-95 group rounded-xl">
                         Isi Kuesioner Tracer
                         <span class="material-symbols-outlined text-sm font-bold group-hover:translate-x-1 transition-transform">→</span>

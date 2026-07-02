@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.index')
 
 @section('title', 'Lamar Pekerjaan')
 @section('page-title', 'Lamar Pekerjaan')
 
-@section('content')
+@section('home')
 <div class="max-w-4xl mx-auto">
     <div class="space-y-6">
         
@@ -120,13 +120,13 @@
 
                 <div class="border-t border-gray-200"></div>
 
-                <!-- Surat Lamaran Upload (Optional) -->
+                <!-- Surat Lamaran Upload (Required) -->
                 <div class="space-y-3">
                     <label class="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                         </svg>
-                        Surat Lamaran <span class="text-gray-400 text-xs">(Opsional)</span>
+                        Surat Lamaran <span class="text-red-500">*</span>
                     </label>
                     
                     <div class="relative">
@@ -135,6 +135,7 @@
                                id="surat_lamaran"
                                accept=".pdf" 
                                class="hidden"
+                               required
                                onchange="handleFileSelect(this, 'suratPreview')">
                         
                         <label for="surat_lamaran" 
@@ -165,31 +166,171 @@
 
                 <div class="border-t border-gray-200"></div>
 
-                <!-- Portofolio Upload (Optional) -->
+                <!-- Ijazah Upload (Required) -->
+                <div class="space-y-3">
+                    <label class="flex items-center gap-2 text-sm font-semibold text-gray-900">
+                        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                        </svg>
+                        Ijazah <span class="text-red-500">*</span>
+                    </label>
+
+                    <div class="relative">
+                        <input type="file"
+                               name="Ijazah"
+                               id="Ijazah"
+                               accept=".pdf"
+                               class="hidden"
+                               required
+                               onchange="handleFileSelect(this, 'ijazahPreview')">
+
+                        <label for="Ijazah"
+                               class="flex items-center justify-center w-full px-6 py-8 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-amber-500 hover:bg-amber-50 transition group">
+                            <div class="text-center" id="ijazahPreview">
+                                <svg class="w-12 h-12 mx-auto mb-3 text-gray-400 group-hover:text-amber-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                </svg>
+                                <p class="text-sm font-medium text-gray-700 group-hover:text-amber-600 mb-1">
+                                    Klik untuk upload Ijazah
+                                </p>
+                                <p class="text-xs text-gray-500">
+                                    Format: PDF • Maksimal 5MB
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+
+                    @error('Ijazah')
+                        <p class="text-sm text-red-600 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div class="border-t border-gray-200"></div>
+
+                <!-- KTP Upload (Required) -->
+                <div class="space-y-3">
+                    <label class="flex items-center gap-2 text-sm font-semibold text-gray-900">
+                        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            <rect x="2" y="4" width="20" height="16" rx="2" stroke-width="2"/>
+                        </svg>
+                        KTP <span class="text-red-500">*</span>
+                    </label>
+
+                    <div class="relative">
+                        <input type="file"
+                               name="ktp"
+                               id="ktp"
+                               accept=".pdf,.jpg,.jpeg,.png"
+                               class="hidden"
+                               required
+                               onchange="handleFileSelect(this, 'ktpPreview')">
+
+                        <label for="ktp"
+                               class="flex items-center justify-center w-full px-6 py-8 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-teal-500 hover:bg-teal-50 transition group">
+                            <div class="text-center" id="ktpPreview">
+                                <svg class="w-12 h-12 mx-auto mb-3 text-gray-400 group-hover:text-teal-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                </svg>
+                                <p class="text-sm font-medium text-gray-700 group-hover:text-teal-600 mb-1">
+                                    Klik untuk upload KTP
+                                </p>
+                                <p class="text-xs text-gray-500">
+                                    Format: PDF/JPG/PNG • Maksimal 5MB
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+
+                    @error('ktp')
+                        <p class="text-sm text-red-600 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div class="border-t border-gray-200"></div>
+
+                <!-- Pas Foto Upload (Required) -->
+                <div class="space-y-3">
+                    <label class="flex items-center gap-2 text-sm font-semibold text-gray-900">
+                        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                            <circle cx="12" cy="13" r="4" stroke-width="2"/>
+                        </svg>
+                        Pas Foto <span class="text-red-500">*</span>
+                    </label>
+
+                    <div class="relative">
+                        <input type="file"
+                               name="foto"
+                               id="foto"
+                               accept=".jpg,.jpeg,.png"
+                               class="hidden"
+                               required
+                               onchange="handleFileSelect(this, 'fotoPreview')">
+
+                        <label for="foto"
+                               class="flex items-center justify-center w-full px-6 py-8 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-pink-500 hover:bg-pink-50 transition group">
+                            <div class="text-center" id="fotoPreview">
+                                <svg class="w-12 h-12 mx-auto mb-3 text-gray-400 group-hover:text-pink-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                </svg>
+                                <p class="text-sm font-medium text-gray-700 group-hover:text-pink-600 mb-1">
+                                    Klik untuk upload Pas Foto
+                                </p>
+                                <p class="text-xs text-gray-500">
+                                    Format: JPG/PNG • Maksimal 2MB
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+
+                    @error('foto')
+                        <p class="text-sm text-red-600 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div class="border-t border-gray-200"></div>
+
+                <!-- Sertifikat Upload (Optional) -->
                 <div class="space-y-3">
                     <label class="flex items-center gap-2 text-sm font-semibold text-gray-900">
                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
-                        Portofolio <span class="text-gray-400 text-xs">(Opsional)</span>
+                        Sertifikat Pendukung <span class="text-gray-400 text-xs">(Opsional)</span>
                     </label>
                     
                     <div class="relative">
                         <input type="file" 
-                               name="portofolio" 
-                               id="portofolio"
+                               name="sertifikat" 
+                               id="sertifikat"
                                accept=".pdf" 
                                class="hidden"
-                               onchange="handleFileSelect(this, 'portofolioPreview')">
+                               onchange="handleFileSelect(this, 'sertifikatPreview')">
                         
-                        <label for="portofolio" 
+                        <label for="sertifikat" 
                                class="flex items-center justify-center w-full px-6 py-8 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-green-500 hover:bg-green-50 transition group">
-                            <div class="text-center" id="portofolioPreview">
+                            <div class="text-center" id="sertifikatPreview">
                                 <svg class="w-12 h-12 mx-auto mb-3 text-gray-400 group-hover:text-green-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
                                 </svg>
                                 <p class="text-sm font-medium text-gray-700 group-hover:text-green-600 mb-1">
-                                    Klik untuk upload Portofolio
+                                    Klik untuk upload Sertifikat (opsional)
                                 </p>
                                 <p class="text-xs text-gray-500">
                                     Format: PDF • Maksimal 10MB
@@ -198,7 +339,7 @@
                         </label>
                     </div>
                     
-                    @error('portofolio')
+                    @error('sertifikat')
                         <p class="text-sm text-red-600 flex items-center gap-1">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
@@ -260,7 +401,7 @@
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <span class="text-blue-600 mt-0.5">✓</span>
-                                    <span>Semua dokumen harus dalam format PDF untuk kemudahan akses</span>
+                                    <span>Dokumen CV, Surat Lamaran, Ijazah wajib berformat PDF; KTP boleh PDF/JPG/PNG; Pas Foto berformat JPG/PNG</span>
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <span class="text-blue-600 mt-0.5">✓</span>
@@ -337,13 +478,22 @@ if (catatanTextarea && charCount) {
 
 // Form validation before submit
 document.getElementById('applicationForm').addEventListener('submit', function(e) {
-    const cvInput = document.getElementById('cv');
-    
-    if (!cvInput.files || cvInput.files.length === 0) {
-        e.preventDefault();
-        alert('CV wajib diupload!');
-        cvInput.focus();
-        return false;
+    const requiredFields = [
+        { id: 'cv', label: 'CV' },
+        { id: 'surat_lamaran', label: 'Surat Lamaran' },
+        { id: 'Ijazah', label: 'Ijazah' },
+        { id: 'ktp', label: 'KTP' },
+        { id: 'foto', label: 'Pas Foto' },
+    ];
+
+    for (const field of requiredFields) {
+        const input = document.getElementById(field.id);
+        if (!input.files || input.files.length === 0) {
+            e.preventDefault();
+            alert(field.label + ' wajib diupload!');
+            input.focus();
+            return false;
+        }
     }
 });
 </script>

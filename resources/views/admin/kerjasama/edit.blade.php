@@ -83,6 +83,22 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                <div>
+                                    <label for="lingkup_kerjasama" class="block text-sm font-semibold text-gray-700 mb-2">Lingkup Kerjasama</label>
+                                    <select id="lingkup_kerjasama" name="lingkup_kerjasama" class="w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-sm appearance-none" required>
+                                        @foreach(\App\Models\KerjasamaIndustri::lingkupOptions() as $value => $label)
+                                            <option value="{{ $value }}" {{ old('lingkup_kerjasama', $kerjasama->lingkup_kerjasama) == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="jenis_dokumen" class="block text-sm font-semibold text-gray-700 mb-2">Jenis Dokumen Utama</label>
+                                    <select id="jenis_dokumen" name="jenis_dokumen" class="w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all shadow-sm appearance-none" required>
+                                        @foreach(\App\Models\KerjasamaIndustri::jenisDokumenOptions() as $value => $label)
+                                            <option value="{{ $value }}" {{ old('jenis_dokumen', $kerjasama->jenis_dokumen) == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
 
                             <div>
@@ -218,6 +234,37 @@
                             </label>
                         </div>
                         @error('dokumen_kontrak')<p class="mt-2 text-xs text-red-500">{{ $message }}</p>@enderror
+                    </div>
+
+                    <!-- Dokumen Surat Kerjasama Card -->
+                    <div class="p-6 bg-indigo-50 rounded-2xl border border-indigo-100">
+                        <h4 class="text-sm font-bold text-indigo-900 uppercase tracking-wider mb-4">Dokumen Surat Kerjasama</h4>
+
+                        @if($kerjasama->dokumen_surat_kerjasama)
+                        <div class="mb-4 flex items-center p-3 bg-white rounded-xl shadow-sm border border-indigo-200">
+                            <div class="p-2 bg-red-100 text-red-600 rounded-lg mr-3">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 012-2h4.586A1 1 0 0111.293 2.707l4 4a1 1 0 01.293.707V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/></svg>
+                            </div>
+                            <div class="overflow-hidden">
+                                <p class="text-xs font-bold text-gray-900 truncate">Dokumen_Surat_Kerjasama.pdf</p>
+                                <a href="{{ Storage::url($kerjasama->dokumen_surat_kerjasama) }}" target="_blank" class="text-indigo-600 hover:underline text-[10px] font-semibold">LIHAT DOKUMEN</a>
+                            </div>
+                        </div>
+                        @endif
+
+                        <div class="relative group">
+                            <input type="file" id="dokumen_surat_kerjasama" name="dokumen_surat_kerjasama" accept=".pdf" class="hidden">
+                            <label for="dokumen_surat_kerjasama" class="flex flex-col items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-indigo-300 border-dashed rounded-xl appearance-none cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 focus:outline-none">
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                    </svg>
+                                    <span class="font-medium text-gray-600">{{ $kerjasama->dokumen_surat_kerjasama ? 'Ganti Dokumen' : 'Upload Dokumen' }}</span>
+                                </span>
+                                <span class="mt-1 text-xs text-gray-500">PDF max. 10MB</span>
+                            </label>
+                        </div>
+                        @error('dokumen_surat_kerjasama')<p class="mt-2 text-xs text-red-500">{{ $message }}</p>@enderror
                     </div>
 
                     <!-- PIC Info -->

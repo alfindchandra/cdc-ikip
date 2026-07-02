@@ -55,30 +55,8 @@ class DashboardController extends Controller
     private function mahasiswaDashboard()
     {
         $mahasiswa = auth()->user()->mahasiswa;
-        
-        $data = [
-            'pkl_aktif' => Pkl::where('mahasiswa_id', $mahasiswa->id)
-                              ->whereIn('status', ['berlangsung', 'diterima'])
-                              ->first(),
-            'lamaran_pending' => $mahasiswa->lamaran()
-                                       ->whereIn('status', ['dikirim', 'dilihat', 'diproses'])
-                                       ->count(),
-            'pelatihan_terdaftar' => $mahasiswa->pelatihan()
-                                           ->wherePivot('status_pendaftaran', 'diterima')
-                                           ->count(),
-            'lowongan_terbaru' => LowonganKerja::with('perusahaan')
-                                               ->aktif()
-                                               ->latest()
-                                               ->take(6)
-                                               ->get(),
-            'pelatihan_tersedia' => Pelatihan::published()
-                                             ->where('tanggal_mulai', '>', now())
-                                             ->take(4)
-                                             ->get(),
-        ];
 
-        return view('mahasiswa.dashboard', $data);
-    }
+return redirect()->route('welcome');    }
 
     private function perusahaanDashboard()
     {

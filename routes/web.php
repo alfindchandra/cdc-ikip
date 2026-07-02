@@ -16,26 +16,30 @@ use App\Http\Controllers\CatatanController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\TracerStudyController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
 
 // Guest routes
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
-Route::get('/lowonganhome', [LowonganKerjaController::class, 'lowonganhome'])->name('index.lowonganhome');
-Route::get('/lowongan', [WelcomeController::class, 'lowongan'])->name('index.lowongan');
-Route::get('/lowongan/{lowongan}', [WelcomeController::class, 'lowonganShow'])->name('lowongan.show');
-Route::get('/pelatihan', [WelcomeController::class, 'pelatihan'])->name('index.pelatihan');
-Route::get('/pelatihan/{pelatihan}', [WelcomeController::class, 'pelatihanShow'])->name('show.pelatihan');
+Route::get('/lowongan', [HomeController::class, 'lowongan'])->name('index.lowongan');
+Route::get('/lowongan/{lowongan}', [HomeController::class, 'lowonganShow'])->name('lowongan.show');
+Route::get('/perusahaan', [HomeController::class, 'perusahaan'])->name('index.perusahaan');
+Route::get('/perusahaan/{perusahaan}', [HomeController::class, 'showPerusahaan'])->name('show.perusahaan');
+Route::get('/pelatihan', [HomeController::class, 'pelatihan'])->name('pelatihan.index');
+Route::get('/pelatihan/{pelatihan}', [HomeController::class, 'showPelatihan'])->name('pelatihan.show');
+Route::get('/tracer-study', [HomeController::class, 'tracerStudy'])->name('index.tracer-study');
+Route::get('/faq', [HomeController::class, 'faxFaq'])->name('index.faq');
+
+
 Route::get('/kerjasama', [WelcomeController::class, 'kerjasama'])->name('index.kerjasama');
 Route::get('/kerjasama/{kerjasama}', [WelcomeController::class, 'kerjasamaShow'])->name('show.kerjasama');
 Route::get('/tracer-study', [WelcomeController::class, 'tracerStudy'])->name('index.tracer-study');
- Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 
-    Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
+Route::get('/email/verify', function () {return view('auth.verify-email');})->middleware('auth')->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
@@ -103,12 +107,6 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
         Route::resource('perusahaan', PerusahaanController::class);
         Route::post('perusahaan/{perusahaan}/status', [PerusahaanController::class, 'updateStatus'])->name('perusahaan.status');
         
-        // PKL Management
-        // Route::resource('pkl', PklController::class);
-        // Route::post('pkl/{pkl}/status', [PklController::class, 'updateStatus'])->name('pkl.status');
-        // Route::post('pkl/{pkl}/nilai', [PklController::class, 'inputNilai'])->name('pkl.nilai');
-        // Route::get('pkl/{pkl}/jurnal', [PklController::class, 'showJurnal'])->name('pkl.jurnal');
-        // Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
         
         // Lowongan Kerja (Admin can view all)\
         Route::get('lowongan', [LowonganKerjaController::class, 'adminIndex'])->name('lowongan.index');
@@ -129,14 +127,12 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
         Route::get('pelatihan/{pelatihan}/peserta', [PelatihanController::class, 'peserta'])->name('pelatihan.peserta');
         Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/status', [PelatihanController::class, 'updateStatusPeserta'])->name('pelatihan.peserta.status');
 Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanController::class, 'inputNilai'])->name('pelatihan.peserta.nilai');
-        // Kerjasama Industri (Admin hanya mengelola & meng-ACC pengajuan dari perusahaan)
+        // Kerjasama Industri (Admin hanya mengelola & meng-ACC langsung pengajuan dari perusahaan)
         Route::resource('kerjasama', KerjasamaIndustriController::class)->except(['create', 'store']);
         Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
-        // Tahap 2: ACC / Tolak dokumen MoU yang dikirim perusahaan
+        // Tahap 2: Admin langsung ACC / Tolak pengajuan (beserta dokumen) yang dikirim perusahaan
         Route::put('kerjasama/{kerjasama}/mou/approve', [KerjasamaIndustriController::class, 'approveMou'])->name('kerjasama.mou.approve');
         Route::put('kerjasama/{kerjasama}/mou/reject', [KerjasamaIndustriController::class, 'rejectMou'])->name('kerjasama.mou.reject');
-        // Tahap 3: Admin mengunggah dokumen MoA & Kontrak setelah MoU disetujui
-        Route::post('kerjasama/{kerjasama}/moa-kontrak', [KerjasamaIndustriController::class, 'storeMoaKontrak'])->name('kerjasama.moa-kontrak.store');
         
         // Laporan
         Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
@@ -153,15 +149,7 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
     
     // Mahasiswa routes
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
-        // PKL
-        // Route::get('pkl', [PklController::class, 'mahasiswaPkl'])->name('pkl.index');
-        // Route::post('pkl/daftar', [PklController::class, 'daftar'])->name('pkl.daftar');
-        // Route::get('pkl/{pkl}', [PklController::class, 'show'])->name('pkl.show');
-        // Route::post('pkl/{pkl}/jurnal', [PklController::class, 'addJurnal'])->name('pkl.jurnal.add');
-        // Route::put('pkl/jurnal/{jurnal}', [PklController::class, 'updateJurnal'])->name('pkl.jurnal.update');
-        // Route::delete('pkl/jurnal/{jurnal}', [PklController::class, 'deleteJurnal'])->name('pkl.jurnal.delete');
-        // Route::post('pkl/{pkl}/upload-laporan', [PklController::class, 'uploadLaporan'])->name('pkl.laporan');
-        
+      
         Route::prefix('tracer-study')->name('tracer-study.')->group(function () {
         Route::get('/', [TracerStudyController::class, 'alumniForm'])->name('form');
         Route::post('/', [TracerStudyController::class, 'alumniStore'])->name('store');
@@ -200,23 +188,13 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
         Route::get('lamaran/{lamaran}', [LamaranController::class, 'show'])->name('lamaran.show');
         Route::post('lamaran/{lamaran}/status', [LamaranController::class, 'updateStatus'])->name('lamaran.status');
         
-        // // PKL
-        // Route::get('pkl', [PklController::class, 'perusahaanPkl'])->name('pkl.index');
-        // Route::get('pkl/{pkl}', [PklController::class, 'show'])->name('pkl.show');
-        // Route::post('pkl/{pkl}/terima', [PklController::class, 'terimaPkl'])->name('pkl.terima');
-        // Route::post('pkl/{pkl}/tolak', [PklController::class, 'tolakPkl'])->name('pkl.tolak');
-        // Route::get('pkl/{pkl}/jurnal', [PklController::class, 'showJurnal'])->name('pkl.jurnal');
-        // Route::post('pkl/jurnal/{jurnal}/validasi', [PklController::class, 'validasiJurnal'])->name('pkl.jurnal.validasi');
-        
-        // Kerjasama (Perusahaan MENGAJUKAN/mengirim kerja sama, admin yang meng-ACC)
+ 
+        // Kerjasama (Perusahaan memilih jenis dokumen & mengajukan kerja sama, admin langsung meng-ACC)
         Route::get('kerjasama', [KerjasamaIndustriController::class, 'perusahaanIndex'])->name('kerjasama.index');
         Route::get('kerjasama/create', [KerjasamaIndustriController::class, 'createPerusahaan'])->name('kerjasama.create');
         Route::post('kerjasama', [KerjasamaIndustriController::class, 'storePerusahaan'])->name('kerjasama.store');
         Route::get('kerjasama/{kerjasama}', [KerjasamaIndustriController::class, 'show'])->name('kerjasama.show');
         Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatusPerusahaan'])->name('kerjasama.status');
-        // Tahap 4: Perusahaan ACC / Tolak dokumen MoA & Kontrak yang disiapkan kampus
-        Route::post('kerjasama/{kerjasama}/approve', [KerjasamaIndustriController::class, 'approveByPerusahaan'])->name('kerjasama.approve');
-        Route::post('kerjasama/{kerjasama}/reject', [KerjasamaIndustriController::class, 'rejectByPerusahaan'])->name('kerjasama.reject');
     
     });
 });

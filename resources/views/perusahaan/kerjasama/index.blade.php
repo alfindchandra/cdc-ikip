@@ -78,9 +78,14 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex flex-col">
                                 <p class="font-medium text-gray-900 truncate max-w-xs">{{ $k->judul }}</p>
-                                <span class="badge inline-flex items-center px-2 py-0.5 mt-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 w-fit">
-                                    {{ ucfirst($k->jenis_kerjasama) }}
-                                </span>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    <span class="badge inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 w-fit">
+                                        {{ ucfirst($k->jenis_kerjasama) }}
+                                    </span>
+                                    <span class="badge inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-sky-100 text-sky-800 w-fit">
+                                        {{ $k->lingkupLabel() }}
+                                    </span>
+                                </div>
                                 @if($k->nilai_kontrak)
                                 <p class="text-xs text-green-600 font-semibold mt-1">
                                     Nilai: Rp {{ number_format($k->nilai_kontrak, 0, ',', '.') }}
@@ -137,8 +142,8 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                     </svg>
                                 </a>
-                                @if($k->dokumen_mou)
-                                <a href="{{ Storage::url($k->dokumen_mou) }}" target="_blank" class="text-green-600 hover:text-green-800 p-1 rounded-full hover:bg-green-50 transition duration-150" title="Lihat Dokumen MoU">
+                                @if($k->dokumenUtama())
+                                <a href="{{ Storage::url($k->dokumenUtama()) }}" target="_blank" class="text-green-600 hover:text-green-800 p-1 rounded-full hover:bg-green-50 transition duration-150" title="Lihat {{ $k->jenisDokumenLabel() }}">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                     </svg>

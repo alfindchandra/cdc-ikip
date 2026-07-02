@@ -21,8 +21,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         <div class="text-sm text-blue-800">
-            <p>Pengajuan ini akan dikirim sebagai <strong>{{ auth()->user()->perusahaan->nama_perusahaan }}</strong> dengan melampirkan <strong>dokumen MoU</strong>, dan berstatus <strong>Proposal</strong> sampai disetujui (ACC) oleh admin.</p>
-            <p class="mt-2 text-xs text-blue-700">Setelah MoU disetujui, pihak kampus akan membuat dan mengunggah dokumen <strong>MoA & Kontrak</strong> untuk Anda setujui (ACC) selanjutnya.</p>
+            <p>Pengajuan ini akan dikirim sebagai <strong>{{ auth()->user()->perusahaan->nama_perusahaan }}</strong> dan berstatus <strong>Proposal</strong> sampai disetujui (ACC) oleh admin.</p>
+            <p class="mt-2 text-xs text-blue-700">Anda dapat memilih sendiri jenis dokumen yang ingin diunggah: <strong>MoU</strong>, <strong>MoA</strong>, atau <strong>Surat Kerjasama</strong>. Setelah dikirim, admin akan langsung meninjau dan meng-ACC pengajuan Anda.</p>
         </div>
     </div>
 
@@ -55,6 +55,17 @@
                     <label for="judul" class="block text-sm font-semibold text-gray-700 mb-2">Judul Kerjasama <span class="text-red-500">*</span></label>
                     <input type="text" id="judul" name="judul" value="{{ old('judul') }}" placeholder="Contoh: Penawaran Kerjasama Rekrutmen Lulusan" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm" required>
                     @error('judul')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="lingkup_kerjasama" class="block text-sm font-semibold text-gray-700 mb-2">Lingkup Kerjasama <span class="text-red-500">*</span></label>
+                    <select id="lingkup_kerjasama" name="lingkup_kerjasama" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm" required>
+                        <option value="">-- Pilih Lingkup --</option>
+                        @foreach(\App\Models\KerjasamaIndustri::lingkupOptions() as $val => $label)
+                            <option value="{{ $val }}" {{ old('lingkup_kerjasama') == $val ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @error('lingkup_kerjasama')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
                 </div>
 
                 <div class="md:col-span-2">
@@ -107,14 +118,26 @@
                 </div>
 
                 <div>
-                    <label for="dokumen_mou" class="block text-sm font-semibold text-gray-700 mb-2">Dokumen MoU (PDF) <span class="text-red-500">*</span></label>
+                    <label for="jenis_dokumen" class="block text-sm font-semibold text-gray-700 mb-2">Jenis Dokumen yang Diunggah <span class="text-red-500">*</span></label>
+                    <select id="jenis_dokumen" name="jenis_dokumen" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all shadow-sm" required>
+                        <option value="">-- Pilih Jenis Dokumen --</option>
+                        @foreach(\App\Models\KerjasamaIndustri::jenisDokumenOptions() as $val => $label)
+                            <option value="{{ $val }}" {{ old('jenis_dokumen') == $val ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @error('jenis_dokumen')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                    <p class="mt-1 text-xs text-gray-400 italic">Pilih dokumen yang paling sesuai dengan tahap kerjasama Anda dengan sekolah.</p>
+                </div>
+
+                <div class="mt-6">
+                    <label for="dokumen_kerjasama" class="block text-sm font-semibold text-gray-700 mb-2">Unggah Dokumen (PDF) <span class="text-red-500">*</span></label>
                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-200 border-dashed rounded-xl hover:border-indigo-400 transition-colors cursor-pointer bg-gray-50/30">
                         <div class="space-y-1 text-center">
                             <svg class="mx-auto h-10 w-10 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                             <div class="flex text-sm text-gray-600">
-                                <label for="dokumen_mou_label" class="relative cursor-pointer rounded-md font-semibold text-indigo-600 hover:text-indigo-500">
+                                <label for="dokumen_kerjasama" class="relative cursor-pointer rounded-md font-semibold text-indigo-600 hover:text-indigo-500">
                                     <span>Upload file</span>
                                 </label>
                                 <p class="pl-1">atau drag and drop</p>
@@ -122,9 +145,9 @@
                             <p class="text-xs text-gray-400">PDF hingga 10MB</p>
                         </div>
                     </div>
-                    <input id="dokumen_mou_label" name="dokumen_mou" type="file" accept=".pdf" class="block w-full mt-2 text-sm text-gray-600" required>
-                    @error('dokumen_mou')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
-                    <p class="mt-1 text-xs text-gray-400 italic">Dokumen MoA dan Kontrak akan disiapkan oleh kampus setelah MoU ini disetujui.</p>
+                    <input id="dokumen_kerjasama" name="dokumen_kerjasama" type="file" accept=".pdf" class="block w-full mt-2 text-sm text-gray-600" required>
+                    @error('dokumen_kerjasama')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                    <p class="mt-1 text-xs text-gray-400 italic">Dokumen akan langsung ditinjau dan di-ACC oleh admin, tanpa tahap tambahan.</p>
                 </div>
             </div>
         </div>
@@ -155,7 +178,7 @@
         <div class="flex items-center justify-end space-x-4 pt-4">
             <a href="{{ route('perusahaan.kerjasama.index') }}" class="px-6 py-3 text-sm font-semibold text-gray-600 hover:text-gray-800 transition-colors">Batal</a>
             <button type="submit" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all focus:ring-4 focus:ring-indigo-100">
-                Kirim MoU & Ajukan Kerjasama
+                Kirim Dokumen & Ajukan Kerjasama
             </button>
         </div>
     </form>
