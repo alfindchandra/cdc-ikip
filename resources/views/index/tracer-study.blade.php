@@ -1,7 +1,5 @@
 
-@extends('layouts.index')
-@section('title', 'Mitra Perusahaan')
-@section('home')
+
 @php
     // Inisialisasi data statistik dengan nilai default untuk mencegah error jika data kosong
     $statistik = $statistik ?? [
@@ -408,4 +406,3 @@
     });
 </script>
 @endpush
-@endsection

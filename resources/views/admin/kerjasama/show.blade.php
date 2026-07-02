@@ -25,9 +25,6 @@
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-sm">
                             {{ ucfirst(str_replace('_', ' ', $kerjasama->jenis_kerjasama)) }}
                         </span>
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-sm">
-                            {{ $kerjasama->lingkupLabel() }}
-                        </span>
                         @php
                             $status_color_map = [
                                 'aktif' => 'bg-green-500',
@@ -171,21 +168,20 @@
                     <div class="p-6">
 
                         @if(in_array($kerjasama->status, ['proposal', 'negosiasi', 'draft']))
-                            {{-- ACC / Tolak pengajuan beserta dokumen yang dipilih perusahaan --}}
+                            {{-- TAHAP 2: Admin meninjau & meng-ACC/menolak MoU --}}
                             <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                <p class="text-sm text-yellow-800">Perusahaan telah mengirim dokumen <strong>{{ $kerjasama->jenisDokumenLabel() }}</strong>. Tinjau dokumen lalu setujui atau tolak.</p>
+                                <p class="text-sm text-yellow-800">Perusahaan telah mengirim dokumen <strong>MoU</strong>. Tinjau dokumen lalu setujui atau tolak.</p>
                             </div>
                             <div class="flex space-x-3">
-                                <form action="{{ route('admin.kerjasama.mou.approve', $kerjasama->id) }}" method="POST" class="flex-1"
-                                      onsubmit="return confirm('Setujui (ACC) pengajuan kerjasama ini? Status akan langsung menjadi Aktif.')">
+                                <form action="{{ route('admin.kerjasama.mou.approve', $kerjasama->id) }}" method="POST" class="flex-1">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg transition duration-150">
-                                        ✓ Setujui (ACC)
+                                        ✓ Setujui MoU (ACC)
                                     </button>
                                 </form>
                                 <button type="button" onclick="document.getElementById('tolak-mou-form').classList.toggle('hidden')" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition duration-150">
-                                    ✕ Tolak
+                                    ✕ Tolak MoU
                                 </button>
                             </div>
                             <form id="tolak-mou-form" action="{{ route('admin.kerjasama.mou.reject', $kerjasama->id) }}" method="POST" class="hidden mt-4 space-y-3">
@@ -193,16 +189,49 @@
                                 @method('PUT')
                                 <textarea name="alasan_penolakan" rows="2" placeholder="Alasan penolakan (opsional)" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></textarea>
                                 <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg transition duration-150">
-                                    Konfirmasi Tolak
+                                    Konfirmasi Tolak MoU
                                 </button>
                             </form>
 
+                        @elseif($kerjasama->status === 'mou_disetujui')
+                            {{-- TAHAP 3: Admin membuat & mengunggah MoA + Kontrak --}}
+                            <div class="mb-4 p-4 bg-cyan-50 border border-cyan-200 rounded-lg">
+                                <p class="text-sm text-cyan-800"><strong>MoU telah disetujui.</strong> Silakan buat dan unggah dokumen MoA & Kontrak untuk dikirim ke perusahaan.</p>
+                            </div>
+                            <form action="{{ route('admin.kerjasama.moa-kontrak.store', $kerjasama->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                                @csrf
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Dokumen MoA (PDF) <span class="text-red-500">*</span></label>
+                                    <input type="file" name="dokumen_moa" accept=".pdf" required class="block w-full text-sm text-gray-600 border border-gray-200 rounded-lg px-3 py-2">
+                                    @error('dokumen_moa')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Dokumen Kontrak (PDF) <span class="text-red-500">*</span></label>
+                                    <input type="file" name="dokumen_kontrak" accept=".pdf" required class="block w-full text-sm text-gray-600 border border-gray-200 rounded-lg px-3 py-2">
+                                    @error('dokumen_kontrak')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1">PIC Sekolah</label>
+                                    <input type="text" name="pic_sekolah" value="{{ old('pic_sekolah', $kerjasama->pic_sekolah) }}" class="block w-full text-sm border border-gray-200 rounded-lg px-3 py-2">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nilai Kontrak (Rp)</label>
+                                    <input type="number" name="nilai_kontrak" value="{{ old('nilai_kontrak', $kerjasama->nilai_kontrak) }}" class="block w-full text-sm border border-gray-200 rounded-lg px-3 py-2">
+                                </div>
+                                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition duration-150">
+                                    Kirim MoA & Kontrak ke Perusahaan
+                                </button>
+                            </form>
+
+                        @elseif($kerjasama->status === 'menunggu_persetujuan_perusahaan')
+                            {{-- TAHAP 4: Menunggu ACC perusahaan --}}
+                            <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p class="text-sm text-blue-800"><strong>MoA & Kontrak telah dikirim.</strong> Menunggu persetujuan (ACC) dari perusahaan.</p>
+                            </div>
+
                         @elseif($kerjasama->status === 'aktif')
                             <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                                <p class="text-sm text-green-800"><strong>Kerjasama Aktif.</strong> Pengajuan telah disetujui (ACC).</p>
-                                @if($kerjasama->disetujui_at)
-                                    <p class="text-xs text-green-700 mt-2">Disetujui pada: {{ $kerjasama->disetujui_at->format('d F Y H:i') }}</p>
-                                @endif
+                                <p class="text-sm text-green-800"><strong>Kerjasama Aktif.</strong> MoU, MoA, dan Kontrak telah disetujui kedua pihak.</p>
                             </div>
 
                         @elseif($kerjasama->status === 'selesai')
@@ -221,8 +250,9 @@
 
                         @if($kerjasama->alasan_penolakan && $kerjasama->status === 'negosiasi')
                             <div class="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                                <p class="text-sm text-orange-800"><strong>Catatan dari proses sebelumnya.</strong></p>
+                                <p class="text-sm text-orange-800"><strong>Perusahaan menolak MoA/Kontrak sebelumnya.</strong></p>
                                 <p class="text-xs text-orange-700 mt-2">Alasan: {{ $kerjasama->alasan_penolakan }}</p>
+                                <p class="text-xs text-orange-700 mt-2">Silakan revisi dokumen lalu setujui kembali MoU untuk mengunggah ulang MoA & Kontrak.</p>
                             </div>
                         @endif
 
@@ -256,16 +286,6 @@
                         <h3 class="text-lg font-bold text-gray-900">Informasi Detail</h3>
                     </div>
                     <div class="p-6 space-y-4">
-                        <div class="pb-4 border-b border-gray-100">
-                            <p class="text-sm text-gray-600 font-medium mb-1">Lingkup Kerjasama</p>
-                            <p class="text-md font-semibold text-gray-900">{{ $kerjasama->lingkupLabel() }}</p>
-                        </div>
-
-                        <div class="pb-4 border-b border-gray-100">
-                            <p class="text-sm text-gray-600 font-medium mb-1">Jenis Dokumen Diunggah</p>
-                            <p class="text-md font-semibold text-gray-900">{{ $kerjasama->jenisDokumenLabel() }}</p>
-                        </div>
-
                         @if($kerjasama->nilai_kontrak)
                         <div class="pb-4 border-b border-gray-100">
                             <p class="text-sm text-gray-600 font-medium mb-1">Nilai Kontrak</p>
@@ -337,25 +357,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                             <span>Download Kontrak</span>
-                        </a>
-                    </div>
-                </div>
-                @endif
-
-                <!-- Dokumen Surat Kerjasama -->
-                @if($kerjasama->dokumen_surat_kerjasama)
-                <div class="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
-                    <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100">
-                        <h3 class="text-lg font-bold text-indigo-900">Dokumen Surat Kerjasama</h3>
-                    </div>
-                    <div class="p-6">
-                        <a href="{{ Storage::url($kerjasama->dokumen_surat_kerjasama) }}"
-                           target="_blank"
-                           class="flex items-center justify-center space-x-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition duration-150">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                            </svg>
-                            <span>Download Surat Kerjasama</span>
                         </a>
                     </div>
                 </div>

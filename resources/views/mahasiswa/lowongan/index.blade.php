@@ -1,9 +1,9 @@
-@extends('layouts.index')
+@extends('layouts.app')
 
 @section('title', 'Lowongan Kerja')
 @section('page-title', '')
 
-@section('home')
+@section('content')
 <div class="max-w-7xl mx-auto space-y-8">
 
     {{-- SEARCH & FILTER --}}

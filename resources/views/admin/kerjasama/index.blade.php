@@ -9,7 +9,7 @@
     <div class="bg-white shadow-lg rounded-xl">
         <div class="p-5">
             <h2 class="text-xl font-bold text-gray-800 mb-4">Filter & Pencarian</h2>
-            <form method="GET" action="{{ route('admin.kerjasama.index') }}" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-4 items-end">
+            <form method="GET" action="{{ route('admin.kerjasama.index') }}" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 items-end">
                 <div class="md:col-span-2">
                     <label for="search-input" class="block text-sm font-medium text-gray-700 mb-1">Cari Kerjasama</label>
                     <input type="text"
@@ -21,9 +21,9 @@
                 </div>
 
                 <div>
-                    <label for="jenis-select" class="block text-sm font-medium text-gray-700 mb-1">Jenis Bidang</label>
+                    <label for="jenis-select" class="block text-sm font-medium text-gray-700 mb-1">Jenis</label>
                     <select id="jenis-select" name="jenis" class="form-select p-2 w-full rounded-lg border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="">Semua Bidang</option>
+                        <option value="">Semua Jenis</option>
                         <option value="pkl" {{ request('jenis') == 'pkl' ? 'selected' : '' }}>PKL</option>
                         <option value="rekrutmen" {{ request('jenis') == 'rekrutmen' ? 'selected' : '' }}>Rekrutmen</option>
                         <option value="pelatihan" {{ request('jenis') == 'pelatihan' ? 'selected' : '' }}>Pelatihan</option>
@@ -33,23 +33,15 @@
                     </select>
                 </div>
 
-               <div>
-                    <label for="lingkup-select" class="block text-sm font-medium text-gray-700 mb-1">Lingkup</label>
-                    <select id="lingkup-select" name="lingkup" class="form-select p-2 w-full rounded-lg border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="">Semua Lingkup</option>
-                        @foreach(\App\Models\KerjasamaIndustri::lingkupOptions() as $val => $label)
-                            <option value="{{ $val }}" {{ request('lingkup') == $val ? 'selected' : '' }}>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
                 <div>
                     <label for="status-select" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select id="status-select" name="status" class="form-select p-2 w-full rounded-lg border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">Semua Status</option>
                         <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                        <option value="proposal" {{ request('status') == 'proposal' ? 'selected' : '' }}>Proposal (Menunggu ACC)</option>
+                        <option value="proposal" {{ request('status') == 'proposal' ? 'selected' : '' }}>Proposal (Menunggu Review MoU)</option>
                         <option value="negosiasi" {{ request('status') == 'negosiasi' ? 'selected' : '' }}>Negosiasi</option>
+                        <option value="mou_disetujui" {{ request('status') == 'mou_disetujui' ? 'selected' : '' }}>MoU Disetujui</option>
+                        <option value="menunggu_persetujuan_perusahaan" {{ request('status') == 'menunggu_persetujuan_perusahaan' ? 'selected' : '' }}>Menunggu ACC Perusahaan</option>
                         <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
                         <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                         <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
@@ -135,14 +127,9 @@
                         </td>
 
                         <td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                            <div class="flex flex-col space-y-1">
-                                <span class="badge inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                                    {{ ucfirst($k->jenis_kerjasama) }}
-                                </span>
-                                <span class="badge inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-sky-100 text-sky-800">
-                                    {{ $k->lingkupLabel() }}
-                                </span>
-                            </div>
+                            <span class="badge inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                {{ ucfirst($k->jenis_kerjasama) }}
+                            </span>
                         </td>
 
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
@@ -255,14 +242,6 @@
                                    target="_blank"
                                    class="text-amber-600 hover:text-amber-800 p-1 rounded-full hover:bg-amber-50 transition duration-150"
                                    title="Lihat Dokumen Kontrak">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                </a>
-                                @endif
-                                @if($k->dokumen_surat_kerjasama)
-                                <a href="{{ Storage::url($k->dokumen_surat_kerjasama) }}"
-                                   target="_blank"
-                                   class="text-indigo-600 hover:text-indigo-800 p-1 rounded-full hover:bg-indigo-50 transition duration-150"
-                                   title="Lihat Surat Kerjasama">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 </a>
                                 @endif

@@ -32,9 +32,6 @@ class LaporanController extends Controller
         $data    = [];
         $fakultas = Fakultas::all();
 
-        // Ambil filter 1 tanggal tunggal
-        $tanggal = $request->get('tanggal');
-
         switch ($jenis) {
             case 'alumni':
                 $query = Mahasiswa::with(['user', 'fakultas', 'programStudi'])
@@ -44,10 +41,6 @@ class LaporanController extends Controller
                 }
                 if ($request->filled('fakultas_id')) {
                     $query->where('fakultas_id', $request->fakultas_id);
-                }
-                // Filter tanggal berdasarkan kapan data alumni dibuat
-                if ($request->filled('tanggal')) {
-                    $query->whereDate('created_at', $tanggal);
                 }
                 $data = $query->latest()->paginate(15)->withQueryString();
                 break;
@@ -60,10 +53,6 @@ class LaporanController extends Controller
                 if ($request->filled('tipe_pekerjaan')) {
                     $query->where('tipe_pekerjaan', $request->tipe_pekerjaan);
                 }
-                // Filter berdasarkan tanggal mulai lowongan aktif
-                if ($request->filled('tanggal')) {
-                    $query->whereDate('tanggal_mulai', $tanggal);
-                }
                 $data = $query->latest()->paginate(15)->withQueryString();
                 break;
 
@@ -71,10 +60,6 @@ class LaporanController extends Controller
                 $query = Lamaran::with(['mahasiswa.user', 'lowongan.perusahaan']);
                 if ($request->filled('status')) {
                     $query->where('status', $request->status);
-                }
-                // Filter berdasarkan tanggal melamar mahasiswa
-                if ($request->filled('tanggal')) {
-                    $query->whereDate('tanggal_melamar', $tanggal);
                 }
                 $data = $query->latest()->paginate(15)->withQueryString();
                 break;
@@ -87,10 +72,6 @@ class LaporanController extends Controller
                 if ($request->filled('status')) {
                     $query->where('status', $request->status);
                 }
-                // Filter berdasarkan tanggal mulai pelatihan
-                if ($request->filled('tanggal')) {
-                    $query->whereDate('tanggal_mulai', $tanggal);
-                }
                 $data = $query->latest()->paginate(15)->withQueryString();
                 break;
 
@@ -101,10 +82,6 @@ class LaporanController extends Controller
                 }
                 if ($request->filled('jenis_kerjasama')) {
                     $query->where('jenis_kerjasama', $request->jenis_kerjasama);
-                }
-                // Filter berdasarkan tanggal mulai kerjasama
-                if ($request->filled('tanggal')) {
-                    $query->whereDate('tanggal_mulai', $tanggal);
                 }
                 $data = $query->latest()->paginate(15)->withQueryString();
                 break;
@@ -155,8 +132,6 @@ class LaporanController extends Controller
                 $query = Mahasiswa::with(['user', 'fakultas', 'programStudi'])->where('status', 'lulus');
                 if (!empty($filters['tahun_lulus'])) $query->where('tahun_lulus', $filters['tahun_lulus']);
                 if (!empty($filters['fakultas_id'])) $query->where('fakultas_id', $filters['fakultas_id']);
-                if (!empty($filters['tanggal'])) $query->whereDate('created_at', $filters['tanggal']);
-                
                 $query->each(function ($m, $i) use (&$rows) {
                     $rows[] = [
                         $i + 1,
@@ -179,8 +154,6 @@ class LaporanController extends Controller
                 $query = LowonganKerja::with('perusahaan');
                 if (!empty($filters['status'])) $query->where('status', $filters['status']);
                 if (!empty($filters['tipe_pekerjaan'])) $query->where('tipe_pekerjaan', $filters['tipe_pekerjaan']);
-                if (!empty($filters['tanggal'])) $query->whereDate('tanggal_mulai', $filters['tanggal']);
-                
                 $query->latest()->each(function ($l, $i) use (&$rows) {
                     $rows[] = [
                         $i + 1,
@@ -204,8 +177,6 @@ class LaporanController extends Controller
                 $rows[] = ['No', 'Nama Pelamar', 'NIM', 'Email', 'Posisi Dilamar', 'Perusahaan', 'Tanggal Melamar', 'Status', 'Catatan'];
                 $query = Lamaran::with(['mahasiswa.user', 'lowongan.perusahaan']);
                 if (!empty($filters['status'])) $query->where('status', $filters['status']);
-                if (!empty($filters['tanggal'])) $query->whereDate('tanggal_melamar', $filters['tanggal']);
-                
                 $query->latest()->each(function ($lm, $i) use (&$rows) {
                     $rows[] = [
                         $i + 1,
@@ -226,8 +197,6 @@ class LaporanController extends Controller
                 $query = Pelatihan::query();
                 if (!empty($filters['jenis_pelatihan'])) $query->where('jenis', $filters['jenis_pelatihan']);
                 if (!empty($filters['status'])) $query->where('status', $filters['status']);
-                if (!empty($filters['tanggal'])) $query->whereDate('tanggal_mulai', $filters['tanggal']);
-                
                 $query->latest()->each(function ($p, $i) use (&$rows) {
                     $rows[] = [
                         $i + 1,
@@ -250,8 +219,6 @@ class LaporanController extends Controller
                 $query = KerjasamaIndustri::with('perusahaan');
                 if (!empty($filters['status'])) $query->where('status', $filters['status']);
                 if (!empty($filters['jenis_kerjasama'])) $query->where('jenis_kerjasama', $filters['jenis_kerjasama']);
-                if (!empty($filters['tanggal'])) $query->whereDate('tanggal_mulai', $filters['tanggal']);
-                
                 $query->latest()->each(function ($k, $i) use (&$rows) {
                     $rows[] = [
                         $i + 1,

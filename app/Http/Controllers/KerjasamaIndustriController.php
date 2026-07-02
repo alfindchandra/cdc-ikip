@@ -9,35 +9,38 @@ use Illuminate\Support\Facades\Storage;
 
 class KerjasamaIndustriController extends Controller
 {
+    /**
+     * Alur kerja sama (lihat juga KerjasamaIndustri::tahapanLabel()):
+     *
+     *  1. Perusahaan mengajukan & mengirim dokumen MoU      -> status: proposal
+     *  2. Admin (kampus) meninjau & meng-ACC / menolak MoU  -> status: mou_disetujui / batal
+     *  3. Admin membuat & mengunggah dokumen MoA + Kontrak  -> status: menunggu_persetujuan_perusahaan
+     *  4. Perusahaan meninjau & menyetujui / menolak         -> status: aktif / negosiasi
+     */
 
-   public function index(Request $request)
-{
-    $query = KerjasamaIndustri::with('perusahaan');
+    // ===================== Admin Methods =====================
 
-    // Gunakan ->filled() untuk memastikan input ada dan tidak kosong ("")
-    if ($request->filled('search')) {
-        $query->where('judul', 'like', "%{$request->search}%");
+    public function index(Request $request)
+    {
+        $query = KerjasamaIndustri::with('perusahaan');
+
+        if ($request->has('search')) {
+            $query->where('judul', 'like', "%{$request->search}%");
+        }
+
+        if ($request->has('jenis')) {
+            $query->where('jenis_kerjasama', $request->jenis);
+        }
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $kerjasama = $query->latest()->paginate(20);
+
+        return view('admin.kerjasama.index', compact('kerjasama'));
     }
 
-    if ($request->filled('jenis')) {
-        $query->where('jenis_kerjasama', $request->jenis);
-    }
-
-    // Perbaikan filter lingkup
-    if ($request->filled('lingkup')) {
-        // PASTIKAN kolom di database Anda memang bernama 'lingkup_kerjasama'
-        $query->where('lingkup_kerjasama', $request->lingkup);
-    }
-
-    if ($request->filled('status')) {
-        $query->where('status', $request->status);
-    }
-
-    // Tambahkan ->withQueryString() agar filter tidak hilang saat pindah halaman pagination
-    $kerjasama = $query->latest()->paginate(20)->withQueryString();
-
-    return view('admin.kerjasama.index', compact('kerjasama'));
-}
     public function show(KerjasamaIndustri $kerjasama)
     {
         $kerjasama->load('perusahaan');
@@ -62,8 +65,6 @@ class KerjasamaIndustriController extends Controller
         $validated = $request->validate([
             'perusahaan_id' => 'required|exists:perusahaan,id',
             'jenis_kerjasama' => 'required|in:pkl,rekrutmen,pelatihan,penelitian,sponsorship,lainnya',
-            'jenis_dokumen' => 'required|in:mou,moa,surat_kerjasama',
-            'lingkup_kerjasama' => 'required|in:dalam_negeri,luar_negeri,swasta,lainnya',
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'tanggal_mulai' => 'required|date',
@@ -71,14 +72,13 @@ class KerjasamaIndustriController extends Controller
             'dokumen_mou' => 'nullable|file|mimes:pdf|max:10240',
             'dokumen_moa' => 'nullable|file|mimes:pdf|max:10240',
             'dokumen_kontrak' => 'nullable|file|mimes:pdf|max:10240',
-            'dokumen_surat_kerjasama' => 'nullable|file|mimes:pdf|max:10240',
             'pic_sekolah' => 'nullable|string',
             'pic_industri' => 'nullable|string',
             'nilai_kontrak' => 'nullable|numeric',
             'catatan' => 'nullable|string',
         ]);
 
-        foreach (['dokumen_mou', 'dokumen_moa', 'dokumen_kontrak', 'dokumen_surat_kerjasama'] as $field) {
+        foreach (['dokumen_mou', 'dokumen_moa', 'dokumen_kontrak'] as $field) {
             if ($request->hasFile($field)) {
                 if ($kerjasama->$field) {
                     Storage::disk('public')->delete($kerjasama->$field);
@@ -107,33 +107,31 @@ class KerjasamaIndustriController extends Controller
     }
 
     /**
-     * [Tahap 2] Admin meng-ACC (menyetujui) pengajuan kerja sama beserta
-     * dokumen (MoU/MoA/Surat Kerjasama) yang dipilih & dikirim perusahaan.
-     * Begitu di-ACC, kerja sama langsung berstatus Aktif.
+     * [Tahap 2] Admin meng-ACC (menyetujui) dokumen MoU yang dikirim perusahaan.
+     * Setelah disetujui, admin diarahkan untuk mengunggah dokumen MoA & Kontrak.
      */
     public function approveMou(KerjasamaIndustri $kerjasama)
     {
         if (!in_array($kerjasama->status, ['draft', 'proposal', 'negosiasi'])) {
-            return back()->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
+            return back()->with('error', 'MoU pada pengajuan ini sudah diproses sebelumnya.');
         }
 
         $kerjasama->update([
-            'status' => 'aktif',
-            'disetujui_at' => now(),
+            'status' => 'mou_disetujui',
             'mou_disetujui_at' => now(),
             'alasan_penolakan' => null,
         ]);
 
-        return back()->with('success', 'Pengajuan kerja sama berhasil disetujui (ACC). Status kini Aktif.');
+        return back()->with('success', 'MoU berhasil disetujui (ACC). Silakan lengkapi dan unggah dokumen MoA & Kontrak.');
     }
 
     /**
-     * [Tahap 2] Admin menolak pengajuan kerja sama yang dikirim perusahaan.
+     * [Tahap 2] Admin menolak dokumen MoU yang dikirim perusahaan.
      */
     public function rejectMou(Request $request, KerjasamaIndustri $kerjasama)
     {
         if (!in_array($kerjasama->status, ['draft', 'proposal', 'negosiasi'])) {
-            return back()->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
+            return back()->with('error', 'MoU pada pengajuan ini sudah diproses sebelumnya.');
         }
 
         $validated = $request->validate([
@@ -145,7 +143,39 @@ class KerjasamaIndustriController extends Controller
             'alasan_penolakan' => $validated['alasan_penolakan'] ?? null,
         ]);
 
-        return back()->with('success', 'Pengajuan kerja sama telah ditolak.');
+        return back()->with('success', 'Pengajuan MoU telah ditolak.');
+    }
+
+    /**
+     * [Tahap 3] Admin (kampus) membuat & mengunggah dokumen MoA dan Kontrak
+     * setelah MoU disetujui. Setelah diunggah, menunggu persetujuan (ACC) perusahaan.
+     */
+    public function storeMoaKontrak(Request $request, KerjasamaIndustri $kerjasama)
+    {
+        if ($kerjasama->status !== 'mou_disetujui') {
+            return back()->with('error', 'MoA & Kontrak hanya dapat diunggah setelah MoU disetujui.');
+        }
+
+        $validated = $request->validate([
+            'dokumen_moa' => 'required|file|mimes:pdf|max:10240',
+            'dokumen_kontrak' => 'required|file|mimes:pdf|max:10240',
+            'pic_sekolah' => 'nullable|string',
+            'nilai_kontrak' => 'nullable|numeric',
+        ]);
+
+        foreach (['dokumen_moa', 'dokumen_kontrak'] as $field) {
+            if ($kerjasama->$field) {
+                Storage::disk('public')->delete($kerjasama->$field);
+            }
+            $validated[$field] = $request->file($field)->store('kerjasama/' . str_replace('dokumen_', '', $field), 'public');
+        }
+
+        $validated['status'] = 'menunggu_persetujuan_perusahaan';
+        $validated['moa_kontrak_diunggah_at'] = now();
+
+        $kerjasama->update($validated);
+
+        return back()->with('success', 'Dokumen MoA & Kontrak berhasil diunggah. Menunggu persetujuan (ACC) dari perusahaan.');
     }
 
     /**
@@ -179,9 +209,9 @@ class KerjasamaIndustriController extends Controller
     }
 
     /**
-     * Form untuk perusahaan MENGAJUKAN (mengirim) penawaran kerjasama baru.
-     * Perusahaan MEMILIH sendiri jenis dokumen yang ingin diunggah:
-     * MoU, MoA, atau Surat Kerjasama.
+     * Form untuk perusahaan MENGAJUKAN (mengirim) penawaran kerjasama baru
+     * beserta dokumen MoU. Dokumen MoA & Kontrak akan disiapkan oleh
+     * kampus setelah MoU disetujui (ACC).
      */
     public function createPerusahaan()
     {
@@ -189,57 +219,38 @@ class KerjasamaIndustriController extends Controller
     }
 
     /**
-     * [Tahap 1] Menyimpan pengajuan kerjasama dari perusahaan beserta dokumen
-     * yang dipilih (MoU/MoA/Surat Kerjasama). Status awal selalu 'proposal'
-     * (menunggu ACC dari admin).
+     * [Tahap 1] Menyimpan pengajuan kerjasama dari perusahaan beserta dokumen MoU.
+     * Status awal selalu 'proposal' (menunggu review/ACC MoU oleh admin).
      */
     public function storePerusahaan(Request $request)
     {
         $validated = $request->validate([
             'jenis_kerjasama' => 'required|in:pkl,rekrutmen,pelatihan,penelitian,sponsorship,lainnya',
-            'jenis_dokumen' => 'required|in:mou,moa,surat_kerjasama',
-            'lingkup_kerjasama' => 'required|in:dalam_negeri,luar_negeri,swasta,lainnya',
             'judul' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'tanggal_mulai' => 'required|date',
             'tanggal_berakhir' => 'nullable|date|after:tanggal_mulai',
-            'dokumen_kerjasama' => 'required|file|mimes:pdf|max:10240',
+            'dokumen_mou' => 'required|file|mimes:pdf|max:10240',
             'pic_industri' => 'nullable|string',
             'nilai_kontrak' => 'nullable|numeric',
             'catatan' => 'nullable|string',
         ]);
 
-        // Simpan file yang diunggah ke kolom yang sesuai dengan jenis dokumen
-        // yang dipilih perusahaan (MoU / MoA / Surat Kerjasama).
-        $kolomDokumen = [
-            'mou' => 'dokumen_mou',
-            'moa' => 'dokumen_moa',
-            'surat_kerjasama' => 'dokumen_surat_kerjasama',
-        ][$validated['jenis_dokumen']];
-
-        $folderDokumen = [
-            'mou' => 'mou',
-            'moa' => 'moa',
-            'surat_kerjasama' => 'surat-kerjasama',
-        ][$validated['jenis_dokumen']];
-
-        $validated[$kolomDokumen] = $request->file('dokumen_kerjasama')->store('kerjasama/' . $folderDokumen, 'public');
-        unset($validated['dokumen_kerjasama']);
-
+        $validated['dokumen_mou'] = $request->file('dokumen_mou')->store('kerjasama/mou', 'public');
         $validated['perusahaan_id'] = auth()->user()->perusahaan->id;
         // Pengajuan baru dari perusahaan selalu berstatus 'proposal'
-        // dan menunggu persetujuan (ACC) langsung dari admin.
+        // dan menunggu persetujuan (ACC) MoU dari admin.
         $validated['status'] = 'proposal';
 
         KerjasamaIndustri::create($validated);
 
         return redirect()->route('perusahaan.kerjasama.index')
-                        ->with('success', 'Pengajuan kerja sama beserta dokumen berhasil dikirim. Menunggu persetujuan (ACC) dari admin.');
+                        ->with('success', 'Dokumen MoU berhasil dikirim. Menunggu persetujuan (ACC) dari admin.');
     }
 
     /**
      * Perusahaan hanya dapat MEMBATALKAN pengajuannya sendiri selama
-     * belum di-ACC oleh admin.
+     * MoU belum disetujui (ACC) oleh admin.
      */
     public function updateStatusPerusahaan(Request $request, KerjasamaIndustri $kerjasama)
     {
@@ -254,5 +265,54 @@ class KerjasamaIndustriController extends Controller
         $kerjasama->update(['status' => 'batal']);
 
         return back()->with('success', 'Pengajuan kerjasama berhasil dibatalkan.');
+    }
+
+    /**
+     * [Tahap 4] Perusahaan menyetujui (ACC) dokumen MoA & Kontrak
+     * yang telah disiapkan oleh kampus. Kerjasama menjadi Aktif.
+     */
+    public function approveByPerusahaan(KerjasamaIndustri $kerjasama)
+    {
+        if ($kerjasama->perusahaan_id != auth()->user()->perusahaan->id) {
+            abort(403, 'Anda tidak memiliki akses untuk mengubah kerjasama ini.');
+        }
+
+        if ($kerjasama->status !== 'menunggu_persetujuan_perusahaan') {
+            return back()->with('error', 'Tidak ada dokumen MoA/Kontrak yang sedang menunggu persetujuan Anda.');
+        }
+
+        $kerjasama->update([
+            'status' => 'aktif',
+            'disetujui_perusahaan_at' => now(),
+            'alasan_penolakan' => null,
+        ]);
+
+        return back()->with('success', 'MoA & Kontrak berhasil disetujui (ACC). Kerjasama kini berstatus Aktif.');
+    }
+
+    /**
+     * [Tahap 4] Perusahaan menolak dokumen MoA & Kontrak yang disiapkan kampus.
+     * Status dikembalikan ke 'negosiasi' agar admin dapat merevisi dokumen.
+     */
+    public function rejectByPerusahaan(Request $request, KerjasamaIndustri $kerjasama)
+    {
+        if ($kerjasama->perusahaan_id != auth()->user()->perusahaan->id) {
+            abort(403, 'Anda tidak memiliki akses untuk mengubah kerjasama ini.');
+        }
+
+        if ($kerjasama->status !== 'menunggu_persetujuan_perusahaan') {
+            return back()->with('error', 'Tidak ada dokumen MoA/Kontrak yang sedang menunggu persetujuan Anda.');
+        }
+
+        $validated = $request->validate([
+            'alasan_penolakan' => 'nullable|string',
+        ]);
+
+        $kerjasama->update([
+            'status' => 'negosiasi',
+            'alasan_penolakan' => $validated['alasan_penolakan'] ?? null,
+        ]);
+
+        return back()->with('success', 'Dokumen MoA & Kontrak ditolak. Admin akan meninjau kembali dan merevisi dokumen.');
     }
 }

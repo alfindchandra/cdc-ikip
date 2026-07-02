@@ -183,7 +183,42 @@ class WelcomeController extends Controller
             'testimoni'
         ));
     }
-    
+    public function lowongan(Request $request)
+    {
+        $query = LowonganKerja::with('perusahaan')
+            ->where('status', 'aktif')
+            ->where('tanggal_berakhir', '>=', now());
+
+        // Filter berdasarkan keyword
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $query->where(function($q) use ($keyword) {
+                $q->where('posisi', 'like', "%{$keyword}%")
+                  ->orWhere('deskripsi', 'like', "%{$keyword}%")
+                  ->orWhereHas('perusahaan', function($q) use ($keyword) {
+                      $q->where('nama_perusahaan', 'like', "%{$keyword}%");
+                  });
+            });
+        }
+         // Filter berdasarkan lokasi
+        if ($request->filled('lokasi')) {
+            $query->where('lokasi', $request->lokasi);
+        }
+
+        // Filter berdasarkan tipe pekerjaan
+        if ($request->filled('tipe')) {
+            $query->where('tipe_pekerjaan', $request->tipe);
+        }
+         $lowonganTerbaru = $query->latest()
+            ->take(8)
+            ->get();
+        return view('index.lowongan', compact('lowonganTerbaru'));
+
+    }
+    public function lowonganShow(LowonganKerja $lowongan)
+    {
+        return view('index.lowonganshow', compact('lowongan'));
+    }
 
     public function kerjasama(Request $request)
     {

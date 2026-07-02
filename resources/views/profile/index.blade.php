@@ -1,9 +1,8 @@
-
-@extends('layouts.index')
+@extends('layouts.app')
 
 @section('title', 'Profil Saya')
 
-@section('home')
+@section('content')
 <div class="min-h-screen bg-slate-50/50 pb-12">
     <div class="h-48 bg-gradient-to-r from-blue-700 to-indigo-800 w-full absolute top-0 left-0 z-0">
         <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>

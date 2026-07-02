@@ -116,11 +116,7 @@
                     <option value="penelitian" {{ request('jenis_kerjasama') == 'penelitian' ? 'selected' : '' }}>Penelitian</option>
                 </select>
                 @endif
-                <div class="flex items-center gap-1.5 border-l pl-3 border-gray-200">
-                    <span class="text-sm font-medium text-gray-500">Tanggal:</span>
-                    <input type="date" name="tanggal" value="{{ request('tanggal') }}" 
-                           class="text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
-                </div>
+
                 <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition">
                     Terapkan Filter
                 </button>
@@ -184,7 +180,7 @@
                         <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ $m->user->name ?? '-' }}</td>
                         <td class="px-4 py-3 text-sm text-gray-600">{{ $m->user->email ?? '-' }}</td>
                         <td class="px-4 py-3 text-sm text-gray-600">{{ $m->fakultas->nama ?? '-' }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600">{{ $m->programStudi->nama ?? '-' }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-600">{{ $m->programStudi->nama_prodi ?? '-' }}</td>
                         <td class="px-4 py-3 text-sm text-center text-gray-700">{{ $m->tahun_masuk }}</td>
                         <td class="px-4 py-3 text-sm text-center text-gray-700">{{ $m->tahun_lulus ?? '-' }}</td>
                     </tr>
@@ -192,7 +188,7 @@
                     <tr><td colspan="8" class="text-center py-12 text-gray-400">Tidak ada data alumni ditemukan.</td></tr>
                     @endforelse
                 </tbody>
-            </table> 
+            </table>
             @endif
 
             {{-- ===== LOWONGAN ===== --}}
