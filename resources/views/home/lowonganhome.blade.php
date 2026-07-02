@@ -90,7 +90,7 @@
                     </h2>
                     <div class="grid grid-cols-2 gap-3 items-center">
                         @foreach($perusahaanMitra as $mitra)
-                            <a href="#" class="p-3 border border-gray-200 rounded-2xl bg-white hover:border-sky-400 hover:shadow-sm transition duration-150 flex justify-center items-center h-16" title="{{ $mitra->nama_perusahaan }}">
+                            <a href="{{ route('show.perusahaan', $mitra->id) }}" class="p-3 border border-gray-200 rounded-2xl bg-white hover:border-sky-400 hover:shadow-sm transition duration-150 flex justify-center items-center h-16" title="{{ $mitra->nama_perusahaan }}">
                                 @if($mitra->logo)
                                     <img src="{{ asset('storage/' . $mitra->logo) }}" alt="{{ $mitra->nama_perusahaan }}" class="max-h-10 max-w-full object-contain filter grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition duration-200">
                                 @else
@@ -99,7 +99,7 @@
                             </a>
                         @endforeach
                         
-                        <a href="" class="p-3 border border-dashed border-gray-300 rounded-2xl flex justify-center items-center h-16 text-xs md:text-sm font-bold text-sky-600 hover:bg-sky-50/50 hover:border-sky-400 transition duration-150">
+                        <a href="{{ route('index.perusahaan') }}" class="p-3 border border-dashed border-gray-300 rounded-2xl flex justify-center items-center h-16 text-xs md:text-sm font-bold text-sky-600 hover:bg-sky-50/50 hover:border-sky-400 transition duration-150">
                             Lihat Semua...
                         </a>
                     </div>

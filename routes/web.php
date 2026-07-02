@@ -110,16 +110,20 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
         Route::post('perusahaan/{perusahaan}/status', [PerusahaanController::class, 'updateStatus'])->name('perusahaan.status');
         
         
-        // Lowongan Kerja (Admin can view all)\
+        // Lowongan Kerja (Admin can view all and create)
         Route::get('lowongan', [LowonganKerjaController::class, 'adminIndex'])->name('lowongan.index');
+        Route::get('lowongan/create', [LowonganKerjaController::class, 'adminCreate'])->name('lowongan.create');
+        Route::post('lowongan', [LowonganKerjaController::class, 'adminStore'])->name('lowongan.store');
+        Route::get('lowongan/{lowongan}/edit', [LowonganKerjaController::class, 'adminEdit'])->name('lowongan.edit');
+        Route::put('lowongan/{lowongan}', [LowonganKerjaController::class, 'adminUpdate'])->name('lowongan.update');
+        Route::delete('lowongan/{lowongan}', [LowonganKerjaController::class, 'adminDestroy'])->name('lowongan.destroy');
         Route::post('lowongan/search', [LowonganKerjaController::class, 'adminSearch'])->name('lowongan.search');
         Route::post('lowongan/{lowongan}/publish', [LowonganKerjaController::class, 'toggleStatus'])->name('lowongan.publish');
         Route::get('lowongan/pelamar/{lowongan}', [LowonganKerjaController::class, 'adminPelamar'])->name('lowongan.pelamar');
         Route::get('lowongan/{lowongan}/peserta', [LowonganKerjaController::class, 'peserta'])->name('lowongan.peserta');
-        Route::post('lowongan/destroy', [LowonganKerjaController::class, 'destroy'])->name('lowongan.destroy');
         Route::get('lowongan/show/{lowongan}', [LowonganKerjaController::class, 'adminShow'])->name('lowongan.show');
         Route::post('lowongan/{lowongan}/status', [LowonganKerjaController::class, 'updateStatus'])->name('lowongan.status');
-
+        Route::get('/admin/lowongan/pelamar', [LowonganKerjaController::class, 'adminPelamar'])->name('admin.lowongan.pelamar');
         // Lamaran (Admin can view all)
         Route::get('lamaran', [LamaranController::class, 'adminIndex'])->name('lamaran.index');
         
@@ -129,10 +133,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
         Route::get('pelatihan/{pelatihan}/peserta', [PelatihanController::class, 'peserta'])->name('pelatihan.peserta');
         Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/status', [PelatihanController::class, 'updateStatusPeserta'])->name('pelatihan.peserta.status');
 Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanController::class, 'inputNilai'])->name('pelatihan.peserta.nilai');
-        // Kerjasama Industri (Admin hanya mengelola & meng-ACC langsung pengajuan dari perusahaan)
-        Route::resource('kerjasama', KerjasamaIndustriController::class)->except(['create', 'store']);
+        // Kerjasama Industri (Admin mengelola & kirim ke Perusahaan / ACC pengajuan dari Perusahaan)
+        Route::resource('kerjasama', KerjasamaIndustriController::class);
         Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
-        // Tahap 2: Admin langsung ACC / Tolak pengajuan (beserta dokumen) yang dikirim perusahaan
+        // Admin ACC / Tolak pengajuan dari perusahaan
         Route::put('kerjasama/{kerjasama}/mou/approve', [KerjasamaIndustriController::class, 'approveMou'])->name('kerjasama.mou.approve');
         Route::put('kerjasama/{kerjasama}/mou/reject', [KerjasamaIndustriController::class, 'rejectMou'])->name('kerjasama.mou.reject');
         
@@ -197,6 +201,9 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
         Route::post('kerjasama', [KerjasamaIndustriController::class, 'storePerusahaan'])->name('kerjasama.store');
         Route::get('kerjasama/{kerjasama}', [KerjasamaIndustriController::class, 'show'])->name('kerjasama.show');
         Route::post('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatusPerusahaan'])->name('kerjasama.status');
+        // Perusahaan ACC / Tolak kerjasama yang dikirim Admin
+        Route::put('kerjasama/{kerjasama}/approve', [KerjasamaIndustriController::class, 'approvePerusahaan'])->name('kerjasama.approve');
+        Route::put('kerjasama/{kerjasama}/reject', [KerjasamaIndustriController::class, 'rejectPerusahaan'])->name('kerjasama.reject');
     
     });
 });

@@ -23,12 +23,10 @@
           Temukan peluang kerja terbaik, kembangkan potensi dirimu, dan bangun karir impian bersama ribuan mitra perusahaan terpercaya. Bersiaplah melangkah lebih jauh hari ini!
         </p>
         <div class="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start w-full">
-          <a href="#lowongan" class="px-6 py-3 bg-white text-[#1270a0] font-bold rounded-xl shadow-lg hover:bg-sky-100 transition-all duration-300 transform hover:-translate-y-0.5">
+          <a href="{{ route('index.lowongan') }}" class="px-6 py-3 bg-white text-[#1270a0] font-bold rounded-xl shadow-lg hover:bg-sky-100 transition-all duration-300 transform hover:-translate-y-0.5">
             Jelajahi Lowongan
           </a>
-          <a href="#Panduan" class="px-6 py-3 bg-transparent text-white font-semibold rounded-xl border border-white/40 hover:bg-white/10 transition-all duration-300">
-            Panduan Karir
-          </a>
+          
         </div>
 
       </div>

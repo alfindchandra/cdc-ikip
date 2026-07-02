@@ -7,10 +7,16 @@
 <div class="space-y-8 px-4 sm:px-0">
     
    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
-    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
-        <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707v7.586l-2-2v-7.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-        Filter & Pencarian
-    </h2>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
+        <h2 class="text-xl font-bold text-gray-900 flex items-center">
+            <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707v7.586l-2-2v-7.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+            Filter & Pencarian
+        </h2>
+        <a href="{{ route('admin.lowongan.create') }}" class="inline-flex items-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-md transition duration-150 text-sm">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Buat Lowongan
+        </a>
+    </div>
     <form method="GET" action="{{ route('admin.lowongan.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
         <div class="md:col-span-2">
             <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Cari Lowongan</label>
@@ -86,7 +92,7 @@
                         
                         {{-- Perusahaan & Lokasi --}}
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <p class="font-medium text-gray-800">{{ $l->perusahaan->nama_perusahaan }}</p>
+                            <p class="font-medium text-gray-800">{{ $l->perusahaan ? $l->perusahaan->nama_perusahaan : '—' }}</p>
                             <p class="text-sm text-gray-500">{{ $l->lokasi }}</p>
                         </td>
                         
@@ -131,7 +137,7 @@
                         
                         {{-- Aksi --}}
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                            <div class="flex space-x-3 justify-center">
+                            <div class="flex space-x-2 justify-center">
                                 <a href="{{ route('admin.lowongan.show', $l->id) }}" 
                                    class="text-blue-600 hover:text-blue-800 p-1 rounded-full hover:bg-blue-50 transition duration-150" 
                                    title="Detail Lowongan">
@@ -140,7 +146,23 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                     </svg>
                                 </a>
-                               
+                                <a href="{{ route('admin.lowongan.edit', $l->id) }}" 
+                                   class="text-yellow-600 hover:text-yellow-800 p-1 rounded-full hover:bg-yellow-50 transition duration-150" 
+                                   title="Edit Lowongan">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </a>
+                                <form action="{{ route('admin.lowongan.destroy', $l->id) }}" method="POST"
+                                      onsubmit="return confirm('Yakin ingin menghapus lowongan ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-800 p-1 rounded-full hover:bg-red-50 transition duration-150" title="Hapus Lowongan">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>

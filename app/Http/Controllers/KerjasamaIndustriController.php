@@ -57,6 +57,60 @@ class KerjasamaIndustriController extends Controller
         return view('admin.kerjasama.edit', compact('kerjasama', 'perusahaan'));
     }
 
+    /**
+     * [Admin] Membuat & mengirimkan dokumen kerjasama ke perusahaan tertentu.
+     * Status awal: menunggu_persetujuan_perusahaan — Perusahaan harus ACC atau tolak.
+     */
+    public function create()
+    {
+        $perusahaan = Perusahaan::where('status_kerjasama', 'aktif')->get();
+        return view('admin.kerjasama.create', compact('perusahaan'));
+    }
+
+    /**
+     * [Admin] Simpan kerjasama yang dikirim admin ke perusahaan.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'perusahaan_id'    => 'required|exists:perusahaan,id',
+            'jenis_kerjasama'  => 'required|in:pkl,rekrutmen,pelatihan,penelitian,sponsorship,lainnya',
+            'jenis_dokumen'    => 'required|in:mou,moa,surat_kerjasama',
+            'lingkup_kerjasama'=> 'required|in:dalam_negeri,luar_negeri,swasta,lainnya',
+            'judul'            => 'required|string|max:255',
+            'deskripsi'        => 'nullable|string',
+            'tanggal_mulai'    => 'required|date',
+            'tanggal_berakhir' => 'nullable|date|after:tanggal_mulai',
+            'dokumen_kerjasama'=> 'required|file|mimes:pdf|max:10240',
+            'pic_sekolah'      => 'nullable|string',
+            'nilai_kontrak'    => 'nullable|numeric',
+            'catatan'          => 'nullable|string',
+        ]);
+
+        $kolomDokumen = [
+            'mou'             => 'dokumen_mou',
+            'moa'             => 'dokumen_moa',
+            'surat_kerjasama' => 'dokumen_surat_kerjasama',
+        ][$validated['jenis_dokumen']];
+
+        $folderDokumen = [
+            'mou'             => 'mou',
+            'moa'             => 'moa',
+            'surat_kerjasama' => 'surat-kerjasama',
+        ][$validated['jenis_dokumen']];
+
+        $validated[$kolomDokumen] = $request->file('dokumen_kerjasama')->store('kerjasama/' . $folderDokumen, 'public');
+        unset($validated['dokumen_kerjasama']);
+
+        $validated['pengirim'] = 'admin';
+        $validated['status']   = 'menunggu_persetujuan_perusahaan';
+
+        KerjasamaIndustri::create($validated);
+
+        return redirect()->route('admin.kerjasama.index')
+                         ->with('success', 'Dokumen kerjasama berhasil dikirim ke perusahaan. Menunggu persetujuan (ACC) perusahaan.');
+    }
+
     public function update(Request $request, KerjasamaIndustri $kerjasama)
     {
         $validated = $request->validate([
@@ -254,5 +308,53 @@ class KerjasamaIndustriController extends Controller
         $kerjasama->update(['status' => 'batal']);
 
         return back()->with('success', 'Pengajuan kerjasama berhasil dibatalkan.');
+    }
+
+    /**
+     * [Perusahaan] Menyetujui (ACC) kerjasama yang dikirimkan oleh Admin.
+     */
+    public function approvePerusahaan(KerjasamaIndustri $kerjasama)
+    {
+        if ($kerjasama->perusahaan_id != auth()->user()->perusahaan->id) {
+            abort(403);
+        }
+
+        if ($kerjasama->pengirim !== 'admin' || $kerjasama->status !== 'menunggu_persetujuan_perusahaan') {
+            return back()->with('error', 'Kerjasama ini tidak dapat disetujui.');
+        }
+
+        $kerjasama->update([
+            'status'                 => 'aktif',
+            'disetujui_perusahaan_at'=> now(),
+            'disetujui_at'           => now(),
+            'alasan_penolakan_perusahaan' => null,
+        ]);
+
+        return back()->with('success', 'Kerjasama berhasil disetujui (ACC). Status kini Aktif.');
+    }
+
+    /**
+     * [Perusahaan] Menolak kerjasama yang dikirimkan oleh Admin.
+     */
+    public function rejectPerusahaan(Request $request, KerjasamaIndustri $kerjasama)
+    {
+        if ($kerjasama->perusahaan_id != auth()->user()->perusahaan->id) {
+            abort(403);
+        }
+
+        if ($kerjasama->pengirim !== 'admin' || $kerjasama->status !== 'menunggu_persetujuan_perusahaan') {
+            return back()->with('error', 'Kerjasama ini tidak dapat ditolak.');
+        }
+
+        $validated = $request->validate([
+            'alasan_penolakan_perusahaan' => 'nullable|string',
+        ]);
+
+        $kerjasama->update([
+            'status'                      => 'batal',
+            'alasan_penolakan_perusahaan' => $validated['alasan_penolakan_perusahaan'] ?? null,
+        ]);
+
+        return back()->with('success', 'Kerjasama telah ditolak.');
     }
 }

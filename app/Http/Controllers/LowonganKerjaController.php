@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LowonganKerja;
+use App\Models\Lamaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -110,6 +111,36 @@ class LowonganKerjaController extends Controller
         return view('perusahaan.lowongan.index', compact('lowongan'));
     }
 
+public function adminPelamar(Request $request, $lowonganId)
+    {
+        // Menangkap kata kunci pencarian dari input text admin
+        $search = $request->input('search');
+
+        // Query dasar mengambil data lamaran berdasarkan lowongan_id tertentu
+        $query = Lamaran::where('lowongan_id', $lowonganId)->with(['lowongan', 'mahasiswa.user']);
+
+        // Jika admin mengisi kolom pencarian, lakukan filter di database
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                // Cari berdasarkan nama user mahasiswa (kolom 'name' di tabel users)
+                $q->whereHas('mahasiswa.user', function($userQuery) use ($search) {
+                    $userQuery->where('name', 'like', "%{$search}%");
+                })
+                // Atau cari berdasarkan NIM (kolom 'nim' di tabel mahasiswa)
+                // Kolom 'nama' dihapus dari sini karena menyebabkan error di database Anda
+                ->orWhereHas('mahasiswa', function($mahasiswaQuery) use ($search) {
+                    $mahasiswaQuery->where('nim', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        // Ambil data terbaru hasil filter database
+        $pelamar = $query->latest()->get();
+
+        // Mengirimkan data pelamar, keyword pencarian, dan ID Lowongan ke view
+        return view('admin.lowongan.pelamar', compact('pelamar', 'search', 'lowonganId'));
+    }
+
     public function create()
     {
         return view('perusahaan.lowongan.create');
@@ -203,5 +234,108 @@ class LowonganKerjaController extends Controller
         $lowongan->update(['status' => $newStatus]);
 
         return back()->with('success', 'Status lowongan berhasil diubah');
+    }
+
+    // ===================== Admin CRUD Methods =====================
+
+    /**
+     * [Admin] Tampilkan form buat lowongan mandiri (tanpa perusahaan).
+     */
+    public function adminCreate()
+    {
+        return view('admin.lowongan.create');
+    }
+
+    /**
+     * [Admin] Simpan lowongan baru yang dibuat admin.
+     */
+    public function adminStore(Request $request)
+    {
+        $validated = $request->validate([
+            'judul'           => 'required|string|max:200',
+            'posisi'          => 'required|string|max:100',
+            'category'        => 'required|string|max:100',
+            'deskripsi'       => 'required|string',
+            'pendidikan'      => 'required|string|max:100',
+            'kualifikasi'     => 'required|string',
+            'benefit'         => 'nullable|string',
+            'tipe_pekerjaan'  => 'required|in:full_time,part_time,kontrak,magang',
+            'lokasi'          => 'required|string',
+            'gaji_min'        => 'nullable|numeric',
+            'gaji_max'        => 'nullable|numeric',
+            'kuota'           => 'nullable|integer',
+            'tanggal_mulai'   => 'required|date',
+            'tanggal_berakhir'=> 'required|date|after:tanggal_mulai',
+            'thumbnail'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            $validated['thumbnail'] = $request->file('thumbnail')->store('lowongan-thumbnails', 'public');
+        }
+
+        $validated['perusahaan_id'] = null; // Admin lowongan tidak terikat perusahaan
+        $validated['status'] = 'aktif';
+
+        LowonganKerja::create($validated);
+
+        return redirect()->route('admin.lowongan.index')
+                         ->with('success', 'Lowongan berhasil dibuat.');
+    }
+
+    /**
+     * [Admin] Tampilkan form edit lowongan.
+     */
+    public function adminEdit(LowonganKerja $lowongan)
+    {
+        return view('admin.lowongan.edit', compact('lowongan'));
+    }
+
+    /**
+     * [Admin] Simpan perubahan lowongan.
+     */
+    public function adminUpdate(Request $request, LowonganKerja $lowongan)
+    {
+        $validated = $request->validate([
+            'judul'           => 'nullable|string|max:200',
+            'posisi'          => 'required|string|max:100',
+            'category'        => 'required|string|max:100',
+            'deskripsi'       => 'required|string',
+            'pendidikan'      => 'required|string|max:100',
+            'kualifikasi'     => 'required|string',
+            'benefit'         => 'nullable|string',
+            'tipe_pekerjaan'  => 'required|in:full_time,part_time,kontrak,magang',
+            'lokasi'          => 'required|string',
+            'gaji_min'        => 'nullable|numeric',
+            'gaji_max'        => 'nullable|numeric',
+            'kuota'           => 'nullable|integer',
+            'tanggal_mulai'   => 'required|date',
+            'tanggal_berakhir'=> 'required|date|after:tanggal_mulai',
+            'thumbnail'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            if ($lowongan->thumbnail) {
+                Storage::disk('public')->delete($lowongan->thumbnail);
+            }
+            $validated['thumbnail'] = $request->file('thumbnail')->store('lowongan-thumbnails', 'public');
+        }
+
+        $lowongan->update($validated);
+
+        return redirect()->route('admin.lowongan.index')
+                         ->with('success', 'Lowongan berhasil diperbarui.');
+    }
+
+    /**
+     * [Admin] Hapus lowongan.
+     */
+    public function adminDestroy(LowonganKerja $lowongan)
+    {
+        if ($lowongan->thumbnail) {
+            Storage::disk('public')->delete($lowongan->thumbnail);
+        }
+        $lowongan->delete();
+
+        return back()->with('success', 'Lowongan berhasil dihapus.');
     }
 }

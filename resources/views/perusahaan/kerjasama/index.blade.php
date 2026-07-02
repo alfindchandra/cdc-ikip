@@ -18,6 +18,13 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     Ajukan Kerjasama Baru
                 </a>
+                @php $pendingFromAdmin = $kerjasama->filter(fn($k) => $k->pengirim === 'admin' && $k->status === 'menunggu_persetujuan_perusahaan')->count(); @endphp
+                @if($pendingFromAdmin > 0)
+                <div class="flex items-center px-4 py-2 bg-yellow-400/90 text-yellow-900 font-bold rounded-lg text-sm animate-pulse">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    {{ $pendingFromAdmin }} Kerjasama Menunggu ACC Anda!
+                </div>
+                @endif
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
                         <p class="text-sm font-medium text-white/80">Total Kerjasama</p>
@@ -74,11 +81,16 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @forelse($kerjasama as $k)
-                    <tr class="hover:bg-indigo-50/30 transition duration-100">
+                    <tr class="hover:bg-indigo-50/30 transition duration-100 {{ $k->pengirim === 'admin' && $k->status === 'menunggu_persetujuan_perusahaan' ? 'bg-yellow-50 border-l-4 border-l-yellow-400' : '' }}">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex flex-col">
                                 <p class="font-medium text-gray-900 truncate max-w-xs">{{ $k->judul }}</p>
                                 <div class="flex flex-wrap gap-1 mt-1">
+                                    @if($k->pengirim === 'admin')
+                                    <span class="badge inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-800 w-fit">
+                                        🏫 Dari Admin Sekolah
+                                    </span>
+                                    @endif
                                     <span class="badge inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 w-fit">
                                         {{ ucfirst($k->jenis_kerjasama) }}
                                     </span>
@@ -135,7 +147,7 @@
                         </td>
 
                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                            <div class="flex items-center justify-center space-x-3">
+                            <div class="flex items-center justify-center space-x-2">
                                 <a href="{{ route('perusahaan.kerjasama.show', $k->id) }}" class="text-blue-600 hover:text-blue-800 p-1 rounded-full hover:bg-blue-50 transition duration-150" title="Detail">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -149,7 +161,32 @@
                                     </svg>
                                 </a>
                                 @endif
+                                {{-- Tombol ACC/Tolak untuk kerjasama yang dikirim Admin --}}
+                                @if($k->menungguACC())
+                                <form action="{{ route('perusahaan.kerjasama.approve', $k->id) }}" method="POST"
+                                      onsubmit="return confirm('Setujui (ACC) kerjasama ini dari Admin Sekolah?')">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition duration-150" title="ACC Kerjasama">
+                                        ✓ ACC
+                                    </button>
+                                </form>
+                                <button type="button" onclick="document.getElementById('tolak-form-{{ $k->id }}').classList.toggle('hidden')" class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition duration-150">
+                                    ✕ Tolak
+                                </button>
+                                @endif
                             </div>
+                            {{-- Form Tolak (hidden toggle) --}}
+                            @if($k->menungguACC())
+                            <div id="tolak-form-{{ $k->id }}" class="hidden mt-2">
+                                <form action="{{ route('perusahaan.kerjasama.reject', $k->id) }}" method="POST" class="flex flex-col space-y-2">
+                                    @csrf
+                                    @method('PUT')
+                                    <textarea name="alasan_penolakan_perusahaan" rows="2" placeholder="Alasan penolakan (opsional)" class="w-full px-2 py-1 border border-gray-300 rounded text-xs"></textarea>
+                                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1.5 rounded transition duration-150">Konfirmasi Tolak</button>
+                                </form>
+                            </div>
+                            @endif
                         </td>
                     </tr>
                     @empty

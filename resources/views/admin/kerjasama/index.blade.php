@@ -101,7 +101,13 @@
             <h3 class="text-xl font-semibold text-gray-800">
                 Total: {{ $kerjasama->total() }} Kerjasama
             </h3>
-            <p class="text-sm text-gray-500 mt-1">Daftar pengajuan kerjasama yang dikirim oleh perusahaan. Gunakan <strong>Ubah Status</strong> untuk menyetujui (ACC) atau menolak pengajuan.</p>
+            <p class="text-sm text-gray-500 mt-1">Daftar pengajuan kerjasama yang dikirim oleh perusahaan atau oleh admin. Gunakan <strong>Detail</strong> untuk menyetujui (ACC) atau menolak pengajuan.</p>
+        </div>
+        <div class="mt-4 sm:mt-0">
+            <a href="{{ route('admin.kerjasama.create') }}" class="inline-flex items-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-md transition duration-150">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Kirim Kerjasama ke Perusahaan
+            </a>
         </div>
     </div>
 
@@ -112,6 +118,7 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Judul & Perusahaan</th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Pengirim</th>
                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Jenis</th>
                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Periode</th>
                         <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider hidden lg:table-cell">PIC</th>
@@ -121,7 +128,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @forelse($kerjasama as $k)
-                    <tr class="hover:bg-indigo-50/50 transition duration-100">
+                    <tr class="hover:bg-indigo-50/50 transition duration-100 {{ $k->pengirim === 'admin' && $k->status === 'menunggu_persetujuan_perusahaan' ? 'bg-blue-50/30' : '' }}">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex flex-col">
                                 <p class="font-medium text-gray-900 truncate max-w-xs">{{ $k->judul }}</p>
@@ -132,6 +139,19 @@
                                 </p>
                                 @endif
                             </div>
+                        </td>
+
+                        {{-- Badge Pengirim --}}
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($k->pengirim === 'admin')
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                                    🏫 Dari Admin
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-100 text-sky-800">
+                                    🏢 Dari Perusahaan
+                                </span>
+                            @endif
                         </td>
 
                         <td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
@@ -282,12 +302,12 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center py-12 text-gray-500">
+                        <td colspan="7" class="text-center py-12 text-gray-500">
                             <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10m0-10l4-2m-4 2l-4-2m0 0v10l4 2m4-2v10l-4 2"/>
                             </svg>
                             <p class="text-lg font-semibold">Belum ada data kerjasama yang ditemukan</p>
-                            <p class="text-sm mt-1">Pengajuan kerjasama akan muncul di sini setelah perusahaan mengirimkannya.</p>
+                            <p class="text-sm mt-1">Pengajuan kerjasama akan muncul di sini setelah perusahaan mengirimkannya, atau klik tombol di atas untuk mengirim ke perusahaan.</p>
                         </td>
                     </tr>
                     @endforelse

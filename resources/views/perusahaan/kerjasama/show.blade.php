@@ -153,7 +153,44 @@
                         </h3>
                     </div>
                     <div class="p-6">
-                        @if(in_array($kerjasama->status, ['draft', 'proposal', 'negosiasi']))
+                        {{-- Kerjasama yang dikirim oleh Admin: tampilkan ACC / Tolak --}}
+                        @if($kerjasama->pengirim === 'admin')
+                            <div class="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <p class="text-sm text-purple-800"><strong>Kerjasama ini dikirimkan oleh Admin Sekolah.</strong></p>
+                            </div>
+                        @endif
+
+                        @if($kerjasama->menungguACC())
+                            {{-- Menunggu ACC Perusahaan --}}
+                            <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                <p class="text-sm text-yellow-800">
+                                    <strong>Tindakan Diperlukan!</strong> Admin Sekolah mengirimkan dokumen <strong>{{ $kerjasama->jenisDokumenLabel() }}</strong>. Tinjau dokumen lalu setujui atau tolak.
+                                </p>
+                            </div>
+                            <div class="flex space-x-3">
+                                <form action="{{ route('perusahaan.kerjasama.approve', $kerjasama->id) }}" method="POST" class="flex-1"
+                                      onsubmit="return confirm('Setujui (ACC) kerjasama ini? Status akan langsung menjadi Aktif.')">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg transition duration-150">
+                                        ✓ Setujui (ACC)
+                                    </button>
+                                </form>
+                                <button type="button" onclick="document.getElementById('tolak-perusahaan-form').classList.toggle('hidden')" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-lg transition duration-150">
+                                    ✕ Tolak
+                                </button>
+                            </div>
+                            <form id="tolak-perusahaan-form" action="{{ route('perusahaan.kerjasama.reject', $kerjasama->id) }}" method="POST" class="hidden mt-4 space-y-3">
+                                @csrf
+                                @method('PUT')
+                                <textarea name="alasan_penolakan_perusahaan" rows="2" placeholder="Alasan penolakan (opsional)" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></textarea>
+                                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg transition duration-150">
+                                    Konfirmasi Tolak
+                                </button>
+                            </form>
+
+                        @elseif(in_array($kerjasama->status, ['draft', 'proposal', 'negosiasi']) && $kerjasama->pengirim !== 'admin')
                             <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                                 <p class="text-sm text-yellow-800">
                                     <strong>Menunggu Persetujuan (ACC) Admin.</strong> Dokumen {{ $kerjasama->jenisDokumenLabel() }} yang Anda kirim sedang ditinjau. Anda akan diberi tahu setelah admin menyetujui atau menolak.
@@ -177,7 +214,13 @@
 
                         @elseif($kerjasama->status === 'aktif')
                             <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                                <p class="text-sm text-green-800"><strong>Kerjasama Aktif.</strong> Pengajuan Anda telah disetujui (ACC) oleh admin.</p>
+                                <p class="text-sm text-green-800"><strong>Kerjasama Aktif.</strong> Pengajuan telah disetujui (ACC).</p>
+                                @if($kerjasama->disetujui_perusahaan_at)
+                                    <p class="text-xs text-green-700 mt-2">Disetujui perusahaan: {{ $kerjasama->disetujui_perusahaan_at->format('d F Y H:i') }}</p>
+                                @endif
+                                @if($kerjasama->disetujui_at)
+                                    <p class="text-xs text-green-700 mt-1">Disetujui pada: {{ $kerjasama->disetujui_at->format('d F Y H:i') }}</p>
+                                @endif
                             </div>
                         @elseif($kerjasama->status === 'selesai')
                             <div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
@@ -187,16 +230,26 @@
                             <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
                                 <p class="text-sm text-red-800"><strong>Pengajuan dibatalkan/ditolak.</strong></p>
                                 @if($kerjasama->alasan_penolakan)
-                                    <p class="text-xs text-red-700 mt-2">Alasan: {{ $kerjasama->alasan_penolakan }}</p>
+                                    <p class="text-xs text-red-700 mt-2">Alasan (admin): {{ $kerjasama->alasan_penolakan }}</p>
+                                @endif
+                                @if($kerjasama->alasan_penolakan_perusahaan)
+                                    <p class="text-xs text-red-700 mt-1">Alasan (perusahaan): {{ $kerjasama->alasan_penolakan_perusahaan }}</p>
                                 @endif
                             </div>
                         @endif
+
                         <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                             <p class="text-xs text-blue-800">
-                                <strong>Alur:</strong> Anda mengajukan kerja sama & mengunggah dokumen (MoU/MoA/Surat Kerjasama) → Admin langsung meninjau & meng-ACC → Kerjasama Aktif.
+                                <strong>Alur:</strong>
+                                @if($kerjasama->pengirim === 'admin')
+                                    Admin Sekolah mengirim dokumen kerjasama → Perusahaan menyetujui (ACC) atau menolak → Kerjasama Aktif / Ditolak.
+                                @else
+                                    Anda mengajukan kerja sama & mengunggah dokumen → Admin langsung meninjau & meng-ACC → Kerjasama Aktif.
+                                @endif
                             </p>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- Detail Info Card -->
