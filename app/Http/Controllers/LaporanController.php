@@ -246,7 +246,7 @@ class LaporanController extends Controller
                 break;
 
             case 'kerjasama':
-                $rows[] = ['No', 'Judul Kerjasama', 'Perusahaan', 'Jenis Kerjasama', 'PIC Sekolah', 'PIC Industri', 'Nilai Kontrak', 'Tanggal Mulai', 'Tanggal Berakhir', 'Status', 'Catatan'];
+                $rows[] = ['No', 'Judul Kerjasama', 'Perusahaan', 'Jenis Kerjasama', 'Pic lembaga/bidang', 'PIC Industri', 'Nilai Kontrak', 'Tanggal Mulai', 'Tanggal Berakhir', 'Status', 'Catatan'];
                 $query = KerjasamaIndustri::with('perusahaan');
                 if (!empty($filters['status'])) $query->where('status', $filters['status']);
                 if (!empty($filters['jenis_kerjasama'])) $query->where('jenis_kerjasama', $filters['jenis_kerjasama']);

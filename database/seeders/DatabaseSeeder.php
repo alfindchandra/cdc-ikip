@@ -44,6 +44,14 @@ class DatabaseSeeder extends Seeder
             'is_active' => true,
             'email_verified_at' => now(),
         ]);
+        $admin = User::create([
+            'name' => 'Administrator CDC 2',
+            'email' => 'admin2@ikippgribojonegoro.ac.id',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ]);
 
         $mahasiswaUser1 = User::create([
            'name' => 'Siti Nurhaliza',

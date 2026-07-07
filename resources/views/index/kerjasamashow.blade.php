@@ -168,10 +168,10 @@
                     </div>
                     <div class="p-8">
                         <div class="grid md:grid-cols-2 gap-8">
-                            <!-- PIC Sekolah -->
+                            <!-- Pic lembaga/bidang -->
                             @if($kerjasama->pic_sekolah)
                             <div>
-                                <p class="text-sm font-semibold text-gray-600 mb-2">PIC SEKOLAH</p>
+                                <p class="text-sm font-semibold text-gray-600 mb-2">PIC LEMBAGA/BIDANG</p>
                                 <p class="text-lg font-bold text-gray-800">{{ $kerjasama->pic_sekolah }}</p>
                             </div>
                             @endif

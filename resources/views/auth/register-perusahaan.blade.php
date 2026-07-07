@@ -135,7 +135,7 @@
                         <!-- No Telepon Perusahaan -->
                         <div>
                             <label for="no_telp" class="block text-sm font-semibold text-gray-700 mb-2">No. Telepon Perusahaan *</label>
-                            <input type="tel" id="no_telp" name="no_telp" value="{{ old('no_telp') }}" 
+                            <input type="number" id="no_telp" name="no_telp" value="{{ old('no_telp') }}" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
                                    placeholder="021xxxxxxxx atau 08xxxxxxxxxx" maxlength="15" required>
                         </div>
@@ -191,7 +191,7 @@
                         <!-- Kode Pos -->
                         <div>
                             <label for="kode_pos" class="block text-sm font-semibold text-gray-700 mb-2">Kode Pos</label>
-                            <input type="text" id="kode_pos" name="kode_pos" value="{{ old('kode_pos') }}" 
+                            <input type="number" id="kode_pos" name="kode_pos" value="{{ old('kode_pos') }}" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
                                    placeholder="62111" maxlength="10">
                         </div>
@@ -235,7 +235,7 @@
                         <!-- No Telepon PIC -->
                         <div>
                             <label for="no_telp_pic" class="block text-sm font-semibold text-gray-700 mb-2">No. Telepon PIC *</label>
-                            <input type="tel" id="no_telp_pic" name="no_telp_pic" value="{{ old('no_telp_pic') }}" 
+                            <input type="number" id="no_telp_pic" name="no_telp_pic" value="{{ old('no_telp_pic') }}" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
                                    placeholder="08xxxxxxxxxx" maxlength="15" required>
                         </div>

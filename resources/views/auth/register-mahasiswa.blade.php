@@ -107,7 +107,7 @@
                         <!-- NIM -->
                         <div>
                             <label for="nim" class="block text-sm font-semibold text-gray-700 mb-2">NIM *</label>
-                            <input type="text" id="nim" name="nim" value="{{ old('nim') }}" 
+                            <input type="number" id="nim" name="nim" value="{{ old('nim') }}" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                                    placeholder="Nomor Induk Mahasiswa" maxlength="20" required>
                         </div>
@@ -162,7 +162,7 @@
                         <!-- No Telepon -->
                         <div>
                             <label for="no_telp" class="block text-sm font-semibold text-gray-700 mb-2">No. Telepon *</label>
-                            <input type="tel" id="no_telp" name="no_telp" value="{{ old('no_telp') }}" 
+                            <input type="number" id="no_telp" name="no_telp" value="{{ old('no_telp') }}" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                                    placeholder="08xxxxxxxxxx" maxlength="15" required>
                         </div>
@@ -255,7 +255,7 @@
                         <!-- No Telepon Orang Tua -->
                         <div class="md:col-span-2">
                             <label for="no_telp_ortu" class="block text-sm font-semibold text-gray-700 mb-2">No. Telepon Orang Tua / Wali</label>
-                            <input type="tel" id="no_telp_ortu" name="no_telp_ortu" value="{{ old('no_telp_ortu') }}" 
+                            <input type="number" id="no_telp_ortu" name="no_telp_ortu" value="{{ old('no_telp_ortu') }}" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                                    placeholder="08xxxxxxxxxx" maxlength="15">
                         </div>

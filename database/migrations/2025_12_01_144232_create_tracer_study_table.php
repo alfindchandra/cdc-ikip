@@ -20,7 +20,9 @@ return new class extends Migration
                 'bekerja', 
                 'wirausaha', 
                 'melanjutkan_studi', 
-                'belum_bekerja'
+                'belum_bekerja', 
+                'belum_memungkinkan_bekerja',
+                'ppg'
             ]);
             
             // Data Pekerjaan

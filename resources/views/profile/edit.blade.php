@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.index')
 
 @section('title', 'Edit Profil')
 @section('page-title', 'Edit Profil')
 
-@section('content')
+@section('home')
 <div class="max-w-4xl mx-auto space-y-6">
     <!-- Back Button -->
     <a href="{{ route('profile') }}" class="inline-flex items-center text-blue-600 hover:text-blue-700">

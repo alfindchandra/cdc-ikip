@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+ 
 use App\Models\TracerStudy;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
@@ -336,7 +336,8 @@ class TracerStudyController extends Controller
 
         // Validasi dasar + reCAPTCHA
         $validated = $request->validate([
-            'status_pekerjaan' => 'required|in:bekerja,belum_memungkinkan_bekerja,wirausaha,melanjutkan_studi,belum_bekerja',
+            // Tambahkan 'ppg' ke dalam aturan 'in'
+            'status_pekerjaan' => 'required|in:bekerja,belum_memungkinkan_bekerja,wirausaha,melanjutkan_studi,belum_bekerja,ppg',
             
             // Data Pekerjaan (untuk status bekerja)
             'waktu_tunggu_kerja' => 'nullable|integer|min:0',
@@ -362,6 +363,11 @@ class TracerStudyController extends Controller
             'nama_institusi' => 'nullable|string|max:255',
             'jurusan_studi' => 'nullable|string|max:255',
             'tanggal_masuk_studi' => 'nullable|date',
+
+            // Data Baru: Pendidikan Profesi Guru (PPG)
+            'jenis_ppg' => 'nullable|string|max:100', // Prajabatan / Dalam Jabatan
+            'lptk_ppg' => 'nullable|string|max:255',   // Universitas Penyelenggara
+            'tahun_ppg' => 'nullable|integer|min:2000',
             
             // Kompetensi
             'kompetensi_saat_lulus' => 'nullable|array',
@@ -399,8 +405,6 @@ class TracerStudyController extends Controller
             'status_pekerjaan.required' => 'Status pekerjaan harus diisi.',
         ]);
 
-       
-
         // Siapkan data untuk disimpan
         $data = [
             'mahasiswa_id' => $mahasiswa->id,
@@ -427,6 +431,12 @@ class TracerStudyController extends Controller
             $data['nama_institusi'] = $validated['nama_institusi'] ?? null;
             $data['jurusan_studi'] = $validated['jurusan_studi'] ?? null;
             $data['sumber_biaya'] = $validated['sumber_biaya'] ?? null;
+        } elseif ($validated['status_pekerjaan'] === 'ppg') {
+            // Mapping kolom opsional disesuaikan dengan struktur tabel TracerStudy Anda
+            // Disimpan ke kolom yang ada atau di-serialize jika kolom spesifik belum dibuat di database
+            $data['nama_institusi'] = $validated['lptk_ppg'] ?? null;
+            $data['jurusan_studi'] = 'Pendidikan Profesi Guru (' . ($validated['jenis_ppg'] ?? '') . ')';
+            $data['sumber_biaya'] = $validated['jenis_ppg'] == 'prajabatan' ? 'Beasiswa Kemendikbud' : 'Mandiri/Pemerintah';
         }
 
         // Simpan data kompetensi dan metode pembelajaran sebagai JSON
@@ -444,6 +454,10 @@ class TracerStudyController extends Controller
                 'jumlah_wawancara' => $validated['jumlah_wawancara'] ?? null,
             ],
             'alasan_tidak_sesuai' => $validated['alasan_tidak_sesuai'] ?? [],
+            'ppg_detail' => $validated['status_pekerjaan'] === 'ppg' ? [
+                'jenis_ppg' => $validated['jenis_ppg'] ?? null,
+                'tahun_ppg' => $validated['tahun_ppg'] ?? null,
+            ] : null
         ]);
 
         // Tambahkan kepuasan dan saran

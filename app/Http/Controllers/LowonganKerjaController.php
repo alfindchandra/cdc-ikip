@@ -67,6 +67,7 @@ class LowonganKerjaController extends Controller
     public function adminIndex(Request $request)
     {
       $query = LowonganKerja::with('perusahaan');
+      
 
     if ($request->has('search') && $request->search != '') {
         $search = $request->search;
@@ -252,7 +253,6 @@ public function adminPelamar(Request $request, $lowonganId)
     public function adminStore(Request $request)
     {
         $validated = $request->validate([
-            'judul'           => 'required|string|max:200',
             'posisi'          => 'required|string|max:100',
             'category'        => 'required|string|max:100',
             'deskripsi'       => 'required|string',

@@ -93,47 +93,7 @@
                     </div>
                 </div>
 
-                <div class="card shadow-md border border-gray-100">
-                    <div class="card-header bg-white rounded-t-xl p-6 border-b border-gray-100">
-                        <h3 class="text-xl font-bold text-gray-900">Tentang Perusahaan</h3>
-                    </div>
-                    <div class="card-body p-6">
-                        <div class="flex items-start space-x-4 mb-4">
-                            @if($lowongan->perusahaan->logo)
-                            <img src="{{ Storage::url($lowongan->perusahaan->logo) }}" alt="{{ $lowongan->perusahaan->nama_perusahaan }}" class="w-16 h-16 rounded-xl object-cover border border-gray-200 flex-shrink-0 shadow-sm">
-                            @else
-                            <div class="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center flex-shrink-0 border border-gray-200 shadow-sm">
-                                <span class="text-gray-600 font-bold text-2xl">{{ substr($lowongan->perusahaan->nama_perusahaan, 0, 1) }}</span>
-                            </div>
-                            @endif
-                            <div class="flex-grow">
-                                <p class="font-bold text-gray-900 text-xl">{{ $lowongan->perusahaan->nama_perusahaan }}</p>
-                                <p class="text-sm text-gray-600">{{ $lowongan->perusahaan->bidang_usaha }}</p>
-                            </div>
-                        </div>
-                        
-                        @if($lowongan->perusahaan->deskripsi)
-                        <p class="text-gray-700 mb-6 leading-relaxed text-sm">{{ Str::limit($lowongan->perusahaan->deskripsi, 200) }}</p>
-                        @endif
-
-                        <div class="space-y-3 text-sm">
-                            @if($lowongan->perusahaan->alamat)
-                            <div class="flex items-start">
-                                <svg class="w-4 h-4 mr-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
-                                <span class="text-gray-600">{{ $lowongan->perusahaan->alamat }}</span>
-                            </div>
-                            @endif
-                            @if($lowongan->perusahaan->website)
-                            <div class="flex items-start">
-                                <svg class="w-4 h-4 mr-3 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                                <a href="{{ $lowongan->perusahaan->website }}" target="_blank" class="text-blue-600 hover:text-blue-700 transition-colors duration-200 break-all">
-                                    {{ $lowongan->perusahaan->website }}
-                                </a>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
+                
             </div>
 
             <div class="lg:col-span-1 space-y-8">

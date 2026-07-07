@@ -1,4 +1,3 @@
-
 @extends('layouts.index')
 @section('title', 'Mitra Perusahaan')
 @section('home')
@@ -9,6 +8,7 @@
         'bekerja' => 0,
         'kuliah' => 0,
         'wirausaha' => 0,
+        'ppg' => 0, // Tambahan default PPG
         'belum_bekerja' => 0,
         'rata_gaji' => 0,
         'rata_omzet' => 0,
@@ -21,14 +21,15 @@
     // Hitung total responden untuk persentase
     $totalResponden = $statistik['total_responden'] > 0 ? $statistik['total_responden'] : 1;
 
-    // Pastikan 'belum_bekerja' dihitung jika tidak ada
-    $statistik['belum_bekerja'] = $statistik['total_responden'] - ($statistik['bekerja'] + $statistik['kuliah'] + $statistik['wirausaha']);
+    // Pastikan 'belum_bekerja' dihitung jika tidak ada (dikurangi termasuk dengan ppg)
+    $statistik['belum_bekerja'] = $statistik['total_responden'] - ($statistik['bekerja'] + $statistik['kuliah'] + $statistik['wirausaha'] + ($statistik['ppg'] ?? 0));
 
     // Data untuk Chart.js Status
     $chartStatusData = [
         'bekerja' => $statistik['bekerja'],
         'kuliah' => $statistik['kuliah'],
         'wirausaha' => $statistik['wirausaha'],
+        'ppg' => $statistik['ppg'] ?? 0, // Tambahan data chart PPG
         'belum_bekerja' => $statistik['belum_bekerja'],
     ];
 
@@ -46,11 +47,6 @@
 
 <div> 
 
-
-
-
-    ---
-
     {{-- Statistik Overview --}}
     <section id="tracer" class="py-16 bg-gray-50">
         <div class="container mx-auto px-4">
@@ -61,13 +57,14 @@
             </div>
 
             {{-- Cards --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-16"> {{-- Diubah grid-cols menjadi lg:grid-cols-5 agar memuat 5 card seimbang --}}
                 @php
                     $statCards = [
                         ['label' => 'Total Responden', 'key' => 'total_responden', 'icon' => 'fas fa-users', 'color' => 'indigo'],
                         ['label' => 'Sudah Bekerja', 'key' => 'bekerja', 'icon' => 'fas fa-briefcase', 'color' => 'green'],
                         ['label' => 'Melanjutkan Kuliah', 'key' => 'kuliah', 'icon' => 'fas fa-graduation-cap', 'color' => 'cyan'],
                         ['label' => 'Wirausaha', 'key' => 'wirausaha', 'icon' => 'fas fa-store', 'color' => 'amber'],
+                        ['label' => 'Pendidikan PPG', 'key' => 'ppg', 'icon' => 'fas fa-user-graduate', 'color' => 'pink'], // Tambahan Card PPG
                     ];
                 @endphp
 
@@ -78,20 +75,20 @@
                             <div class="p-3 rounded-full bg-{{ $card['color'] }}-100">
                                 <i class="{{ $card['icon'] }} fa-2x text-{{ $card['color'] }}-600"></i>
                             </div>
-                            @if(in_array($card['key'], ['bekerja', 'kuliah', 'wirausaha']))
+                            @if(in_array($card['key'], ['bekerja', 'kuliah', 'wirausaha', 'ppg']))
                                 <div class="px-3 py-1 rounded-full bg-{{ $card['color'] }}-200 text-{{ $card['color'] }}-800 font-bold text-sm">
-                                    {{ $totalResponden > 1 ? round(($statistik[$card['key']] ?? 0 / $totalResponden) * 100, 1) : 0 }}%
+                                    {{ $totalResponden > 1 ? round((($statistik[$card['key']] ?? 0) / $totalResponden) * 100, 1) : 0 }}%
                                 </div>
                             @endif
                         </div>
                         <h3 class="text-4xl font-extrabold text-gray-900 mb-1">{{ $statistik[$card['key']] ?? 0 }}</h3>
-                        <p class="text-gray-500">{{ $card['label'] }}</p>
+                        <p class="text-gray-500 text-sm">{{ $card['label'] }}</p>
                     </div>
                 @endforeach
             </div>
 
             {{-- Chart Visualization --}}
-             <section class="container mx-auto px-4">
+            <section class="container mx-auto px-4">
         
 
         {{-- Breakdown Status (Progress Bars) --}}
@@ -106,13 +103,16 @@
                         'bekerja' => ['icon' => 'fas fa-briefcase', 'color' => 'green', 'label' => 'Bekerja'],
                         'wirausaha' => ['icon' => 'fas fa-store', 'color' => 'blue', 'label' => 'Wirausaha'],
                         'melanjutkan_studi' => ['icon' => 'fas fa-book', 'color' => 'cyan', 'label' => 'Melanjutkan Studi'],
+                        'ppg' => ['icon' => 'fas fa-user-graduate', 'color' => 'pink', 'label' => 'Pendidikan Profesi Guru (PPG)'], // Tambahan Row PPG
                         'belum_bekerja' => ['icon' => 'fas fa-user-clock', 'color' => 'amber', 'label' => 'Belum Bekerja'],
                     ];
                 @endphp
 
                 @foreach($breakdownStatus as $key => $info)
                     @php
-                        $count = $statistik[$key] ?? 0;
+                        // Menyelaraskan key 'melanjutkan_studi' dengan data array 'kuliah'
+                        $actualKey = ($key === 'melanjutkan_studi') ? 'kuliah' : $key;
+                        $count = $statistik[$actualKey] ?? 0;
                         $percentage = ($count / $totalResponden) * 100;
                     @endphp
                     <div class="space-y-1 group">
@@ -140,7 +140,7 @@
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
                 <span class="text-green-600 font-semibold uppercase tracking-wider">Kualitas Lulusan</span>
-                <h2 class="text-4xl font-extrabold text-gray-900 mt-2">Kesesuaian Bidang Kerja</h2>
+                <h2 class="text-4xl font-extrabold text-gray-900 mt-2">Kessesuaian Bidang Kerja</h2>
                 <p class="text-gray-600 mt-4 text-lg">Tingkat kesesuaian antara bidang studi dengan pekerjaan</p>
             </div>
 
@@ -177,14 +177,9 @@
         </div>
     </section>
 
-
-
-  
- 
 </div> {{-- End kontainer utama --}}
 
 @push('scripts')
-{{-- Hanya Chart.js yang diperlukan --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -204,25 +199,27 @@
             const data = JSON.parse(chartDataAttr);
 
             if (!data || Object.values(data).every(v => v === 0)) {
-                return; // Tidak perlu inisialisasi jika data kosong
+                return; 
             }
 
             new Chart(statusCtx.getContext('2d'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Bekerja', 'Kuliah', 'Wirausaha', 'Belum Bekerja'],
+                    labels: ['Bekerja', 'Kuliah', 'Wirausaha', 'PPG', 'Belum Bekerja'],
                     datasets: [{
                         data: [
                             data.bekerja,
                             data.kuliah,
                             data.wirausaha,
+                            data.ppg || 0,
                             data.belum_bekerja
                         ],
                         backgroundColor: [
                             'rgba(16, 185, 129, 0.9)', // Green-500
                             'rgba(99, 102, 241, 0.9)', // Indigo-500
                             'rgba(251, 191, 36, 0.9)', // Amber-400
-                            'rgba(107, 114, 128, 0.9)' // Gray-500
+                            'rgba(236, 72, 153, 0.9)',  // Pink-500 (PPG)
+                            'rgba(107, 114, 128, 0.9)'  // Gray-500
                         ],
                         borderColor: '#fff',
                         borderWidth: 3,
@@ -272,7 +269,7 @@
             const data = JSON.parse(chartDataAttr);
 
              if (!data || Object.values(data).every(v => v === 0)) {
-                return; // Tidak perlu inisialisasi jika data kosong
+                return; 
             }
 
             new Chart(waktuTungguCtx.getContext('2d'), {
@@ -287,8 +284,8 @@
                             data.tunggu_12,
                             data.tunggu_lebih
                         ],
-                        backgroundColor: 'rgba(79, 70, 229, 0.85)', // Indigo-600
-                        borderColor: 'rgba(55, 48, 163, 1)', // Indigo-800
+                        backgroundColor: 'rgba(79, 70, 229, 0.85)', 
+                        borderColor: 'rgba(55, 48, 163, 1)', 
                         borderWidth: 1,
                         borderRadius: 8,
                         hoverBackgroundColor: 'rgba(99, 102, 241, 1)',
@@ -345,20 +342,22 @@
     // Ambil nilai dari PHP dan pastikan default ke 0 jika tidak ada
     const dataBekerja = {{ $statistik['bekerja'] ?? 0 }};
     const dataWirausaha = {{ $statistik['wirausaha'] ?? 0 }};
-    const dataStudi = {{ $statistik['melanjutkan_studi'] ?? 0 }};
+    const dataStudi = {{ $statistik['kuliah'] ?? 0 }};
+    const dataPpg = {{ $statistik['ppg'] ?? 0 }}; // Tambahan variabel JS untuk PPG
     const dataBelumBekerja = {{ $statistik['belum_bekerja'] ?? 0 }};
 
     const ctx = document.getElementById('statusChart').getContext('2d');
     new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Bekerja', 'Wirausaha', 'Melanjutkan Studi', 'Belum Bekerja'],
+            labels: ['Bekerja', 'Wirausaha', 'Melanjutkan Studi', 'PPG', 'Belum Bekerja'],
             datasets: [{
-                data: [dataBekerja, dataWirausaha, dataStudi, dataBelumBekerja],
+                data: [dataBekerja, dataWirausaha, dataStudi, dataPpg, dataBelumBekerja],
                 backgroundColor: [
                     'rgba(16, 185, 129, 0.9)', // Green-500
                     'rgba(59, 130, 246, 0.9)', // Blue-500
                     'rgba(6, 182, 212, 0.9)',  // Cyan-500
+                    'rgba(236, 72, 153, 0.9)',  // Pink-500 (PPG)
                     'rgba(245, 158, 11, 0.9)'  // Amber-500
                 ],
                 borderColor: 'rgba(255, 255, 255, 1)',

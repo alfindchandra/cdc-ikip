@@ -157,12 +157,12 @@
                             </div>
                             @endif
 
-                            <!-- PIC Sekolah -->
+                            <!-- Pic lembaga/bidang -->
                             @if($kerjasama->pic_sekolah)
                             <div class="flex items-start text-sm text-gray-600">
                                 <i class="fas fa-user-tie text-purple-500 w-4 mr-2 mt-0.5 flex-shrink-0"></i>
                                 <div>
-                                    <p class="font-semibold text-gray-700">PIC Sekolah</p>
+                                    <p class="font-semibold text-gray-700">Pic lembaga/bidang</p>
                                     <p>{{ $kerjasama->pic_sekolah }}</p>
                                 </div>
                             </div>

@@ -97,6 +97,7 @@
                                     'belum_memungkinkan_bekerja' => ['icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', 'label' => 'Belum memungkinkan bekerja', 'color' => 'yellow'],
                                     'wirausaha' => ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'label' => 'Wiraswasta', 'color' => 'blue'],
                                     'melanjutkan_studi' => ['icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', 'label' => 'Melanjutkan Pendidikan', 'color' => 'purple'],
+                                    'ppg' => ['icon' => 'M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222', 'label' => 'Pendidikan Profesi Guru (PPG)', 'color' => 'pink'],
                                     'belum_bekerja' => ['icon' => 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z', 'label' => 'Tidak kerja tetapi sedang mencari kerja', 'color' => 'red']
                                 ];
                             @endphp
@@ -388,6 +389,40 @@
                             <input type="date" 
                                    name="tanggal_masuk_studi" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        </div>
+                    </div>
+                </div>
+                {{-- SECTION 4B: PENDIDIKAN PROFESI GURU (PPG) --}}
+                <div x-show="status === 'ppg'" x-transition class="mb-10 p-6 bg-pink-50 rounded-2xl border-2 border-pink-200">
+                    <h2 class="text-2xl font-bold pb-3 mb-6 flex items-center text-pink-800">
+                        <span class="bg-pink-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">4B</span>
+                        Informasi Pendidikan Profesi Guru (PPG)
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Jenis PPG
+                            </label>
+                            <select name="jenis_ppg" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent">
+                                <option value="">Pilih Jenis PPG</option>
+                                <option value="prajabatan" {{ old('jenis_ppg') == 'prajabatan' ? 'selected' : '' }}>PPG Prajabatan</option>
+                                <option value="dalam_jabatan" {{ old('jenis_ppg') == 'dalam_jabatan' ? 'selected' : '' }}>PPG Dalam Jabatan</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                LPTK Penyelenggara (Universitas)
+                            </label>
+                            <input type="text" name="lptk_ppg" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent" value="{{ old('lptk_ppg') }}" placeholder="Contoh: IKIP PGRI Bojonegoro">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                Tahun Pelaksanaan
+                            </label>
+                            <input type="number" name="tahun_ppg" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent" value="{{ old('tahun_ppg', date('Y')) }}" min="2000">
                         </div>
                     </div>
                 </div>
@@ -766,7 +801,7 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
                                 No. Telepon Saat Ini
                             </label>
-                            <input type="tel" 
+                            <input type="number" 
                                    name="no_telp_saat_ini" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
                                    value="{{ old('no_telp_saat_ini', $tracerStudy->no_telp_saat_ini ?? '') }}"

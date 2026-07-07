@@ -131,7 +131,7 @@
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="p-6 rounded-xl bg-blue-50 border border-blue-200">
-                            <p class="text-xs text-blue-600 font-semibold uppercase mb-2">PIC Sekolah</p>
+                            <p class="text-xs text-blue-600 font-semibold uppercase mb-2">Pic lembaga/bidang</p>
                             <p class="text-lg font-bold text-gray-900">{{ $kerjasama->pic_sekolah ?? '-' }}</p>
                         </div>
                         <div class="p-6 rounded-xl bg-indigo-50 border border-indigo-200">

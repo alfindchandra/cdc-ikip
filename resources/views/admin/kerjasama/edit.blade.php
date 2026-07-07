@@ -272,7 +272,7 @@
                         <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2">Person In Charge (PIC)</h4>
                         
                         <div>
-                            <label for="pic_sekolah" class="block text-xs font-bold text-gray-500 mb-1">PIC SEKOLAH</label>
+                            <label for="pic_sekolah" class="block text-xs font-bold text-gray-500 mb-1">PIC LEMBAGA/BIDANG</label>
                             <input type="text" id="pic_sekolah" name="pic_sekolah" value="{{ old('pic_sekolah', $kerjasama->pic_sekolah) }}" 
                                 class="w-full px-4 py-2 bg-gray-50 border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 text-sm" placeholder="Nama lengkap">
                         </div>

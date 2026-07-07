@@ -37,7 +37,6 @@ Route::get('/faq', [HomeController::class, 'faxFaq'])->name('index.faq');
 
 Route::get('/kerjasama', [WelcomeController::class, 'kerjasama'])->name('index.kerjasama');
 Route::get('/kerjasama/{kerjasama}', [WelcomeController::class, 'kerjasamaShow'])->name('show.kerjasama');
-Route::get('/tracer-study', [WelcomeController::class, 'tracerStudy'])->name('index.tracer-study');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 

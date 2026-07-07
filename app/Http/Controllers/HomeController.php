@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\LowonganKerja;
 use App\Models\Perusahaan;
 use App\Models\Pelatihan;
+use App\Models\KerjasamaIndustri;
+use App\Models\TracerStudy;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -114,75 +117,76 @@ public function lowongan(Request $request)
 
         return view('home.pelatihan.show', compact('kelas', 'kelasLainnya'));
     }
-    public function tracerStudy(Request $request)
-    {
-        $user = auth()->user();
+   public function tracerStudy(Request $request)
+{
+    $user = auth()->user();
 
-        // Query builder untuk lowongan kerja
-        $query = LowonganKerja::with('perusahaan')
-            ->where('status', 'aktif')
-            ->where('tanggal_berakhir', '>=', now());
+    // Query builder untuk lowongan kerja
+    $query = LowonganKerja::with('perusahaan')
+        ->where('status', 'aktif')
+        ->where('tanggal_berakhir', '>=', now());
 
-        // Filter berdasarkan keyword
-        if ($request->filled('keyword')) {
-            $keyword = $request->keyword;
-            $query->where(function($q) use ($keyword) {
-                $q->where('posisi', 'like', "%{$keyword}%")
-                  ->orWhere('deskripsi', 'like', "%{$keyword}%")
-                  ->orWhereHas('perusahaan', function($q) use ($keyword) {
-                      $q->where('nama_perusahaan', 'like', "%{$keyword}%");
-                  });
-            });
-        }
+    // Filter berdasarkan keyword
+    if ($request->filled('keyword')) {
+        $keyword = $request->keyword;
+        $query->where(function($q) use ($keyword) {
+            $q->where('posisi', 'like', "%{$keyword}%")
+              ->orWhere('deskripsi', 'like', "%{$keyword}%")
+              ->orWhereHas('perusahaan', function($q) use ($keyword) {
+                  $q->where('nama_perusahaan', 'like', "%{$keyword}%");
+              });
+        });
+    }
 
-        // Filter berdasarkan lokasi
-        if ($request->filled('lokasi')) {
-            $query->where('lokasi', $request->lokasi);
-        }
+    // Filter berdasarkan lokasi
+    if ($request->filled('lokasi')) {
+        $query->where('lokasi', $request->lokasi);
+    }
 
-        // Filter berdasarkan tipe pekerjaan
-        if ($request->filled('tipe')) {
-            $query->where('tipe_pekerjaan', $request->tipe);
-        }
+    // Filter berdasarkan tipe pekerjaan
+    if ($request->filled('tipe')) {
+        $query->where('tipe_pekerjaan', $request->tipe);
+    }
 
-        // Ambil hasil dengan pagination atau limit
-        $lowonganTerbaru = $query->latest()
-            ->take(8)
-            ->get();
+    // Ambil hasil dengan pagination atau limit
+    $lowonganTerbaru = $query->latest()
+        ->take(8)
+        ->get();
 
-        // Ambil perusahaan dengan status kerjasama aktif
-        $perusahaanMitra = Perusahaan::where('status_kerjasama', 'aktif')
-            ->latest()
-            ->take(12)
-            ->get();
+    // Ambil perusahaan dengan status kerjasama aktif
+    $perusahaanMitra = Perusahaan::where('status_kerjasama', 'aktif')
+        ->latest()
+        ->take(12)
+        ->get();
 
-        // Ambil pelatihan yang published
-        $pelatihanTerbaru = Pelatihan::where('status', 'published')
-            ->where('tanggal_mulai', '>=', now())
-            ->latest()
-            ->take(3)
-            ->get();
+    // Ambil pelatihan yang published
+    $pelatihanTerbaru = Pelatihan::where('status', 'published')
+        ->where('tanggal_mulai', '>=', now())
+        ->latest()
+        ->take(3)
+        ->get();
 
-        // Ambil kerjasama yang aktif
-        $kerjasamaTerbaru = KerjasamaIndustri::with('perusahaan')
-            ->where('status', 'aktif')
-            ->where('tanggal_berakhir', '>=', now())
-            ->latest()
-            ->take(6)
-            ->get();
+    // Ambil kerjasama yang aktif
+    $kerjasamaTerbaru = KerjasamaIndustri::with('perusahaan')
+        ->where('status', 'aktif')
+        ->where('tanggal_berakhir', '>=', now())
+        ->latest()
+        ->take(6)
+        ->get();
 
-        // Statistik
-        $statistik = [
-            'total_lowongan' => LowonganKerja::where('status', 'aktif')->count(),
-            'total_perusahaan' => Perusahaan::where('status_kerjasama', 'aktif')->count(),
-            'total_mahasiswa_pkl' => \App\Models\Pkl::where('status', 'berlangsung')->count(),
-            'total_alumni' => \App\Models\Mahasiswa::where('status', 'lulus')->count(),
-              'total_responden' => TracerStudy::count(),
+    // Statistik Utama & Status Pekerjaan mengikuti ENUM
+    $statistik = [
+        'total_lowongan' => LowonganKerja::where('status', 'aktif')->count(),
+        'total_perusahaan' => Perusahaan::where('status_kerjasama', 'aktif')->count(),
+        'total_mahasiswa_pkl' => \App\Models\Pkl::where('status', 'berlangsung')->count(),
+        'total_alumni' => \App\Models\Mahasiswa::where('status', 'lulus')->count(),
+        'total_responden' => TracerStudy::count(),
 
-        // Status pekerjaan mengikuti ENUM pada migrasi
+        // Mengambil hitungan data ppg dari database
         'bekerja' => TracerStudy::where('status_pekerjaan', 'bekerja')->count(),
         'kuliah' => TracerStudy::where('status_pekerjaan', 'melanjutkan_studi')->count(),
         'wirausaha' => TracerStudy::where('status_pekerjaan', 'wirausaha')->count(),
+        'ppg' => TracerStudy::where('status_pekerjaan', 'ppg')->count(), // Tambahan PPG
         'belum_bekerja' => TracerStudy::where('status_pekerjaan', 'belum_bekerja')->count(),
 
         // Rata-rata gaji (penghasilan)
@@ -194,9 +198,8 @@ public function lowongan(Request $request)
         'rata_omzet' => TracerStudy::where('status_pekerjaan', 'wirausaha')
                                    ->whereNotNull('omzet_usaha')
                                    ->avg(DB::raw('CAST(omzet_usaha AS SIGNED)')) ?? 0,
-        ];
-        // Statistik Umum 
-   
+    ];
+
     // Waktu Tunggu Kerja (dalam bulan)
     $statistik['tunggu_3'] = TracerStudy::where('status_pekerjaan', 'bekerja')
                                         ->where('waktu_tunggu_kerja', '<', 3)
@@ -250,7 +253,7 @@ public function lowongan(Request $request)
         }
     }
 
-    // Top 10 Perusahaan (field status_kerja DIPERBAIKI → status_pekerjaan)
+    // Top 10 Perusahaan
     $topCompanies = TracerStudy::select(
             'nama_perusahaan', 
             'bidang_pekerjaan', 
@@ -263,8 +266,7 @@ public function lowongan(Request $request)
         ->take(10)
         ->get();
     
-
-    // Testimoni Alumni (kolom kepuasan_alumni TIDAK ADA → diganti kepuasan_pendidikan)
+    // Testimoni Alumni
     $testimoni = TracerStudy::with(['mahasiswa.user', 'mahasiswa.programStudi'])
                             ->whereNotNull('kepuasan_pendidikan')
                             ->where('kepuasan_pendidikan', '>=', 4)
@@ -272,19 +274,19 @@ public function lowongan(Request $request)
                             ->take(6)
                             ->get();
 
-        // Kirim semua data ke view
-        return view('index.tracer-study', compact(
-            'user',
-            'lowonganTerbaru',
-            'perusahaanMitra',
-            'pelatihanTerbaru',
-            'kerjasamaTerbaru',
-            'statistik',
-            'kesesuaianBidang',
-            'topCompanies',
-            'testimoni'
-        ));
-    }
+    // Kirim semua data ke view
+    return view('index.tracer-study', compact(
+        'user',
+        'lowonganTerbaru',
+        'perusahaanMitra',
+        'pelatihanTerbaru',
+        'kerjasamaTerbaru',
+        'statistik',
+        'kesesuaianBidang',
+        'topCompanies',
+        'testimoni'
+    ));
+}
     public function faxFaq()
     {
         // Data FAQ opsional jika ingin dilempar dinamis, atau bisa langsung ditulis di Blade

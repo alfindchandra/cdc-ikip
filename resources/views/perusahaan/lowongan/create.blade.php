@@ -51,11 +51,82 @@
                     <textarea name="deskripsi" rows="5" class="w-full border-2 p-2 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Jelaskan tugas dan tanggung jawab..." required>{{ old('deskripsi') }}</textarea>
                     @error('deskripsi')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Kualifikasi *</label>
-                    <textarea name="kualifikasi" rows="5" class="w-full p-2 rounded-lg border-gray-300 border-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Tuliskan kualifikasi yang dibutuhkan..." required>{{ old('kualifikasi') }}</textarea>
-                    @error('kualifikasi')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
-                </div>
+                 <div>
+    <label class="block text-sm font-semibold text-gray-700 mb-2">Kualifikasi <span class="text-red-500">*</span></label>
+    
+    <!-- Wrapper Alpine.js -->
+    <div x-data="{ 
+        open: false, 
+        search: '', 
+        selected: {{ json_encode(old('kualifikasi', [])) }},
+        options: [
+            'S1 Pendidikan Matematika', 'D3 Teknik Informatika', 'S2 Pendidikan Matematika',
+            'S1 Ilmu Komputer', 'S1 Sistem Informasi', 'D3 Manajemen Informatika',
+            'S1 Pendidikan Fisika', 'S1 Pendidikan Biologi', 'S1 Pendidikan Kimia',
+            'S1 Teknik Elektro', 'S1 Teknik Sipil', 'S1 Teknik Mesin',
+            'S1 Akuntansi', 'S1 Manajemen', 'S1 Ilmu Ekonomi',
+            'S1 Hukum', 'S1 Psikologi', 'S1 Hubungan Internasional',
+            'S1 Sastra Inggris', 'S1 Sastra Indonesia', 'S1 Komunikasi',
+            'S2 Ilmu Komputer', 'S2 Sistem Informasi', 'S2 Manajemen',
+            'D4 Teknik Elektronika', 'D3 Keperawatan', 'D3 Kebidanan',
+            'S1 Farmasi', 'S1 Kedokteran', 'S1 Kesehatan Masyarakat', 'Lainnya'
+        ],
+        toggle(option) {
+            if (this.selected.includes(option)) {
+                this.selected = this.selected.filter(item => item !== option);
+            } else {
+                this.selected.push(option);
+            }
+        },
+        get filteredOptions() {
+            return this.options.filter(i => i.toLowerCase().includes(this.search.toLowerCase()));
+        }
+    }" class="relative">
+        
+        <!-- Input Utama / Tempat Chips -->
+        <div @click="open = !open" class="w-full min-h-[46px] border border-gray-300 rounded-xl p-2 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 text-sm transition-all bg-white flex flex-wrap gap-1.5 items-center cursor-pointer">
+            
+            <!-- Jika belum ada yang dipilih -->
+            <template x-if="selected.length === 0">
+                <span class="text-gray-400 pl-1">Pilih Kualifikasi (Bisa lebih dari satu)</span>
+            </template>
+
+            <!-- Tampilan Chips yang dipilih -->
+            <template x-for="item in selected" :key="item">
+                <span class="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 text-xs font-medium px-2.5 py-1 rounded-lg border border-indigo-100">
+                    <span x-text="item"></span>
+                    <button type="button" @click.stop="toggle(item)" class="text-indigo-400 hover:text-indigo-600 font-bold">&times;</button>
+                </span>
+            </template>
+
+            <!-- Hidden inputs untuk dikirim ke Backend Laravel -->
+            <template x-for="item in selected" :key="'input-'+item">
+                <input type="hidden" name="kualifikasi" :value="item">
+            </template>
+        </div>
+
+        <!-- Dropdown Menu + Search Bar -->
+        <div x-show="open" @click.away="open = false" class="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto p-2" x-cloak>
+            <input type="text" x-model="search" placeholder="Cari kualifikasi..." class="w-full p-2 mb-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            
+            <div class="flex flex-col gap-0.5">
+                <template x-for="option in filteredOptions" :key="option">
+                    <div @click="toggle(option)" 
+                         :class="selected.includes(option) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100'"
+                         class="p-2 text-sm rounded-lg cursor-pointer transition-colors flex justify-between items-center">
+                        <span x-text="option"></span>
+                        <span x-show="selected.includes(option)" class="text-xs font-bold">✓</span>
+                    </div>
+                </template>
+                <template x-if="filteredOptions.length === 0">
+                    <span class="p-2 text-sm text-gray-500 italic text-center">Kualifikasi tidak ditemukan</span>
+                </template>
+            </div>
+        </div>
+    </div>
+    
+    @error('kualifikasi')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror    
+</div>
             </div>
 
             <!-- Benefit -->

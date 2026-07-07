@@ -334,7 +334,7 @@
                         </p>
                     </div>
                     <div>
-                        <p class="text-gray-500">PIC Sekolah:</p>
+                        <p class="text-gray-500">Pic lembaga/bidang:</p>
                         <p class="font-semibold text-gray-900 truncate">{{ $k->pic_sekolah ?? '-' }}</p>
                     </div>
                     <div>

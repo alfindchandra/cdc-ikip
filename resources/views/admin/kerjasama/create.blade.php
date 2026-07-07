@@ -57,7 +57,7 @@
                     <label for="jenis_kerjasama" class="block text-sm font-semibold text-gray-700 mb-2">Jenis Kerjasama <span class="text-red-500">*</span></label>
                     <select id="jenis_kerjasama" name="jenis_kerjasama" class="block w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm" required>
                         <option value="">-- Pilih Jenis --</option>
-                        @foreach(['pkl' => 'PKL', 'rekrutmen' => 'Rekrutmen', 'pelatihan' => 'Pelatihan', 'penelitian' => 'Penelitian', 'sponsorship' => 'Sponsorship', 'lainnya' => 'Lainnya'] as $val => $label)
+                        @foreach(['rekrutmen' => 'Rekrutmen', 'pelatihan' => 'Pelatihan', 'penelitian' => 'Penelitian', 'sponsorship' => 'Sponsorship', 'lainnya' => 'Lainnya'] as $val => $label)
                             <option value="{{ $val }}" {{ old('jenis_kerjasama') == $val ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
@@ -169,7 +169,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="pic_sekolah" class="block text-sm font-semibold text-gray-700 mb-2">PIC Sekolah</label>
+                    <label for="pic_sekolah" class="block text-sm font-semibold text-gray-700 mb-2">Pic lembaga/bidang</label>
                     <input type="text" id="pic_sekolah" name="pic_sekolah" value="{{ old('pic_sekolah') }}" placeholder="Nama koordinator sekolah" class="block w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
                 </div>
                 <div>
