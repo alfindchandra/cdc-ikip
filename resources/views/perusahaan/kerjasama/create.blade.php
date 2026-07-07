@@ -44,7 +44,7 @@
                     <label for="jenis_kerjasama" class="block text-sm font-semibold text-gray-700 mb-2">Jenis Kerjasama <span class="text-red-500">*</span></label>
                     <select id="jenis_kerjasama" name="jenis_kerjasama" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm" required>
                         <option value="">-- Pilih Jenis --</option>
-                        @foreach(['rekrutmen' => 'Rekrutmen', 'pelatihan' => 'Pelatihan', 'penelitian' => 'Penelitian', 'sponsorship' => 'Sponsorship', 'lainnya' => 'Lainnya'] as $val => $label)
+                        @foreach(['magang' => 'Magang', 'rekrutmen' => 'Rekrutmen', 'pelatihan' => 'Pelatihan', 'penelitian' => 'Penelitian', 'sponsorship' => 'Sponsorship', 'lainnya' => 'Lainnya'] as $val => $label)
                             <option value="{{ $val }}" {{ old('jenis_kerjasama') == $val ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>

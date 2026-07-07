@@ -13,6 +13,7 @@ class KerjasamaIndustriController extends Controller
    public function index(Request $request)
 {
     $query = KerjasamaIndustri::with('perusahaan');
+    $perusahaan = Perusahaan::where('status_kerjasama', 'aktif')->get();
 
     // Gunakan ->filled() untuk memastikan input ada dan tidak kosong ("")
     if ($request->filled('search')) {
@@ -36,7 +37,7 @@ class KerjasamaIndustriController extends Controller
     // Tambahkan ->withQueryString() agar filter tidak hilang saat pindah halaman pagination
     $kerjasama = $query->latest()->paginate(20)->withQueryString();
 
-    return view('admin.kerjasama.index', compact('kerjasama'));
+    return view('admin.kerjasama.index', compact('kerjasama', 'perusahaan'));
 }
     public function show(KerjasamaIndustri $kerjasama)
     {

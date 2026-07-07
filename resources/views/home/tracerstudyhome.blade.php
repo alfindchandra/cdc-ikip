@@ -34,10 +34,7 @@
                         Isi Kuesioner Tracer
                         <span class="material-symbols-outlined text-sm font-bold group-hover:translate-x-1 transition-transform">→</span>
                     </a>
-                    <a href="" 
-                       class="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors">
-                        Laporan Detail Publik
-                    </a>
+                    
                 </div>
             </div>
 
