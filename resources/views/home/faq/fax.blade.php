@@ -11,7 +11,7 @@
         <h1 class="display-5 fw-bold text-dark mb-3">Career Development Center (CDC) IKIP</h1>
         <h4 class="fw-normal text-muted mb-4">Sistem Informasi Penyerapan Lulusan, Magang, dan Kemitraan Industri</h4>
         <p class="lead text-secondary mx-auto" style="max-width: 800px; font-size: 1.05rem; line-height: 1.7;">
-            <strong>CDC IKIP</strong> merupakan platform karier digital terintegrasi yang dirancang khusus untuk memfasilitasi mahasiswa aktif dan alumni dalam meraih peluang masa depan terbaik. Sistem ini berfungsi sebagai jembatan interaktif bagi <strong>Perusahaan Mitra</strong> untuk mempublikasikan lowongan kerja, mengelola berkas administrasi Kerja Sama Industri (MoU/MoA), serta memantau validasi berkas PKL mahasiswa. Didukung dengan fitur otentikasi keamanan OTP, modul Pelatihan Kompetensi, hingga pelacakan data alumni (Tracer Study), kami berkomitmen menyelaraskan dunia akademik dengan kebutuhan riil Dunia Usaha Dunia Industri (DUDI).
+            <strong>CDC IKIP</strong> merupakan platform karier digital terintegrasi yang dirancang khusus untuk memfasilitasi mahasiswa aktif dan alumni dalam meraih peluang masa depan terbaik. Sistem ini berfungsi sebagai jembatan interaktif bagi <strong>Perusahaan Mitra</strong> untuk mempublikasikan lowongan kerja, mengelola berkas administrasi Kerja Sama Industri (MoU/MoA), serta memantau validasi berkas Magang mahasiswa. Didukung dengan fitur otentikasi keamanan OTP, modul Pelatihan Kompetensi, hingga pelacakan data alumni (Tracer Study), kami berkomitmen menyelaraskan dunia akademik dengan kebutuhan riil Dunia Usaha Dunia Industri (DUDI).
         </p>
     </div>
 </div>

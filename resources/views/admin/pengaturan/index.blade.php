@@ -62,9 +62,9 @@
                 </div>
 
                 <div>
-                    <label class="form-label">Batas Minimal Bulan PKL</label>
+                    <label class="form-label">Batas Minimal Bulan Magang</label>
                     <input type="number" name="batas_pkl" value="{{ \App\Models\Pengaturan::get('batas_pkl') }}" class="form-input" min="1" max="12">
-                    <p class="text-xs text-gray-500 mt-1">Durasi minimal PKL dalam bulan</p>
+                    <p class="text-xs text-gray-500 mt-1">Durasi minimal Magang dalam bulan</p>
                 </div>
 
                 <div>

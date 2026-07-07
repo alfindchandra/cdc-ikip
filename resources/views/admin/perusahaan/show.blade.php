@@ -34,47 +34,69 @@
 
             <!-- INFO PERUSAHAAN -->
             <div class="bg-white rounded-2xl shadow p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="font-semibold text-blue-600">Informasi Perusahaan</h2>
-                    <span class="px-3 py-1 text-xs rounded-full
-                        {{ $perusahaan->status_kerjasama === 'aktif' ? 'bg-green-100 text-green-700' :
-                           ($perusahaan->status_kerjasama === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                           'bg-gray-200 text-gray-600') }}">
-                        {{ ucfirst($perusahaan->status_kerjasama) }}
-                    </span>
-                </div>
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
+        <h2 class="font-semibold text-blue-600">Informasi Perusahaan</h2>
+        
+        <span class="self-start px-3 py-1 text-xs rounded-full font-medium
+            {{ $perusahaan->status_kerjasama === 'aktif' ? 'bg-green-100 text-green-700' :
+               ($perusahaan->status_kerjasama === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+               'bg-red-100 text-red-700') }}">
+            {{ ucfirst($perusahaan->status_kerjasama) }}
+        </span>
+    </div>
 
-                <div class="text-center">
-                    @if($perusahaan->logo)
-                        <img src="{{ asset('storage/'.$perusahaan->logo) }}"
-                             class="mx-auto h-36 object-contain mb-4 rounded-xl">
-                    @else
-                        <div class="h-36 flex items-center justify-center bg-gray-100 rounded-xl mb-4">
-                            <i class="fas fa-building text-4xl text-gray-400"></i>
-                        </div>
-                    @endif
-
-                    <h3 class="text-lg font-bold">{{ $perusahaan->nama_perusahaan }}</h3>
-                    <p class="text-sm text-gray-500">{{ $perusahaan->bidang_usaha }}</p>
+    <div class="mb-5 p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+        <p class="text-xs text-gray-500 mb-2 font-medium">Aksi Status Kerjasama:</p>
+        <form action="" method="POST">
+            @csrf
+            @method('PATCH')
+            
+            @if($perusahaan->status_kerjasama !== 'aktif')
+                <input type="hidden" name="status_kerjasama" value="aktif">
+                <button type="submit" class="w-full text-center px-4 py-2 text-sm bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition shadow-sm flex items-center justify-center gap-1">
+                    ✅ Aktifkan Perusahaan
+                </button>
+            @else
+                <div class="flex gap-2">
+                    <select name="status_kerjasama" onchange="this.form.submit()" class="w-full text-sm bg-white border rounded-lg px-2 py-1.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="aktif" selected>🟢 Aktif</option>
+                        <option value="nonaktif">🔴 Nonaktif</option>
+                        <option value="pending">🟡 Pending</option>
+                    </select>
                 </div>
+            @endif
+        </form>
+    </div>
 
-             
-               
-                <div class="mt-5 text-sm text-gray-600 space-y-2">
-                    <p><strong>Email:</strong> {{ $perusahaan->email }}</p>
-                    <p><strong>Telepon:</strong> {{ $perusahaan->no_telp ?? '-' }}</p>
-                    <p>
-                        <strong>Website:</strong>
-                        @if($perusahaan->website)
-                            <a href="{{ $perusahaan->website }}" class="text-blue-600 hover:underline" target="_blank">
-                                {{ Str::limit($perusahaan->website, 30) }}
-                            </a>
-                        @else -
-                        @endif
-                    </p>
-                    <p><strong>Kota:</strong> {{ $perusahaan->kota ?? '-' }}</p>
-                </div>
+    <div class="text-center">
+        @if($perusahaan->logo)
+            <img src="{{ asset('storage/'.$perusahaan->logo) }}"
+                 class="mx-auto h-36 object-contain mb-4 rounded-xl">
+        @else
+            <div class="h-36 flex items-center justify-center bg-gray-100 rounded-xl mb-4">
+                <i class="fas fa-building text-4xl text-gray-400"></i>
             </div>
+        @endif
+
+        <h3 class="text-lg font-bold">{{ $perusahaan->nama_perusahaan }}</h3>
+        <p class="text-sm text-gray-500">{{ $perusahaan->bidang_usaha }}</p>
+    </div>
+
+    <div class="mt-5 text-sm text-gray-600 space-y-2">
+        <p><strong>Email:</strong> {{ $perusahaan->email }}</p>
+        <p><strong>Telepon:</strong> {{ $perusahaan->no_telp ?? '-' }}</p>
+        <p>
+            <strong>Website:</strong>
+            @if($perusahaan->website)
+                <a href="{{ $perusahaan->website }}" class="text-blue-600 hover:underline" target="_blank">
+                    {{ Str::limit($perusahaan->website, 30) }}
+                </a>
+            @else -
+            @endif
+        </p>
+        <p><strong>Kota:</strong> {{ $perusahaan->kota ?? '-' }}</p>
+    </div>
+</div>
 
             <!-- PIC -->
             <div class="bg-white rounded-2xl shadow p-6">

@@ -21,7 +21,7 @@
     <!-- Info PKL -->
     <div class="card shadow mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informasi PKL</h5>
+            <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informasi</h5>
         </div>
         <div class="card-body">
             <div class="row">

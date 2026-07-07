@@ -64,7 +64,7 @@ class KerjasamaIndustriController extends Controller
      */
     public function create()
     {
-        $perusahaan = Perusahaan::where('status_kerjasama', 'aktif')->get();
+        $perusahaan = Perusahaan::all();
         return view('admin.kerjasama.create', compact('perusahaan'));
     }
 

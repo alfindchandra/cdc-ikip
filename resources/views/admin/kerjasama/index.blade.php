@@ -24,8 +24,7 @@
                     <label for="jenis-select" class="block text-sm font-medium text-gray-700 mb-1">Jenis Bidang</label>
                     <select id="jenis-select" name="jenis" class="form-select p-2 w-full rounded-lg border-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">Semua Bidang</option>
-                        <option value="pkl" {{ request('jenis') == 'pkl' ? 'selected' : '' }}>PKL</option>
-                        <option value="rekrutmen" {{ request('jenis') == 'rekrutmen' ? 'selected' : '' }}>Rekrutmen</option>
+                        <option value="magang" {{ request('jenis') == 'magang' ? 'selected' : '' }}>Magang</option>
                         <option value="pelatihan" {{ request('jenis') == 'pelatihan' ? 'selected' : '' }}>Pelatihan</option>
                         <option value="penelitian" {{ request('jenis') == 'penelitian' ? 'selected' : '' }}>Penelitian</option>
                         <option value="sponsorship" {{ request('jenis') == 'sponsorship' ? 'selected' : '' }}>Sponsorship</option>
