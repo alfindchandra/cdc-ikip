@@ -17,6 +17,7 @@ use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\TracerStudyController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\EPortfolioController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
@@ -32,6 +33,7 @@ Route::get('/perusahaan/{perusahaan}', [HomeController::class, 'showPerusahaan']
 Route::get('/pelatihan', [HomeController::class, 'pelatihan'])->name('pelatihan.index');
 Route::get('/pelatihan/{pelatihan}', [HomeController::class, 'showPelatihan'])->name('pelatihan.show');
 Route::get('/tracer-study', [HomeController::class, 'tracerStudy'])->name('index.tracer-study');
+Route::get('/eportfolio', [HomeController::class, 'ePortfolio'])->name('eportfolio.index');
 Route::get('/faq', [HomeController::class, 'faxFaq'])->name('index.faq');
 
 
@@ -174,6 +176,10 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
         Route::get('pelatihan/{pelatihan}', [PelatihanController::class, 'show'])->name('pelatihan.show');
         Route::post('pelatihan/{pelatihan}/daftar', [PelatihanController::class, 'daftar'])->name('pelatihan.daftar');
         Route::delete('pelatihan/{pelatihan}/batal', [PelatihanController::class, 'batalDaftar'])->name('pelatihan.batal');
+
+        // E-Portfolio
+        Route::get('eportfolio', [EPortfolioController::class, 'index'])->name('eportfolio.index');
+        Route::post('eportfolio', [EPortfolioController::class, 'store'])->name('eportfolio.store');
     });
     
     // Perusahaan routes
@@ -192,6 +198,9 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
         Route::get('lamaran', [LamaranController::class, 'perusahaanIndex'])->name('lamaran.index');
         Route::get('lamaran/{lamaran}', [LamaranController::class, 'show'])->name('lamaran.show');
         Route::post('lamaran/{lamaran}/status', [LamaranController::class, 'updateStatus'])->name('lamaran.status');
+
+        // E-Portfolio perusahaan
+        Route::get('mahasiswa/{mahasiswa}/eportfolio', [EPortfolioController::class, 'showForCompany'])->name('mahasiswa.eportfolio.show');
         
  
         // Kerjasama (Perusahaan memilih jenis dokumen & mengajukan kerja sama, admin langsung meng-ACC)

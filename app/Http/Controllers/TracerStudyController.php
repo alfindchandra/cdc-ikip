@@ -483,17 +483,18 @@ class TracerStudyController extends Controller
 
     // Private Methods
     private function getStatistik()
-    {
-        return [
-            'total_alumni' => Mahasiswa::where('status', 'lulus')->count(),
-            'total_responden' => TracerStudy::count(),
-            'bekerja' => TracerStudy::where('status_pekerjaan', 'bekerja')->count(),
-            'wirausaha' => TracerStudy::where('status_pekerjaan', 'wirausaha')->count(),
-            'melanjutkan_studi' => TracerStudy::where('status_pekerjaan', 'melanjutkan_studi')->count(),
-            'belum_bekerja' => TracerStudy::where('status_pekerjaan', 'belum_bekerja')->count(),
-            'belum_memungkinkan_bekerja' => TracerStudy::where('status_pekerjaan', 'belum_memungkinkan_bekerja')->count(),
-            'rata_waktu_tunggu' => round(TracerStudy::where('waktu_tunggu_kerja', '>', 0)->avg('waktu_tunggu_kerja'), 2),
-            'rata_kepuasan' => round(TracerStudy::where('kepuasan_pendidikan', '>', 0)->avg('kepuasan_pendidikan'), 2),
-        ];
-    }
+{
+    return [
+        'total_alumni' => Mahasiswa::where('status', 'lulus')->count(),
+        'total_responden' => TracerStudy::count(),
+        'bekerja' => TracerStudy::where('status_pekerjaan', 'bekerja')->count(),
+        'wirausaha' => TracerStudy::where('status_pekerjaan', 'wirausaha')->count(),
+        'melanjutkan_studi' => TracerStudy::where('status_pekerjaan', 'melanjutkan_studi')->count(),
+        'belum_bekerja' => TracerStudy::where('status_pekerjaan', 'belum_bekerja')->count(),
+        'belum_memungkinkan_bekerja' => TracerStudy::where('status_pekerjaan', 'belum_memungkinkan_bekerja')->count(),
+        'ppg' => TracerStudy::where('status_pekerjaan', 'ppg')->count(), // <-- Tambahkan baris ini
+        'rata_waktu_tunggu' => round(TracerStudy::where('waktu_tunggu_kerja', '>', 0)->avg('waktu_tunggu_kerja'), 2),
+        'rata_kepuasan' => round(TracerStudy::where('kepuasan_pendidikan', '>', 0)->avg('kepuasan_pendidikan'), 2),
+    ];
+}
 }

@@ -71,12 +71,13 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $l->tanggal_melamar->format('d M Y') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-3">
-                                <!-- Modern Avatar -->
                                 <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg flex-shrink-0 border-2 border-indigo-200">
                                     {{ substr($l->mahasiswa->user->name, 0, 1) }}
                                 </div>
                                 <div>
-                                    <p class="font-semibold text-gray-900 truncate max-w-xs">{{ $l->mahasiswa->user->name }}</p>
+                                    <a href="{{ route('perusahaan.mahasiswa.eportfolio.show', $l->mahasiswa->id) }}" target="_blank" rel="noopener noreferrer" title="Lihat E-Portfolio" class="font-semibold text-gray-900 truncate max-w-xs hover:text-indigo-600">
+                                        {{ $l->mahasiswa->user->name }}
+                                    </a>
                                     <p class="text-xs text-gray-500">{{ $l->mahasiswa->program_studi }}</p>
                                 </div>
                             </div>

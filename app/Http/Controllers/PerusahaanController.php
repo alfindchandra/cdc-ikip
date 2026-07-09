@@ -134,7 +134,7 @@ public function index(Request $request)
         return view('admin.perusahaan.show', compact('perusahaan'));
     }
 
-    public function updateStatus(Request $request, Perusahaan $perusahaan)
+    public function update(Request $request, Perusahaan $perusahaan)
     {
         $validated = $request->validate([
             'status_kerjasama' => 'required|in:aktif,nonaktif,pending',

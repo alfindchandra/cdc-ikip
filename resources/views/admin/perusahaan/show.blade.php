@@ -47,7 +47,7 @@
 
     <div class="mb-5 p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200">
         <p class="text-xs text-gray-500 mb-2 font-medium">Aksi Status Kerjasama:</p>
-        <form action="" method="POST">
+        <form action="{{ route('admin.perusahaan.update', $perusahaan) }}" method="POST">
             @csrf
             @method('PATCH')
             

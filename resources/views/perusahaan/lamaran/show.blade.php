@@ -29,7 +29,7 @@
                         {{ substr($lamaran->mahasiswa->user->name, 0, 1) }}
                     </div>
                     <div class="flex-1">
-                        <h2 class="text-2xl font-bold text-gray-900">{{ $lamaran->mahasiswa->user->name }}</h2>
+                        <a href="{{ route('perusahaan.mahasiswa.eportfolio.show', $lamaran->mahasiswa->id) }}" target="_blank" rel="noopener noreferrer" title="Lihat E-Portfolio" class="text-2xl font-bold text-gray-900">{{ $lamaran->mahasiswa->user->name }}</a>
                         <p class="text-gray-600 mt-1">NIM: {{ $lamaran->mahasiswa->nim }}</p>
 
                         <div class="flex flex-wrap gap-2 mt-3">

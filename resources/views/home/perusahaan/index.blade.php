@@ -110,7 +110,6 @@
                                     </div>
 
                                     <div class="mt-3 flex items-center justify-between gap-2 text-[11px]">
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-100/50" x-text="item.status_kerjasama"></span>
                                         <span class="text-gray-400 font-medium" x-text="item.lowongans.length + ' Lowongan'"></span>
                                     </div>
                                 </div>

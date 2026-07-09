@@ -44,11 +44,11 @@
                     <dl class="space-y-3 text-sm">
                         @php
                             $alumniData = [
-                                'Nama' => $tracerStudy->mahasiswa->user->name,
-                                'NIM' => $tracerStudy->mahasiswa->nim,
+                                'Nama' => $tracerStudy->mahasiswa->user->name ?? '-',
+                                'NIM' => $tracerStudy->mahasiswa->nim ?? '-',
                                 'Fakultas' => $tracerStudy->mahasiswa->fakultas->nama ?? '-',
                                 'Program Studi' => $tracerStudy->mahasiswa->programStudi->nama ?? '-',
-                                'Tahun Masuk' => $tracerStudy->mahasiswa->tahun_masuk,
+                                'Tahun Masuk' => $tracerStudy->mahasiswa->tahun_masuk ?? '-',
                                 'Tahun Lulus' => $tracerStudy->mahasiswa->tahun_lulus ?? '-',
                                 'Tanggal Isi' => $tracerStudy->tanggal_isi ? $tracerStudy->tanggal_isi->format('d F Y, H:i') : '-',
                             ];
@@ -115,7 +115,9 @@
                         <button @click="activeTab = 'kompetensi'" :class="{'border-blue-500 text-blue-600': activeTab === 'kompetensi', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'kompetensi'}" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition duration-150 ease-in-out flex items-center">
                             <i class="fas fa-chart-line mr-2"></i> Kompetensi
                         </button>
-                        
+                        <button @click="activeTab = 'feedback'" :class="{'border-blue-500 text-blue-600': activeTab === 'feedback', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'feedback'}" class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition duration-150 ease-in-out flex items-center">
+                            <i class="fas fa-star mr-2"></i> Kepuasan & Feedback
+                        </button>
                     </nav>
                 </div>
 
@@ -132,7 +134,8 @@
                                     $statusLabels = [
                                         'bekerja' => ['label' => 'Bekerja', 'class' => 'bg-green-600'],
                                         'wirausaha' => ['label' => 'Wirausaha', 'class' => 'bg-blue-600'],
-                                        'melanjutkan_studi' => ['label' => 'Melanjutkan Studi', 'class' => 'bg-purple-600'],
+                                        'melanjutkan_studi' => ['label' => 'Melanjutkan Studi', 'class' => 'bg-cyan-600'],
+                                        'ppg' => ['label' => 'Pendidikan Profesi Guru (PPG)', 'class' => 'bg-purple-600'],
                                         'belum_bekerja' => ['label' => 'Belum Bekerja', 'class' => 'bg-amber-600'],
                                         'belum_memungkinkan_bekerja' => ['label' => 'Belum Memungkinkan Bekerja', 'class' => 'bg-gray-600'],
                                     ];
@@ -221,7 +224,7 @@
 
                             @elseif($tracerStudy->status_pekerjaan == 'melanjutkan_studi')
                                 <h6 class="col-span-full text-lg font-semibold text-gray-700 border-b pb-2 mb-4 flex items-center">
-                                    <i class="fas fa-graduation-cap mr-2 text-purple-600"></i> Informasi Studi Lanjutan
+                                    <i class="fas fa-graduation-cap mr-2 text-cyan-600"></i> Informasi Studi Lanjutan
                                 </h6>
                                 
                                 @php
@@ -234,6 +237,34 @@
                                 @endphp
 
                                 @foreach($studiData as $label => $value)
+                                    <div>
+                                        <p class="text-xs font-medium text-gray-500">{{ $label }}</p>
+                                        <p class="font-bold text-gray-900 mt-1">{{ $value }}</p>
+                                    </div>
+                                @endforeach
+
+                            @elseif($tracerStudy->status_pekerjaan == 'ppg')
+                                <h6 class="col-span-full text-lg font-semibold text-gray-700 border-b pb-2 mb-4 flex items-center">
+                                    <i class="fas fa-user-graduate mr-2 text-purple-600"></i> Informasi Pendidikan Profesi Guru (PPG)
+                                </h6>
+                                
+                                @php
+                                    $kompetensiData = is_string($tracerStudy->kompetensi_yang_digunakan) 
+                                        ? json_decode($tracerStudy->kompetensi_yang_digunakan, true) 
+                                        : $tracerStudy->kompetensi_yang_digunakan;
+                                        
+                                    $ppgDetail = $kompetensiData['ppg_detail'] ?? [];
+                                    
+                                    $ppgData = [
+                                        'LPTK Penyelenggara' => $tracerStudy->nama_institusi ?? '-',
+                                        'Label Program' => $tracerStudy->jurusan_studi ?? '-',
+                                        'Jenis PPG' => isset($ppgDetail['jenis_ppg']) ? ucfirst($ppgDetail['jenis_ppg']) : '-',
+                                        'Tahun Pelaksanaan' => $ppgDetail['tahun_ppg'] ?? '-',
+                                        'Sumber Biaya' => $tracerStudy->sumber_biaya ?? '-',
+                                    ];
+                                @endphp
+
+                                @foreach($ppgData as $label => $value)
                                     <div>
                                         <p class="text-xs font-medium text-gray-500">{{ $label }}</p>
                                         <p class="font-bold text-gray-900 mt-1">{{ $value }}</p>
@@ -357,7 +388,7 @@
                             @endif
 
                             {{-- Pencarian Kerja --}}
-                            @if(isset($kompetensiData['pencarian_kerja']) && !empty($kompetensiData['pencarian_kerja']))
+                            @if(isset($kompetensiData['pencarian_kerja']) && !empty($kompetensiData['pencarian_kerja']) && $tracerStudy->status_pekerjaan !== 'ppg')
                                 <div class="mb-6 bg-blue-50 p-4 rounded-lg">
                                     <h6 class="text-md font-semibold text-gray-700 mb-3">Informasi Pencarian Kerja</h6>
                                     <div class="grid grid-cols-2 gap-4">

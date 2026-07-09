@@ -20,7 +20,6 @@
                     <a href="{{ route('admin.tracer-study.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition">
                         <i class="fas fa-arrow-left mr-2"></i> Kembali
                     </a>
-                    
                 </div>
             </div>
         </div>
@@ -199,6 +198,7 @@
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Bekerja</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Wirausaha</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Studi Lanjut</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">PPG</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Response Rate</th>
                         </tr>
                     </thead>
@@ -221,6 +221,7 @@
                                 $bekerjaCount = $respondenData->where('status_pekerjaan', 'bekerja')->count();
                                 $wirausahaCount = $respondenData->where('status_pekerjaan', 'wirausaha')->count();
                                 $studiCount = $respondenData->where('status_pekerjaan', 'melanjutkan_studi')->count();
+                                $ppgCount = $respondenData->where('status_pekerjaan', 'ppg')->count();
                                 $responseRate = $alumniCount > 0 ? round(($respondenCount / $alumniCount) * 100, 1) : 0;
                                 
                                 if($respondenCount > 0 || $alumniCount > 0) {
@@ -231,6 +232,7 @@
                                         'bekerja' => $bekerjaCount,
                                         'wirausaha' => $wirausahaCount,
                                         'studi' => $studiCount,
+                                        'ppg' => $ppgCount,
                                         'rate' => $responseRate
                                     ];
                                 }
@@ -259,8 +261,13 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
                                         {{ $stat['studi'] }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                        {{ $stat['ppg'] }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
@@ -274,7 +281,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                                <td colspan="8" class="px-6 py-8 text-center text-gray-500">
                                     <i class="fas fa-inbox text-4xl mb-2"></i>
                                     <p>Tidak ada data statistik</p>
                                 </td>
@@ -311,9 +318,9 @@
                             <tr class="{{ $index % 2 === 0 ? 'bg-white' : 'bg-gray-50' }} hover:bg-indigo-50 transition">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $index + 1 }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $item->mahasiswa->user->name }}</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $item->mahasiswa->user->name ?? '-' }}</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->mahasiswa->nim }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->mahasiswa->nim ?? '-' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $item->mahasiswa->programStudi->nama ?? '-' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-700">{{ $item->mahasiswa->tahun_lulus ?? '-' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -321,8 +328,10 @@
                                         $statusBadge = [
                                             'bekerja' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'label' => 'Bekerja'],
                                             'wirausaha' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'label' => 'Wirausaha'],
-                                            'melanjutkan_studi' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-800', 'label' => 'Studi Lanjut'],
+                                            'melanjutkan_studi' => ['bg' => 'bg-cyan-100', 'text' => 'text-cyan-800', 'label' => 'Studi Lanjut'],
+                                            'ppg' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-800', 'label' => 'PPG'],
                                             'belum_bekerja' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'label' => 'Belum Bekerja'],
+                                            'belum_memungkinkan_bekerja' => ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'label' => 'Belum Memungkinkan'],
                                         ][$item->status_pekerjaan] ?? ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'label' => 'Lainnya'];
                                     @endphp
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusBadge['bg'] }} {{ $statusBadge['text'] }}">
@@ -337,6 +346,9 @@
                                         {{ $item->nama_usaha ?? '-' }}
                                     @elseif($item->status_pekerjaan == 'melanjutkan_studi')
                                         {{ $item->nama_institusi ?? '-' }}
+                                    @elseif($item->status_pekerjaan == 'ppg')
+                                        <span class="font-semibold text-purple-700">{{ $item->nama_institusi ?? '-' }}</span>
+                                        @if($item->jurusan_studi), <span class="text-xs text-gray-500">({{ $item->jurusan_studi }})</span>@endif
                                     @else
                                         -
                                     @endif
@@ -392,18 +404,20 @@
     new Chart(document.getElementById('statusChart'), {
         type: 'doughnut',
         data: {
-            labels: ['Bekerja', 'Wirausaha', 'Melanjutkan Studi', 'Belum Bekerja', 'Belum Memungkinkan'],
+            labels: ['Bekerja', 'Wirausaha', 'Melanjutkan Studi', 'PPG', 'Belum Bekerja', 'Belum Memungkinkan'],
             datasets: [{
                 data: [
-                    {{ $analisis['bekerja'] }},
-                    {{ $analisis['wirausaha'] }},
-                    {{ $analisis['melanjutkan_studi'] }},
-                    {{ $analisis['belum_bekerja'] }},
+                    {{ $analisis['bekerja'] ?? 0 }},
+                    {{ $analisis['wirausaha'] ?? 0 }},
+                    {{ $analisis['melanjutkan_studi'] ?? 0 }},
+                    {{ $analisis['ppg'] ?? 0 }},
+                    {{ $analisis['belum_bekerja'] ?? 0 }},
                     {{ $analisis['belum_memungkinkan_bekerja'] ?? 0 }}
                 ],
                 backgroundColor: [
                     chartColors.green,
                     chartColors.blue,
+                    chartColors.cyan,
                     chartColors.purple,
                     chartColors.yellow,
                     'rgba(156, 163, 175, 0.8)'
@@ -446,10 +460,10 @@
             datasets: [{
                 label: 'Jumlah Alumni',
                 data: [
-                    {{ $analisis['sangat_relevan'] }},
-                    {{ $analisis['relevan'] }},
-                    {{ $analisis['cukup_relevan'] }},
-                    {{ $analisis['tidak_relevan'] }}
+                    {{ $analisis['sangat_relevan'] ?? 0 }},
+                    {{ $analisis['relevan'] ?? 0 }},
+                    {{ $analisis['cukup_relevan'] ?? 0 }},
+                    {{ $analisis['tidak_relevan'] ?? 0 }}
                 ],
                 backgroundColor: [
                     chartColors.green,

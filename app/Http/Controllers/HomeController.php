@@ -117,6 +117,12 @@ public function lowongan(Request $request)
 
         return view('home.pelatihan.show', compact('kelas', 'kelasLainnya'));
     }
+
+    public function ePortfolio()
+    {
+        return view('home.eportfolio.index');
+    }
+
    public function tracerStudy(Request $request)
 {
     $user = auth()->user();

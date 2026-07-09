@@ -16,8 +16,6 @@
             <a href="{{ route('admin.tracer-study.laporan') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:scale-105">
                 <i class="fas fa-file-alt mr-2"></i>Laporan Analisis
             </a>
-            
-           
         </div>
     </header>
 
@@ -74,13 +72,14 @@
             <div class="p-5 border-b border-gray-100 bg-gray-50">
                 <h2 class="text-xl font-bold text-indigo-700">Persentase Status <i class="fas fa-list-alt ml-2 text-indigo-400"></i></h2>
             </div>
-            <div class="p-6 space-y-6">
+            <div class="p-6 space-y-5">
                 @php
                     $totalResponden = $statistik['total_responden'] > 0 ? $statistik['total_responden'] : 1;
                     $breakdownStatus = [
                         'bekerja' => ['icon' => 'fas fa-briefcase', 'color' => 'green', 'label' => 'Bekerja'],
                         'wirausaha' => ['icon' => 'fas fa-store', 'color' => 'blue', 'label' => 'Wirausaha'],
                         'melanjutkan_studi' => ['icon' => 'fas fa-book', 'color' => 'cyan', 'label' => 'Melanjutkan Studi'],
+                        'ppg' => ['icon' => 'fas fa-user-graduate', 'color' => 'purple', 'label' => 'PPG'],
                         'belum_bekerja' => ['icon' => 'fas fa-user-clock', 'color' => 'amber', 'label' => 'Belum Bekerja'],
                         'belum_memungkinkan_bekerja' => ['icon' => 'fas fa-pause-circle', 'color' => 'gray', 'label' => 'Belum Memungkinkan'],
                     ];
@@ -141,6 +140,7 @@
                             <option value="bekerja" {{ request('status_pekerjaan') == 'bekerja' ? 'selected' : '' }}>Bekerja</option>
                             <option value="wirausaha" {{ request('status_pekerjaan') == 'wirausaha' ? 'selected' : '' }}>Wirausaha</option>
                             <option value="melanjutkan_studi" {{ request('status_pekerjaan') == 'melanjutkan_studi' ? 'selected' : '' }}>Melanjutkan Studi</option>
+                            <option value="ppg" {{ request('status_pekerjaan') == 'ppg' ? 'selected' : '' }}>PPG (Profesi Guru)</option>
                             <option value="belum_bekerja" {{ request('status_pekerjaan') == 'belum_bekerja' ? 'selected' : '' }}>Belum Bekerja</option>
                             <option value="belum_memungkinkan_bekerja" {{ request('status_pekerjaan') == 'belum_memungkinkan_bekerja' ? 'selected' : '' }}>Belum Memungkinkan</option>
                         </select>
@@ -225,6 +225,7 @@
                                             'bekerja' => 'bg-green-100 text-green-800',
                                             'wirausaha' => 'bg-blue-100 text-blue-800',
                                             'melanjutkan_studi' => 'bg-cyan-100 text-cyan-800',
+                                            'ppg' => 'bg-purple-100 text-purple-800',
                                             'belum_bekerja' => 'bg-amber-100 text-amber-800',
                                             'belum_memungkinkan_bekerja' => 'bg-gray-100 text-gray-800',
                                         ][$item->status_pekerjaan] ?? 'bg-gray-100 text-gray-800';
@@ -233,6 +234,7 @@
                                             'bekerja' => 'Bekerja',
                                             'wirausaha' => 'Wirausaha',
                                             'melanjutkan_studi' => 'Studi Lanjut',
+                                            'ppg' => 'PPG',
                                             'belum_bekerja' => 'Belum Bekerja',
                                             'belum_memungkinkan_bekerja' => 'Belum Memungkinkan',
                                         ][$item->status_pekerjaan] ?? $item->status_pekerjaan;
@@ -250,22 +252,23 @@
                                         <div class="text-xs">{{ $item->bidang_usaha ?? '-' }}</div>
                                     @elseif($item->status_pekerjaan == 'melanjutkan_studi')
                                         <div class="text-gray-900 font-medium">{{ $item->nama_institusi ?? '-' }}</div>
-                                        <div class="text-xs">{{ $item->jenjang_studi_label ?? '-' }}</div>
+                                        <div class="text-xs">{{ $item->jurusan_studi ?? '-' }}</div>
+                                    @elseif($item->status_pekerjaan == 'ppg')
+                                        <div class="text-gray-900 font-medium">{{ $item->nama_institusi ?? '-' }}</div>
+                                        <div class="text-xs text-purple-600 font-medium">{{ $item->jurusan_studi ?? '-' }}</div>
                                     @else
                                         <div class="text-sm text-gray-600 italic">-</div>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $item->tanggal_isi ? $item->tanggal_isi->format('d M Y') : '-' }}
+                                    {{ $item->tanggal_isi ? \Carbon\Carbon::parse($item->tanggal_isi)->format('d M Y') : '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                     <div class="flex items-center justify-center space-x-2">
                                         <a href="{{ route('admin.tracer-study.show', $item) }}" class="text-indigo-600 hover:text-indigo-900 p-2 rounded-full hover:bg-indigo-100 transition duration-150 transform hover:scale-110" title="Detail">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                             </svg>
                                         </a>
                                         <button onclick="confirmDelete({{ $item->id }})" class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-100 transition duration-150 transform hover:scale-110" title="Hapus">
@@ -309,6 +312,7 @@
     const dataBekerja = {{ $statistik['bekerja'] ?? 0 }};
     const dataWirausaha = {{ $statistik['wirausaha'] ?? 0 }};
     const dataStudi = {{ $statistik['melanjutkan_studi'] ?? 0 }};
+    const dataPpg = {{ $statistik['ppg'] ?? 0 }}; // <-- Menangkap data PPG
     const dataBelumBekerja = {{ $statistik['belum_bekerja'] ?? 0 }};
     const dataBelumMemungkinkan = {{ $statistik['belum_memungkinkan_bekerja'] ?? 0 }};
 
@@ -316,15 +320,16 @@
     new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Bekerja', 'Wirausaha', 'Melanjutkan Studi', 'Belum Bekerja', 'Belum Memungkinkan'],
+            labels: ['Bekerja', 'Wirausaha', 'Melanjutkan Studi', 'PPG', 'Belum Bekerja', 'Belum Memungkinkan'],
             datasets: [{
-                data: [dataBekerja, dataWirausaha, dataStudi, dataBelumBekerja, dataBelumMemungkinkan],
+                data: [dataBekerja, dataWirausaha, dataStudi, dataPpg, dataBelumBekerja, dataBelumMemungkinkan],
                 backgroundColor: [
-                    'rgba(16, 185, 129, 0.9)', // Green-500
-                    'rgba(59, 130, 246, 0.9)', // Blue-500
-                    'rgba(6, 182, 212, 0.9)',  // Cyan-500
-                    'rgba(245, 158, 11, 0.9)', // Amber-500
-                    'rgba(156, 163, 175, 0.9)' // Gray-400
+                    'rgba(16, 185, 129, 0.9)', // Bekerja (Green)
+                    'rgba(59, 130, 246, 0.9)', // Wirausaha (Blue)
+                    'rgba(6, 182, 212, 0.9)',  // Studi Lanjut (Cyan)
+                    'rgba(139, 92, 246, 0.9)', // PPG (Purple)
+                    'rgba(245, 158, 11, 0.9)', // Belum Bekerja (Amber)
+                    'rgba(156, 163, 175, 0.9)' // Belum Memungkinkan (Gray)
                 ],
                 borderColor: 'rgba(255, 255, 255, 1)',
                 borderWidth: 3,
@@ -339,7 +344,7 @@
                     position: 'bottom',
                     labels: {
                         boxWidth: 12,
-                        padding: 20,
+                        padding: 15,
                         font: {
                             family: 'Inter, sans-serif'
                         }
