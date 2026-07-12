@@ -13,9 +13,9 @@
             </h1>
 
             <div class="flex flex-wrap items-center gap-2 mb-4">
-                @if($lowongan->perusahaan)
+                @if($lowongan->perusahaan->user)
                 <span class="px-3 py-1 bg-purple-500/10 text-slate-800 border border-purple-500/20 rounded-full text-xs font-semibold tracking-wide uppercase">
-                    {{ $lowongan->perusahaan->nama_perusahaan }}
+                    {{ $lowongan->perusahaan->user->name ?? 'Perusahaan Mitra' }}
                 </span>
                 @endif
             </div>
@@ -127,7 +127,7 @@
                         @if($lowongan->perusahaan->user && $lowongan->perusahaan->user->avatar)
                             <div class="w-24 h-24 mx-auto rounded-2xl overflow-hidden border-2 border-purple-100 p-1 bg-white shadow-sm">
                                 <img src="{{ \Illuminate\Support\Facades\Storage::url($lowongan->perusahaan->user->avatar) }}" 
-                                     alt="{{ $lowongan->perusahaan->nama_perusahaan }}" 
+                                     alt="{{ $lowongan->perusahaan->user->name ?? 'Perusahaan Mitra' }}" 
                                      class="w-full h-full object-cover rounded-xl">
                             </div>
                         @else
@@ -139,7 +139,7 @@
 
                     <div class="text-center mb-5">
                         <h3 class="text-xl font-bold text-slate-900 mb-2 px-1">
-                            {{ $lowongan->perusahaan->nama_perusahaan }}
+                            {{ $lowongan->perusahaan->user->name ?? 'Perusahaan Mitra' }}
                         </h3>
                         @if($lowongan->perusahaan->deskripsi)
                         <p class="text-xs text-slate-500 line-clamp-3 leading-relaxed px-2">

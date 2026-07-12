@@ -1,5 +1,5 @@
 @extends('layouts.index')
-@section('title', $perusahaan->nama_perusahaan)
+@section('title', $perusahaan->user->name ?? 'Detail Perusahaan')
 @section('home')
 
 <section class="py-12 bg-gradient-to-b from-blue-50 via-white to-gray-50 border-b border-gray-100">
@@ -13,7 +13,7 @@
         <div class="flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left mt-6">
             <div class="w-24 h-24 shrink-0 rounded-2xl bg-white border border-gray-200 p-3 flex items-center justify-center shadow-sm">
                 @if($perusahaan->user && $perusahaan->user->avatar)
-                    <img src="{{ \Illuminate\Support\Facades\Storage::url($perusahaan->user->avatar) }}" alt="{{ $perusahaan->nama_perusahaan }}" class="w-full h-full object-contain">
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($perusahaan->user->avatar) }}" alt="{{ $perusahaan->user->name }}" class="w-full h-full object-contain">
                 @else
                     <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M8 10h.01"></path><path d="M16 10h.01"></path><path d="M8 14h.01"></path><path d="M16 14h.01"></path></svg>
                 @endif
@@ -23,7 +23,7 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     Mitra {{ $perusahaan->status_kerjasama ?? 'Aktif' }}
                 </div>
-                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">{{ $perusahaan->nama_perusahaan }}</h1>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-800 tracking-tight">{{ $perusahaan->user->name ?? 'Perusahaan Mitra' }}</h1>
                 <p class="text-blue-600 font-bold text-sm mt-1">{{ $perusahaan->bidang_usaha ?? '-' }}</p>
                 
                 <div class="flex flex-wrap justify-center md:justify-start items-center gap-y-2 gap-x-4 mt-3 text-xs text-gray-500">
@@ -47,7 +47,7 @@
                             <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600"><i class="fas fa-envelope text-xs"></i></span>
                             <div class="min-w-0 flex-1">
                                 <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Email</div>
-                                <p class="text-xs font-bold text-gray-700 break-all">{{ $perusahaan->email ?? '-' }}</p>
+                                <p class="text-xs font-bold text-gray-700 break-all">{{ $perusahaan->user->email ?? '-' }}</p>
                             </div>
                         </div>
 
@@ -114,7 +114,7 @@
                                 <i class="fas fa-briefcase text-gray-300 text-xl"></i>
                             </div>
                             <h4 class="text-base font-bold text-gray-700">Belum Ada Lowongan Aktif</h4>
-                            <p class="text-xs text-gray-400 mt-1 max-w-sm mx-auto">Saat ini {{ $perusahaan->nama_perusahaan }} belum membuka atau mempublikasikan lowongan pekerjaan baru.</p>
+                            <p class="text-xs text-gray-400 mt-1 max-w-sm mx-auto">Saat ini {{ $perusahaan->user->name ?? 'Perusahaan ini' }} belum membuka atau mempublikasikan lowongan pekerjaan baru.</p>
                         </div>
                     @endforelse
                 </div>

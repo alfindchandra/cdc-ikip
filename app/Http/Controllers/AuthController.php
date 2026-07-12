@@ -145,20 +145,22 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
-            'nama_perusahaan' => 'required|string|max:255',
             'bidang_usaha' => 'required|string|max:100',
+            'jenis_pt' => 'required|string|max:100',
             'alamat' => 'required|string',
             'kota' => 'required|string|max:100',
             'provinsi' => 'required|string|max:100',
             'kode_pos' => 'nullable|string|max:10',
             'no_telp' => 'required|string|max:15',
-            'email_perusahaan' => 'required|email',
+            'no_hp' => 'nullable|string|max:15',
             'website' => 'nullable|url',
-            'nama_pic' => 'required|string|max:255',
-            'jabatan_pic' => 'required|string|max:100',
-            'no_telp_pic' => 'required|string|max:15',
-            'email_pic' => 'required|email',
+            'nama_pimpinan' => 'required|string|max:255',
+            'tahun_berdiri' => 'nullable|integer|min:1900|max:' . (date('Y')),
+            'jumlah_karyawan' => 'nullable|integer|min:0',
+            'visi' => 'nullable|string',
+            'misi' => 'nullable|string',
             'deskripsi' => 'nullable|string',
+            'cv_perusahaan' => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
         $user = User::create([
@@ -169,21 +171,28 @@ class AuthController extends Controller
             'is_active' => true,
         ]);
 
+        $cvPath = null;
+        if ($request->hasFile('cv_perusahaan')) {
+            $cvPath = $request->file('cv_perusahaan')->store('perusahaan/cv', 'public');
+        }
+
         Perusahaan::create([
             'user_id' => $user->id,
-            'nama_perusahaan' => $validated['nama_perusahaan'],
             'bidang_usaha' => $validated['bidang_usaha'],
+            'jenis_pt' => $validated['jenis_pt'],
             'alamat' => $validated['alamat'],
             'kota' => $validated['kota'],
             'provinsi' => $validated['provinsi'],
             'kode_pos' => $validated['kode_pos'],
             'no_telp' => $validated['no_telp'],
-            'email' => $validated['email_perusahaan'],
+            'no_hp' => $validated['no_hp'] ?? null,
             'website' => $validated['website'],
-            'nama_pic' => $validated['nama_pic'],
-            'jabatan_pic' => $validated['jabatan_pic'],
-            'no_telp_pic' => $validated['no_telp_pic'],
-            'email_pic' => $validated['email_pic'],
+            'nama_pimpinan' => $validated['nama_pimpinan'],
+            'tahun_berdiri' => $validated['tahun_berdiri'] ?? null,
+            'jumlah_karyawan' => $validated['jumlah_karyawan'] ?? null,
+            'visi' => $validated['visi'] ?? null,
+            'misi' => $validated['misi'] ?? null,
+            'cv_perusahaan' => $cvPath,
             'deskripsi' => $validated['deskripsi'],
             'status_kerjasama' => 'pending',
         ]);

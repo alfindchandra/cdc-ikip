@@ -47,12 +47,12 @@
         @foreach($perusahaanTerbaru as $index => $perusahaan)
         {
             id: {{ $perusahaan->id }},
-            nama: '{{ addslashes($perusahaan->nama_perusahaan) }}',
+            nama: '{{ addslashes($perusahaan->user->name ?? 'Perusahaan Tanpa Nama') }}',
             logo: '{{ ($perusahaan->user && $perusahaan->user->avatar) ? \Illuminate\Support\Facades\Storage::url($perusahaan->user->avatar) : '' }}',
             bidang: '{{ addslashes($perusahaan->bidang_usaha ?? '-') }}',
             alamat: '{{ addslashes($perusahaan->alamat ?? '-') }}',
             telepon: '{{ $perusahaan->no_telp ?? '-' }}',
-            email: '{{ $perusahaan->email ?? '-' }}',
+            email: '{{ $perusahaan->user->email ?? '-' }}',
             website: '{{ $perusahaan->website ?? '-' }}',
             status_kerjasama: '{{ $perusahaan->status_kerjasama ?? 'Aktif' }}',
             deskripsi: `{!! nl2br(e($perusahaan->deskripsi)) !!}`,

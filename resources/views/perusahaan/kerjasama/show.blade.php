@@ -109,13 +109,22 @@
                         Penanggung Jawab (PIC)
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="p-6 rounded-xl bg-blue-50 border border-blue-200">
-                            <p class="text-xs text-blue-600 font-semibold uppercase mb-2">Pic lembaga/bidang</p>
-                            <p class="text-lg font-bold text-gray-900">{{ $kerjasama->pic_sekolah ?? '-' }}</p>
+                        
+                        <div class="p-6 rounded-xl bg-indigo-50 border border-indigo-200">
+                            <p class="text-xs text-indigo-600 font-semibold uppercase mb-2">Nama PIC Perusahaan</p>
+                            <p class="text-lg font-bold text-gray-900">{{ $kerjasama->pic_industri ?? '-' }}</p>
                         </div>
                         <div class="p-6 rounded-xl bg-indigo-50 border border-indigo-200">
-                            <p class="text-xs text-indigo-600 font-semibold uppercase mb-2">PIC Perusahaan</p>
-                            <p class="text-lg font-bold text-gray-900">{{ $kerjasama->pic_industri ?? '-' }}</p>
+                            <p class="text-xs text-indigo-600 font-semibold uppercase mb-2">Jabatan PIC</p>
+                            <p class="text-lg font-bold text-gray-900">{{ $kerjasama->jabatan_pic_industri ?? '-' }}</p>
+                        </div>
+                        <div class="p-6 rounded-xl bg-indigo-50 border border-indigo-200">
+                            <p class="text-xs text-indigo-600 font-semibold uppercase mb-2">No. Telepon PIC</p>
+                            <p class="text-lg font-bold text-gray-900">{{ $kerjasama->no_telp_pic_industri ?? '-' }}</p>
+                        </div>
+                        <div class="p-6 rounded-xl bg-indigo-50 border border-indigo-200">
+                            <p class="text-xs text-indigo-600 font-semibold uppercase mb-2">Email PIC</p>
+                            <p class="text-lg font-bold text-gray-900">{{ $kerjasama->email_pic_industri ?? '-' }}</p>
                         </div>
                     </div>
                 </section>

@@ -259,7 +259,10 @@ class KerjasamaIndustriController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_berakhir' => 'nullable|date|after:tanggal_mulai',
             'dokumen_kerjasama' => 'required|file|mimes:pdf|max:10240',
-            'pic_industri' => 'nullable|string',
+            'pic_industri' => 'nullable|string|max:150',
+            'jabatan_pic_industri' => 'nullable|string|max:100',
+            'no_telp_pic_industri' => 'nullable|string|max:20',
+            'email_pic_industri' => 'nullable|email|max:255',
             'nilai_kontrak' => 'nullable|numeric',
             'catatan' => 'nullable|string',
         ]);

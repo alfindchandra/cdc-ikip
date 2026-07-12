@@ -78,12 +78,15 @@
         {
             id: {{ $lowongan->id }},
             posisi: '{{ addslashes($lowongan->posisi) }}',
-            perusahaan: '{{ $lowongan->perusahaan ? addslashes($lowongan->perusahaan->nama_perusahaan) : '' }}',
+            // Mengambil nama perusahaan dari user->name
+            perusahaan: '{{ ($lowongan->perusahaan && $lowongan->perusahaan->user) ? addslashes($lowongan->perusahaan->user->name) : 'Perusahaan Mitra' }}',
             perusahaan_logo: '{{ ($lowongan->perusahaan && $lowongan->perusahaan->user && $lowongan->perusahaan->user->avatar) ? \Illuminate\Support\Facades\Storage::url($lowongan->perusahaan->user->avatar) : '' }}',
             perusahaan_deskripsi: '{{ $lowongan->perusahaan ? addslashes(Str::limit($lowongan->perusahaan->deskripsi, 180)) : '' }}',
             perusahaan_alamat: '{{ $lowongan->perusahaan ? addslashes($lowongan->perusahaan->alamat) : '' }}',
-            perusahaan_telepon: '{{ $lowongan->perusahaan ? $lowongan->perusahaan->no_telepon : '' }}',
-            perusahaan_email: '{{ $lowongan->perusahaan ? $lowongan->perusahaan->email : '' }}',
+            // Menyesuaikan ke nama kolom no_telp sesuai model fillable Anda
+            perusahaan_telepon: '{{ $lowongan->perusahaan ? $lowongan->perusahaan->no_telp : '' }}',
+            // Mengambil email login perusahaan dari user->email
+            perusahaan_email: '{{ ($lowongan->perusahaan && $lowongan->perusahaan->user) ? $lowongan->perusahaan->user->email : '' }}',
             tipe: '{{ ucfirst(str_replace('_', ' ', $lowongan->tipe_pekerjaan)) }}',
             pendidikan: '{{ ucfirst($lowongan->pendidikan) }}',
             category: '{{ ucfirst($lowongan->category) }}',

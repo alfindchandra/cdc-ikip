@@ -373,18 +373,15 @@
  
 
     @elseif(auth()->user()->isPerusahaan())
-        <!-- PERUSAHAAN EDIT FORM -->
         @php $perusahaan = auth()->user()->perusahaan; @endphp
         
-        <form action="{{ route('perusahaan.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
 
-            <!-- Logo & Akun -->
-            <div class="card">
-               <div class="p-8 space-y-8">
+            <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+               <div class="space-y-8">
 
-                    <!-- Avatar Section -->
                     <div class="pb-8 border-b border-slate-100">
                         <h3 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
                             <span class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -396,20 +393,18 @@
                         </h3>
 
                         <div class="flex items-start gap-6">
-                            <!-- Avatar Preview -->
                             <div class="relative group">
                                 <div class="w-32 h-32 rounded-2xl border-4 border-slate-100 shadow-lg overflow-hidden bg-slate-200 relative">
                                     @if(auth()->user()->avatar)
                                         <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="Avatar" class="w-full h-full object-cover" id="avatarPreview">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-4xl font-bold" id="avatarPreview">
-                                            {{ substr(auth()->user()->perusahaan->nama_perusahaan ?? 'P', 0, 1) }}
+                                            {{ substr(auth()->user()->name ?? 'P', 0, 1) }}
                                         </div>
                                     @endif
                                 </div>
                             </div>
 
-                            <!-- Upload Instructions -->
                             <div class="flex-1">
                                 <label class="block text-sm font-semibold text-slate-700 mb-3">Upload Logo Baru</label>
                                 <div class="flex items-center gap-3">
@@ -435,7 +430,6 @@
                         </div>
                     </div>
 
-                    <!-- Informasi Perusahaan -->
                     <div class="space-y-6">
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <span class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
@@ -447,41 +441,80 @@
                         </h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Nama Perusahaan -->
-                            <div class="md:col-span-2">
-                                <label for="nama_perusahaan" class="block text-sm font-semibold text-slate-700 mb-2">
+                            <div>
+                                <label for="name" class="block text-sm font-semibold text-slate-700 mb-2">
                                     Nama Perusahaan <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" id="nama_perusahaan" name="nama_perusahaan" 
-                                       value="{{ old('nama_perusahaan', auth()->user()->perusahaan->nama_perusahaan) }}"
-                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('nama_perusahaan') border-red-300 @enderror"
-                                       placeholder="PT. Nama Perusahaan" required>
-                                @error('nama_perusahaan')
+                                <input type="text" id="name" name="name" 
+                                       value="{{ old('name', auth()->user()->name) }}"
+                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('name') border-red-300 @enderror"
+                                       placeholder="Nama Lengkap Perusahaan" required>
+                                @error('name')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <!-- Bidang Usaha -->
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">
+                                    Email Login Akun <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" id="email" name="email" 
+                                       value="{{ old('email', auth()->user()->email) }}"
+                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('email') border-red-300 @enderror"
+                                       placeholder="company@example.com" required>
+                                @error('email')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <div>
                                 <label for="bidang_usaha" class="block text-sm font-semibold text-slate-700 mb-2">
                                     Bidang Usaha
                                 </label>
                                 <input type="text" id="bidang_usaha" name="bidang_usaha" 
-                                       value="{{ old('bidang_usaha', auth()->user()->perusahaan->bidang_usaha) }}"
+                                       value="{{ old('bidang_usaha', $perusahaan->bidang_usaha) }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                       placeholder="Teknologi Informasi">
+                                       placeholder="Contoh: Teknologi Informasi">
                                 @error('bidang_usaha')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <!-- Website -->
+                            <div>
+                                <label for="jenis_pt" class="block text-sm font-semibold text-slate-700 mb-2">
+                                    Jenis PT
+                                </label>
+                                <select id="jenis_pt" name="jenis_pt" 
+                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none bg-white">
+                                    <option value="">Pilih Jenis PT</option>
+                                    @foreach(\App\Models\Perusahaan::jenisPtOptions() as $value => $label)
+                                        <option value="{{ $value }}" {{ old('jenis_pt', $perusahaan->jenis_pt) == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('jenis_pt')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="nama_pimpinan" class="block text-sm font-semibold text-slate-700 mb-2">
+                                    Nama Pimpinan <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="nama_pimpinan" name="nama_pimpinan" 
+                                       value="{{ old('nama_pimpinan', $perusahaan->nama_pimpinan) }}"
+                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all @error('nama_pimpinan') border-red-300 @enderror"
+                                       placeholder="Nama Direktur / Pimpinan" required>
+                                @error('nama_pimpinan')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <div>
                                 <label for="website" class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Website
+                                    Website Perusahaan
                                 </label>
                                 <input type="url" id="website" name="website" 
-                                       value="{{ old('website', auth()->user()->perusahaan->website) }}"
+                                       value="{{ old('website', $perusahaan->website) }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                        placeholder="https://www.perusahaan.com">
                                 @error('website')
@@ -489,14 +522,39 @@
                                 @enderror
                             </div>
 
-                            <!-- Deskripsi -->
+                            <div>
+                                <label for="tahun_berdiri" class="block text-sm font-semibold text-slate-700 mb-2">
+                                    Tahun Berdiri
+                                </label>
+                                <input type="number" id="tahun_berdiri" name="tahun_berdiri" 
+                                       value="{{ old('tahun_berdiri', $perusahaan->tahun_berdiri) }}"
+                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                       placeholder="Contoh: 2015" min="1900" max="{{ date('Y') }}">
+                                @error('tahun_berdiri')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="jumlah_karyawan" class="block text-sm font-semibold text-slate-700 mb-2">
+                                    Jumlah Karyawan
+                                </label>
+                                <input type="number" id="jumlah_karyawan" name="jumlah_karyawan" 
+                                       value="{{ old('jumlah_karyawan', $perusahaan->jumlah_karyawan) }}"
+                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                       placeholder="Contoh: 50" min="0">
+                                @error('jumlah_karyawan')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <div class="md:col-span-2">
                                 <label for="deskripsi" class="block text-sm font-semibold text-slate-700 mb-2">
                                     Deskripsi Perusahaan
                                 </label>
-                                <textarea id="deskripsi" name="deskripsi" rows="4"
+                                <textarea id="deskripsi" name="deskripsi" rows="3"
                                           class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
-                                          placeholder="Ceritakan tentang perusahaan Anda...">{{ old('deskripsi', auth()->user()->perusahaan->deskripsi) }}</textarea>
+                                          placeholder="Ceritakan singkat mengenai profil perusahaan...">{{ old('deskripsi', $perusahaan->deskripsi) }}</textarea>
                                 @error('deskripsi')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
@@ -504,7 +562,33 @@
                         </div>
                     </div>
 
-                    <!-- Alamat & Kontak -->
+                    <div class="space-y-6 pt-6 border-t border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <span class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                </svg>
+                            </span>
+                            Visi & Misi
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="visi" class="block text-sm font-semibold text-slate-700 mb-2">Visi</label>
+                                <textarea id="visi" name="visi" rows="3"
+                                          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                                          placeholder="Visi Perusahaan">{{ old('visi', $perusahaan->visi) }}</textarea>
+                                @error('visi')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label for="misi" class="block text-sm font-semibold text-slate-700 mb-2">Misi</label>
+                                <textarea id="misi" name="misi" rows="3"
+                                          class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                                          placeholder="Misi Perusahaan">{{ old('misi', $perusahaan->misi) }}</textarea>
+                                @error('misi')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="space-y-6 pt-6 border-t border-slate-100">
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <span class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -517,148 +601,97 @@
                         </h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Alamat -->
                             <div class="md:col-span-2">
                                 <label for="alamat" class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Alamat Lengkap
+                                    Alamat Lengkap *
                                 </label>
-                                <textarea id="alamat" name="alamat" rows="3"
+                                <textarea id="alamat" name="alamat" rows="2" required
                                           class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
-                                          placeholder="Jl. Contoh No. 123">{{ old('alamat', auth()->user()->perusahaan->alamat) }}</textarea>
+                                          placeholder="Jl. Contoh No. 123">{{ old('alamat', $perusahaan->alamat) }}</textarea>
                                 @error('alamat')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <!-- Kota -->
                             <div>
                                 <label for="kota" class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Kota
+                                    Kota *
                                 </label>
-                                <input type="text" id="kota" name="kota" 
-                                       value="{{ old('kota', auth()->user()->perusahaan->kota) }}"
+                                <input type="text" id="kota" name="kota" value="{{ old('kota', $perusahaan->kota) }}" required
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                       placeholder="Jakarta">
+                                       placeholder="Bojonegoro">
                                 @error('kota')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <!-- Provinsi -->
                             <div>
                                 <label for="provinsi" class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Provinsi
+                                    Provinsi *
                                 </label>
-                                <input type="text" id="provinsi" name="provinsi" 
-                                       value="{{ old('provinsi', auth()->user()->perusahaan->provinsi) }}"
+                                <input type="text" id="provinsi" name="provinsi" value="{{ old('provinsi', $perusahaan->provinsi) }}" required
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                       placeholder="DKI Jakarta">
+                                       placeholder="Jawa Timur">
                                 @error('provinsi')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <!-- Kode Pos -->
                             <div>
                                 <label for="kode_pos" class="block text-sm font-semibold text-slate-700 mb-2">
                                     Kode Pos
                                 </label>
-                                <input type="text" id="kode_pos" name="kode_pos" 
-                                       value="{{ old('kode_pos', auth()->user()->perusahaan->kode_pos) }}"
+                                <input type="text" id="kode_pos" name="kode_pos" value="{{ old('kode_pos', $perusahaan->kode_pos) }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                       placeholder="12345">
+                                       placeholder="62111">
                                 @error('kode_pos')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <!-- No Telepon -->
                             <div>
                                 <label for="no_telp" class="block text-sm font-semibold text-slate-700 mb-2">
-                                    No. Telepon Perusahaan
+                                    No. Telepon Perusahaan *
                                 </label>
-                                <input type="text" id="no_telp" name="no_telp" 
-                                       value="{{ old('no_telp', auth()->user()->perusahaan->no_telp) }}"
+                                <input type="text" id="no_telp" name="no_telp" value="{{ old('no_telp', $perusahaan->no_telp) }}" required
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                       placeholder="021-1234567">
+                                       placeholder="021xxxxxx">
                                 @error('no_telp')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Person in Charge (PIC) -->
-                    <div class="space-y-6 pt-6 border-t border-slate-100">
-                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                            <span class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                </svg>
-                            </span>
-                            Contact Person (PIC)
-                        </h3>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Nama PIC -->
                             <div>
-                                <label for="nama_pic" class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Nama PIC
+                                <label for="no_hp" class="block text-sm font-semibold text-slate-700 mb-2">
+                                    No. HP / WhatsApp Contact
                                 </label>
-                                <input type="text" id="nama_pic" name="nama_pic" 
-                                       value="{{ old('nama_pic', auth()->user()->perusahaan->nama_pic) }}"
+                                <input type="text" id="no_hp" name="no_hp" value="{{ old('no_hp', $perusahaan->no_hp) }}"
                                        class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                       placeholder="John Doe">
-                                @error('nama_pic')
+                                       placeholder="08xxxxxxxxxx">
+                                @error('no_hp')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <!-- Jabatan PIC -->
-                            <div>
-                                <label for="jabatan_pic" class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Jabatan PIC
+                            <div class="md:col-span-2">
+                                <label for="cv_perusahaan" class="block text-sm font-semibold text-slate-700 mb-2">
+                                    Berkas Profil Perusahaan / CV Perusahaan (PDF)
                                 </label>
-                                <input type="text" id="jabatan_pic" name="jabatan_pic" 
-                                       value="{{ old('jabatan_pic', auth()->user()->perusahaan->jabatan_pic) }}"
-                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                       placeholder="HR Manager">
-                                @error('jabatan_pic')
-                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- No Telp PIC -->
-                            <div>
-                                <label for="no_telp_pic" class="block text-sm font-semibold text-slate-700 mb-2">
-                                    No. Telepon PIC
-                                </label>
-                                <input type="text" id="no_telp_pic" name="no_telp_pic" 
-                                       value="{{ old('no_telp_pic', auth()->user()->perusahaan->no_telp_pic) }}"
-                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                       placeholder="08123456789">
-                                @error('no_telp_pic')
-                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Email PIC -->
-                            <div>
-                                <label for="email_pic" class="block text-sm font-semibold text-slate-700 mb-2">
-                                    Email PIC
-                                </label>
-                                <input type="email" id="email_pic" name="email_pic" 
-                                       value="{{ old('email_pic', auth()->user()->perusahaan->email_pic) }}"
-                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                       placeholder="pic@perusahaan.com">
-                                @error('email_pic')
+                                <input type="file" id="cv_perusahaan" name="cv_perusahaan" accept="application/pdf"
+                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                @if($perusahaan->cv_perusahaan)
+                                    <p class="text-xs text-emerald-600 mt-2 flex items-center gap-1">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        Berkas sudah terunggah. <a href="{{ Storage::url($perusahaan->cv_perusahaan) }}" target="_blank" class="underline font-bold hover:text-emerald-700">Lihat PDF lama</a>
+                                    </p>
+                                @endif
+                                @error('cv_perusahaan')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
                     </div>
 
-                    <!-- Password Section -->
                     <div class="space-y-6 pt-6 border-t border-slate-100">
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <span class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
@@ -674,12 +707,11 @@
                                 <svg class="w-5 h-5 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
-                                <p class="text-sm text-blue-700">Kosongkan jika tidak ingin mengubah password</p>
+                                <p class="text-sm text-blue-700">Kosongkan jika tidak ingin mengubah password akun login</p>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Password Baru -->
                             <div>
                                 <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">
                                     Password Baru
@@ -692,7 +724,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Konfirmasi Password -->
                             <div>
                                 <label for="password_confirmation" class="block text-sm font-semibold text-slate-700 mb-2">
                                     Konfirmasi Password
@@ -706,8 +737,7 @@
 
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="px-8 py-6 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row gap-3 justify-end">
+                <div class="px-8 py-6 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row gap-3 justify-end rounded-b-3xl mt-8">
                     <a href="{{ route('profile') }}" 
                        class="px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-medium hover:bg-slate-50 transition-all text-center">
                         Batal
@@ -720,6 +750,7 @@
                         Simpan Perubahan
                     </button>
                 </div>
+            </div>
         </form>
 
     @else

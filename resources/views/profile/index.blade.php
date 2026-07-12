@@ -240,21 +240,52 @@
                     <div class="p-6">
                         <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Detail Perusahaan</h3>
                         <div class="space-y-4">
+                            @if($perusahaan->jenis_pt)
                             <div>
-                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Bidang</p>
-                                <p class="text-slate-800 font-medium">{{ $perusahaan->bidang_usaha }}</p>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Jenis Instansi / PT</p>
+                                <p class="text-slate-800 font-medium">{{ $perusahaan->jenis_pt }}</p>
+                            </div>
+                            @endif
+                            <div>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Bidang Usaha</p>
+                                <p class="text-slate-800 font-medium">{{ $perusahaan->bidang_usaha ?? '-' }}</p>
                             </div>
                             <div>
-                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Lokasi</p>
-                                <p class="text-slate-800 leading-relaxed">{{ $perusahaan->alamat }} <br> <span class="text-slate-500">{{ $perusahaan->kota }}, {{ $perusahaan->provinsi }}</span></p>
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Lokasi Kantor</p>
+                                <p class="text-slate-800 leading-relaxed text-sm">{{ $perusahaan->alamat }} <br> <span class="text-slate-500">{{ $perusahaan->kota }}, {{ $perusahaan->provinsi }} {{ $perusahaan->kode_pos }}</span></p>
                             </div>
                             @if($perusahaan->website)
                             <div>
                                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Website</p>
-                                <a href="{{ $perusahaan->website }}" target="_blank" class="text-blue-600 hover:underline truncate block">{{ $perusahaan->website }}</a>
+                                <a href="{{ $perusahaan->website }}" target="_blank" class="text-blue-600 hover:underline text-sm truncate block">{{ $perusahaan->website }}</a>
                             </div>
                             @endif
-                            <div>
+                            @if($perusahaan->tahun_berdiri || $perusahaan->jumlah_karyawan)
+                            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-50">
+                                @if($perusahaan->tahun_berdiri)
+                                <div>
+                                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Berdiri</p>
+                                    <p class="text-slate-700 text-sm font-medium">{{ $perusahaan->tahun_berdiri }}</p>
+                                </div>
+                                @endif
+                                @if($perusahaan->jumlah_karyawan)
+                                <div>
+                                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Karyawan</p>
+                                    <p class="text-slate-700 text-sm font-medium">{{ $perusahaan->jumlah_karyawan }} Orang</p>
+                                </div>
+                                @endif
+                            </div>
+                            @endif
+                            @if($perusahaan->cv_perusahaan)
+                            <div class="pt-2">
+                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Profil PT / Berkas</p>
+                                <a href="{{ Storage::url($perusahaan->cv_perusahaan) }}" target="_blank" class="inline-flex items-center text-xs bg-emerald-50 text-emerald-700 font-semibold px-2.5 py-1.5 rounded-lg hover:bg-emerald-100 transition-colors">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z"/></svg>
+                                    Unduh Profil Perusahaan (PDF)
+                                </a>
+                            </div>
+                            @endif
+                            <div class="pt-2 border-t border-slate-100">
                                 <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Status Kerjasama</p>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-{{ $perusahaan->status_kerjasama == 'aktif' ? 'green' : 'yellow' }}-100 text-{{ $perusahaan->status_kerjasama == 'aktif' ? 'green' : 'yellow' }}-800">
                                     {{ ucfirst($perusahaan->status_kerjasama) }}
@@ -269,27 +300,56 @@
                 @if($perusahaan->deskripsi)
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
                     <h3 class="font-bold text-slate-800 mb-3">Tentang Perusahaan</h3>
-                    <div class="prose prose-sm max-w-none text-slate-600">
+                    <div class="prose prose-sm max-w-none text-slate-600 leading-relaxed text-sm">
                         {{ $perusahaan->deskripsi }}
                     </div>
                 </div>
                 @endif
 
-                @if($perusahaan->nama_pic)
+                @if($perusahaan->visi || $perusahaan->misi)
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if($perusahaan->visi)
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-1.5 text-sm">
+                            <span class="w-1.5 h-3.5 bg-blue-600 rounded-sm"></span> Visi
+                        </h4>
+                        <p class="text-slate-600 text-sm leading-relaxed whitespace-pre-line">{{ $perusahaan->visi }}</p>
+                    </div>
+                    @endif
+                    @if($perusahaan->misi)
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-1.5 text-sm">
+                            <span class="w-1.5 h-3.5 bg-indigo-600 rounded-sm"></span> Misi
+                        </h4>
+                        <p class="text-slate-600 text-sm leading-relaxed whitespace-pre-line">{{ $perusahaan->misi }}</p>
+                    </div>
+                    @endif
+                </div>
+                @endif
+
+                @if($perusahaan->nama_pimpinan)
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                     <div class="px-6 py-4 bg-slate-50/50 border-b border-slate-100">
-                        <h3 class="font-bold text-slate-800">Contact Person (PIC)</h3>
+                        <h3 class="font-bold text-slate-800">Manajemen Pemimpin & Kontak</h3>
                     </div>
                     <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Nama PIC</p>
-                            <p class="text-slate-800 font-medium">{{ $perusahaan->nama_pic }}</p>
-                            <p class="text-sm text-slate-500">{{ $perusahaan->jabatan_pic }}</p>
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Nama Pimpinan / Direktur</p>
+                            <p class="text-slate-800 font-bold text-sm">{{ $perusahaan->nama_pimpinan }}</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Penanggung Jawab Utama Instansi</p>
                         </div>
                         <div>
-                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Kontak</p>
-                            <p class="text-slate-800 font-medium">{{ $perusahaan->no_telp_pic }}</p>
-                            <p class="text-sm text-blue-600">{{ $perusahaan->email_pic }}</p>
+                            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Saluran Kontak Resmi</p>
+                            <p class="text-slate-800 font-semibold text-sm flex items-center gap-1">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                {{ $perusahaan->no_telp }} <span class="text-xs text-slate-400 font-normal">(Telp Kantor)</span>
+                            </p>
+                            @if($perusahaan->no_hp)
+                            <p class="text-slate-700 font-medium text-sm mt-1 flex items-center gap-1">
+                                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                {{ $perusahaan->no_hp }} <span class="text-xs text-slate-400 font-normal">(WhatsApp Direct)</span>
+                            </p>
+                            @endif
                         </div>
                     </div>
                 </div>

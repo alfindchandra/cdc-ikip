@@ -28,7 +28,7 @@ class PengaturanController extends Controller
     {
         $user = auth()->user();
 
-        // Validasi dasar untuk semua role
+        // 1. Validasi dasar global (User data)
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -36,7 +36,7 @@ class PengaturanController extends Controller
             'avatar' => 'nullable|image|max:2048',
         ];
 
-        // Tambah validasi untuk mahasiswa
+        // 2. Tambah validasi sesuai role
         if ($user->isMahasiswa()) {
             $rules = array_merge($rules, [
                 'nim' => 'nullable|string|max:20|unique:mahasiswa,nim,' . $user->mahasiswa->id,
@@ -53,11 +53,31 @@ class PengaturanController extends Controller
                 'pekerjaan_ortu' => 'nullable|string',
                 'no_telp_ortu' => 'nullable|string|max:15',
             ]);
+        } elseif ($user->isPerusahaan()) {
+            // Sesuai $fillable Model Perusahaan Anda
+            $rules = array_merge($rules, [
+                'bidang_usaha' => 'nullable|string|max:255',
+                'jenis_pt' => 'nullable|string|max:100',
+                'alamat' => 'required|string',
+                'kota' => 'required|string|max:100',
+                'provinsi' => 'required|string|max:100',
+                'kode_pos' => 'nullable|string|max:10',
+                'no_telp' => 'required|string|max:20',
+                'no_hp' => 'nullable|string|max:20',
+                'website' => 'nullable|url|max:255',
+                'nama_pimpinan' => 'required|string|max:255',
+                'tahun_berdiri' => 'nullable|integer|min:1900|max:' . date('Y'),
+                'jumlah_karyawan' => 'nullable|integer|min:0',
+                'visi' => 'nullable|string',
+                'misi' => 'nullable|string',
+                'deskripsi' => 'nullable|string',
+                'cv_perusahaan' => 'nullable|file|mimes:pdf|max:5120',
+            ]);
         }
 
         $validated = $request->validate($rules);
 
-        // Handle avatar upload
+        // 3. Handle upload Avatar (Logo/Foto Profil)
         if ($request->hasFile('avatar')) {
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
@@ -65,21 +85,22 @@ class PengaturanController extends Controller
             $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
-        // Update user data
-        $user->update([
+        // 4. Update data Tabel `users`
+        $userData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'avatar' => $validated['avatar'] ?? $user->avatar,
-        ]);
+        ];
 
-        // Update password if provided
         if ($request->filled('password')) {
-            $user->update(['password' => Hash::make($validated['password'])]);
+            $userData['password'] = Hash::make($validated['password']);
         }
 
-        // Update mahasiswa profile if user is mahasiswa
+        $user->update($userData);
+
+        // 5. Jalankan update ke tabel spesifik
         if ($user->isMahasiswa()) {
-            $mahasiswaData = [
+            $user->mahasiswa->update([
                 'nim' => $validated['nim'] ?? null,
                 'tempat_lahir' => $validated['tempat_lahir'] ?? null,
                 'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
@@ -93,9 +114,36 @@ class PengaturanController extends Controller
                 'nama_ortu' => $validated['nama_ortu'] ?? null,
                 'pekerjaan_ortu' => $validated['pekerjaan_ortu'] ?? null,
                 'no_telp_ortu' => $validated['no_telp_ortu'] ?? null,
-            ];
+            ]);
+        } elseif ($user->isPerusahaan()) {
+            
+            // Handle upload berkas PDF profil/CV Perusahaan jika ada file baru
+            $cvPath = $user->perusahaan->cv_perusahaan;
+            if ($request->hasFile('cv_perusahaan')) {
+                if ($cvPath) {
+                    Storage::disk('public')->delete($cvPath);
+                }
+                $cvPath = $request->file('cv_perusahaan')->store('perusahaan/cv', 'public');
+            }
 
-            $user->mahasiswa->update($mahasiswaData);
+            $user->perusahaan->update([
+                'bidang_usaha' => $validated['bidang_usaha'] ?? $user->perusahaan->bidang_usaha,
+                'jenis_pt' => $validated['jenis_pt'] ?? $user->perusahaan->jenis_pt,
+                'alamat' => $validated['alamat'],
+                'kota' => $validated['kota'],
+                'provinsi' => $validated['provinsi'],
+                'kode_pos' => $validated['kode_pos'] ?? $user->perusahaan->kode_pos,
+                'no_telp' => $validated['no_telp'],
+                'no_hp' => $validated['no_hp'] ?? $user->perusahaan->no_hp,
+                'website' => $validated['website'] ?? $user->perusahaan->website,
+                'nama_pimpinan' => $validated['nama_pimpinan'],
+                'tahun_berdiri' => $validated['tahun_berdiri'] ?? $user->perusahaan->tahun_berdiri,
+                'jumlah_karyawan' => $validated['jumlah_karyawan'] ?? $user->perusahaan->jumlah_karyawan,
+                'visi' => $validated['visi'] ?? $user->perusahaan->visi,
+                'misi' => $validated['misi'] ?? $user->perusahaan->misi,
+                'deskripsi' => $validated['deskripsi'] ?? $user->perusahaan->deskripsi,
+                'cv_perusahaan' => $cvPath,
+            ]);
         }
 
         return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui');

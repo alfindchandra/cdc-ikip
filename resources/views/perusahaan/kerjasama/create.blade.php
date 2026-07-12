@@ -162,9 +162,27 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="pic_industri" class="block text-sm font-semibold text-gray-700 mb-2">PIC Perusahaan</label>
+                    <label for="pic_industri" class="block text-sm font-semibold text-gray-700 mb-2">Nama PIC Perusahaan</label>
                     <input type="text" id="pic_industri" name="pic_industri" value="{{ old('pic_industri') }}" placeholder="Nama kontak di perusahaan Anda" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
                     @error('pic_industri')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="jabatan_pic_industri" class="block text-sm font-semibold text-gray-700 mb-2">Jabatan PIC</label>
+                    <input type="text" id="jabatan_pic_industri" name="jabatan_pic_industri" value="{{ old('jabatan_pic_industri') }}" placeholder="HRD Manager, Direktur, dll" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+                    @error('jabatan_pic_industri')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="no_telp_pic_industri" class="block text-sm font-semibold text-gray-700 mb-2">No. Telepon PIC</label>
+                    <input type="text" id="no_telp_pic_industri" name="no_telp_pic_industri" value="{{ old('no_telp_pic_industri') }}" placeholder="08xxxxxxxxxx" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+                    @error('no_telp_pic_industri')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
+
+                <div>
+                    <label for="email_pic_industri" class="block text-sm font-semibold text-gray-700 mb-2">Email PIC</label>
+                    <input type="email" id="email_pic_industri" name="email_pic_industri" value="{{ old('email_pic_industri') }}" placeholder="pic@company.com" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm">
+                    @error('email_pic_industri')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
                 </div>
             </div>
 

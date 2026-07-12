@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi Perusahaan - CDC {{ config('app.ikip') }}</title>
+    <title>Registrasi PT - CDC {{ config('app.ikip') }}</title>
     @vite(['resources/css/app.css'])
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
@@ -26,8 +26,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                 </svg>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Registrasi Perusahaan</h1>
-            <p class="text-gray-600">Lengkapi data perusahaan Anda untuk membuat akun</p>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Registrasi PT</h1>
+            <p class="text-gray-600">Lengkapi data PT/perusahaan Anda untuk membuat akun</p>
         </div>
 
         <!-- Form Card -->
@@ -47,7 +47,7 @@
             </div>
             @endif
 
-            <form method="POST" action="{{ route('register.perusahaan') }}" class="space-y-6">
+            <form method="POST" action="{{ route('register.perusahaan') }}" class="space-y-6" enctype="multipart/form-data">
                 @csrf
 
                 <!-- Data Akun Section -->
@@ -60,12 +60,12 @@
                     </h3>
 
                     <div class="grid md:grid-cols-2 gap-5">
-                        <!-- Nama PIC -->
+                        <!-- Nama Akun -->
                         <div class="md:col-span-2">
-                            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Nama PIC (Person In Charge) *</label>
+                            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Nama Perusahaan *</label>
                             <input type="text" id="name" name="name" value="{{ old('name') }}" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
-                                   placeholder="Nama lengkap penanggung jawab" required>
+                                   placeholder="Nama lengkap perusahaan" required>
                         </div>
 
                         <!-- Email -->
@@ -105,14 +105,7 @@
                     </h3>
 
                     <div class="grid md:grid-cols-2 gap-5">
-                        <!-- Nama Perusahaan -->
-                        <div class="md:col-span-2">
-                            <label for="nama_perusahaan" class="block text-sm font-semibold text-gray-700 mb-2">Nama Perusahaan *</label>
-                            <input type="text" id="nama_perusahaan" name="nama_perusahaan" value="{{ old('nama_perusahaan') }}" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
-                                   placeholder="PT. Nama Perusahaan" required>
-                        </div>
-
+                        
                         <!-- Bidang Usaha -->
                         <div>
                             <label for="bidang_usaha" class="block text-sm font-semibold text-gray-700 mb-2">Bidang Usaha *</label>
@@ -132,6 +125,18 @@
                             </select>
                         </div>
 
+                        <!-- Jenis PT -->
+                        <div>
+                            <label for="jenis_pt" class="block text-sm font-semibold text-gray-700 mb-2">Jenis PT *</label>
+                            <select id="jenis_pt" name="jenis_pt" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                                <option value="">Pilih Jenis PT</option>
+                                @foreach(\App\Models\Perusahaan::jenisPtOptions() as $value => $label)
+                                <option value="{{ $value }}" {{ old('jenis_pt') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <!-- No Telepon Perusahaan -->
                         <div>
                             <label for="no_telp" class="block text-sm font-semibold text-gray-700 mb-2">No. Telepon Perusahaan *</label>
@@ -140,20 +145,44 @@
                                    placeholder="021xxxxxxxx atau 08xxxxxxxxxx" maxlength="15" required>
                         </div>
 
-                        <!-- Email Perusahaan -->
-                        <div>
-                            <label for="email_perusahaan" class="block text-sm font-semibold text-gray-700 mb-2">Email Perusahaan *</label>
-                            <input type="email" id="email_perusahaan" name="email_perusahaan" value="{{ old('email_perusahaan') }}" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
-                                   placeholder="company@example.com" required>
-                        </div>
-
                         <!-- Website -->
                         <div>
                             <label for="website" class="block text-sm font-semibold text-gray-700 mb-2">Website Perusahaan</label>
                             <input type="url" id="website" name="website" value="{{ old('website') }}" 
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
                                    placeholder="https://www.company.com">
+                        </div>
+
+                        <!-- Nama Pimpinan -->
+                        <div>
+                            <label for="nama_pimpinan" class="block text-sm font-semibold text-gray-700 mb-2">Nama Pimpinan *</label>
+                            <input type="text" id="nama_pimpinan" name="nama_pimpinan" value="{{ old('nama_pimpinan') }}" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                   placeholder="Nama Direktur/Pimpinan PT" required>
+                        </div>
+
+                        <!-- No HP -->
+                        <div>
+                            <label for="no_hp" class="block text-sm font-semibold text-gray-700 mb-2">No. HP</label>
+                            <input type="text" id="no_hp" name="no_hp" value="{{ old('no_hp') }}" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                   placeholder="08xxxxxxxxxx" maxlength="15">
+                        </div>
+
+                        <!-- Tahun Berdiri -->
+                        <div>
+                            <label for="tahun_berdiri" class="block text-sm font-semibold text-gray-700 mb-2">Tahun Berdiri</label>
+                            <input type="number" id="tahun_berdiri" name="tahun_berdiri" value="{{ old('tahun_berdiri') }}" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                   placeholder="Contoh: 2015" min="1900" max="{{ date('Y') }}">
+                        </div>
+
+                        <!-- Jumlah Karyawan -->
+                        <div>
+                            <label for="jumlah_karyawan" class="block text-sm font-semibold text-gray-700 mb-2">Jumlah Karyawan</label>
+                            <input type="number" id="jumlah_karyawan" name="jumlah_karyawan" value="{{ old('jumlah_karyawan') }}" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                   placeholder="Contoh: 50" min="0">
                         </div>
 
                         <!-- Alamat -->
@@ -175,17 +204,9 @@
                         <!-- Provinsi -->
                         <div>
                             <label for="provinsi" class="block text-sm font-semibold text-gray-700 mb-2">Provinsi *</label>
-                            <select id="provinsi" name="provinsi" 
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
-                                <option value="">Pilih Provinsi</option>
-                                <option value="Jawa Timur" {{ old('provinsi') == 'Jawa Timur' ? 'selected' : '' }}>Jawa Timur</option>
-                                <option value="Jawa Tengah" {{ old('provinsi') == 'Jawa Tengah' ? 'selected' : '' }}>Jawa Tengah</option>
-                                <option value="Jawa Barat" {{ old('provinsi') == 'Jawa Barat' ? 'selected' : '' }}>Jawa Barat</option>
-                                <option value="DKI Jakarta" {{ old('provinsi') == 'DKI Jakarta' ? 'selected' : '' }}>DKI Jakarta</option>
-                                <option value="Banten" {{ old('provinsi') == 'Banten' ? 'selected' : '' }}>Banten</option>
-                                <option value="DI Yogyakarta" {{ old('provinsi') == 'DI Yogyakarta' ? 'selected' : '' }}>DI Yogyakarta</option>
-                                <option value="Lainnya" {{ old('provinsi') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
-                            </select>
+                            <input type="text" id="provinsi" name="provinsi" value="{{ old('provinsi') }}" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                   placeholder="Contoh: Jawa Timur" maxlength="100" required>
                         </div>
 
                         <!-- Kode Pos -->
@@ -196,67 +217,46 @@
                                    placeholder="62111" maxlength="10">
                         </div>
 
+                        <!-- Visi -->
+                        <div class="md:col-span-2">
+                            <label for="visi" class="block text-sm font-semibold text-gray-700 mb-2">Visi</label>
+                            <textarea id="visi" name="visi" rows="2" 
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                      placeholder="Visi PT/perusahaan Anda">{{ old('visi') }}</textarea>
+                        </div>
+
+                        <!-- Misi -->
+                        <div class="md:col-span-2">
+                            <label for="misi" class="block text-sm font-semibold text-gray-700 mb-2">Misi</label>
+                            <textarea id="misi" name="misi" rows="3" 
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
+                                      placeholder="Misi PT/perusahaan Anda">{{ old('misi') }}</textarea>
+                        </div>
+
                         <!-- Deskripsi -->
                         <div class="md:col-span-2">
                             <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi Perusahaan</label>
                             <textarea id="deskripsi" name="deskripsi" rows="4" 
                                       class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
-                                      placeholder="Ceritakan tentang perusahaan Anda, visi, misi, dan bidang kegiatan...">{{ old('deskripsi') }}</textarea>
+                                      placeholder="Ceritakan tentang perusahaan Anda dan bidang kegiatan...">{{ old('deskripsi') }}</textarea>
+                        </div>
+
+                        <!-- CV Perusahaan -->
+                        <div class="md:col-span-2">
+                            <label for="cv_perusahaan" class="block text-sm font-semibold text-gray-700 mb-2">CV Perusahaan (Profil PT, PDF)</label>
+                            <input type="file" id="cv_perusahaan" name="cv_perusahaan" accept="application/pdf" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                            <p class="text-xs text-gray-500 mt-1">Format PDF, maksimal 5MB</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Data PIC Section -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                        Data Person In Charge (PIC)
-                    </h3>
-
-                    <div class="grid md:grid-cols-2 gap-5">
-                        <!-- Nama PIC -->
-                        <div>
-                            <label for="nama_pic" class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap PIC *</label>
-                            <input type="text" id="nama_pic" name="nama_pic" value="{{ old('nama_pic') }}" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
-                                   placeholder="Nama lengkap PIC" required>
-                        </div>
-
-                        <!-- Jabatan PIC -->
-                        <div>
-                            <label for="jabatan_pic" class="block text-sm font-semibold text-gray-700 mb-2">Jabatan PIC *</label>
-                            <input type="text" id="jabatan_pic" name="jabatan_pic" value="{{ old('jabatan_pic') }}" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
-                                   placeholder="HRD Manager, Direktur, dll" maxlength="100" required>
-                        </div>
-
-                        <!-- No Telepon PIC -->
-                        <div>
-                            <label for="no_telp_pic" class="block text-sm font-semibold text-gray-700 mb-2">No. Telepon PIC *</label>
-                            <input type="number" id="no_telp_pic" name="no_telp_pic" value="{{ old('no_telp_pic') }}" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
-                                   placeholder="08xxxxxxxxxx" maxlength="15" required>
-                        </div>
-
-                        <!-- Email PIC -->
-                        <div>
-                            <label for="email_pic" class="block text-sm font-semibold text-gray-700 mb-2">Email PIC *</label>
-                            <input type="email" id="email_pic" name="email_pic" value="{{ old('email_pic') }}" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent" 
-                                   placeholder="pic@company.com" required>
-                        </div>
-                    </div>
-
-                 
-                </div>
-
+                
                 <!-- Submit Button -->
                 <div class="pt-4">
                     <button type="submit" 
                             class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold py-3.5 rounded-xl hover:from-purple-700 hover:to-purple-800 shadow-lg transform hover:scale-[1.02] transition-all flex items-center justify-center space-x-2">
-                        <span>Daftar Sebagai Perusahaan</span>
+                        <span>Daftar Sebagai PT</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                         </svg>
