@@ -34,7 +34,7 @@
                              class="w-14 h-14 rounded-xl object-cover ring-1 ring-gray-100">
                     @else
                         <div class="w-14 h-14 bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-xl flex items-center justify-center text-lg font-bold text-gray-600">
-                            {{ substr($l->lowongan->perusahaan->nama_perusahaan, 0, 1) }}
+                            {{ substr( $l->lowongan->perusahaan->user->name ?? 'P', 0, 1) }}
                         </div>
                     @endif
                 </div>
@@ -48,7 +48,7 @@
                                     {{ $l->lowongan->judul }}
                                 </a>
                             </h3>
-                            <p class="text-sm font-medium text-gray-600 mt-0.5">{{ $l->lowongan->perusahaan->nama_perusahaan }}</p>
+                            <p class="text-sm font-medium text-gray-600 mt-0.5">{{ $l->lowongan->perusahaan->user->name }}</p>
                         </div>
                         
                         {{-- Status Badge (Clean & Soft Pill Style) --}}

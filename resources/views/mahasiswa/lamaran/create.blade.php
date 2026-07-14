@@ -34,7 +34,7 @@
                     <p class="text-lg text-white/90 mb-3">{{ $lowongan->posisi }}</p>
                     <div class="flex flex-wrap gap-3">
                         <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-lg text-sm font-medium">
-                            {{ $lowongan->perusahaan->nama_perusahaan }}
+                            {{ $lowongan->user->name->name }}
                         </span>
                         <span class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-lg text-sm font-medium">
                             📍 {{ $lowongan->lokasi }}

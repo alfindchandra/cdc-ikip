@@ -189,31 +189,18 @@
                     <div class="grid md:grid-cols-2 gap-5">
                         <!-- Fakultas -->
                         <div>
-                            <label for="fakultas_id" class="block text-sm font-semibold text-gray-700 mb-2">Fakultas *</label>
-                            <select id="fakultas_id" name="fakultas_id" 
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                                    onchange="filterProgramStudi()" required>
-                                <option value="">Pilih Fakultas</option>
-                                @foreach($fakultas as $fak)
-                                <option value="{{ $fak->id }}" {{ old('fakultas_id') == $fak->id ? 'selected' : '' }}>
-                                    {{ $fak->nama }}
-                                </option>
-                                @endforeach
-                            </select>
+                            <label for="fakultas_nama" class="block text-sm font-semibold text-gray-700 mb-2">Fakultas *</label>
+                            <input type="text" id="fakultas_nama" name="fakultas_nama" value="{{ old('fakultas_nama') }}" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                   placeholder="Contoh: Fakultas Teknik" maxlength="150" required>
                         </div>
 
                         <!-- Program Studi -->
                         <div>
-                            <label for="program_studi_id" class="block text-sm font-semibold text-gray-700 mb-2">Program Studi *</label>
-                            <select id="program_studi_id" name="program_studi_id" 
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
-                                <option value="">Pilih Program Studi</option>
-                                @foreach($programStudis as $prodi)
-                                <option value="{{ $prodi->id }}" data-fakultas="{{ $prodi->fakultas_id }}" {{ old('program_studi_id') == $prodi->id ? 'selected' : '' }}>
-                                    {{ $prodi->nama }}
-                                </option>
-                                @endforeach
-                            </select>
+                            <label for="program_studi_nama" class="block text-sm font-semibold text-gray-700 mb-2">Program Studi *</label>
+                            <input type="text" id="program_studi_nama" name="program_studi_nama" value="{{ old('program_studi_nama') }}" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                   placeholder="Contoh: Teknik Informatika" maxlength="200" required>
                         </div>
 
                         <!-- Tahun Masuk -->
@@ -222,6 +209,36 @@
                             <input type="number" id="tahun_masuk" name="tahun_masuk" value="{{ old('tahun_masuk', date('Y')) }}" 
                                    min="2000" max="{{ date('Y') + 1 }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        </div>
+
+                        <!-- Status Mahasiswa -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Status *</label>
+                            <div class="flex gap-4 mt-3">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="status" value="aktif" id="status_aktif"
+                                           {{ old('status', 'aktif') == 'aktif' ? 'checked' : '' }}
+                                           class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                           onchange="toggleTahunLulus()" required>
+                                    <span class="ml-2 text-gray-700">Mahasiswa Aktif</span>
+                                </label>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="radio" name="status" value="lulus" id="status_lulus"
+                                           {{ old('status') == 'lulus' ? 'checked' : '' }}
+                                           class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                           onchange="toggleTahunLulus()" required>
+                                    <span class="ml-2 text-gray-700">Lulus</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Tahun Lulus (muncul jika status = lulus) -->
+                        <div id="tahun_lulus_wrapper" class="{{ old('status') == 'lulus' ? '' : 'hidden' }}">
+                            <label for="tahun_lulus" class="block text-sm font-semibold text-gray-700 mb-2">Tahun Lulus *</label>
+                            <input type="number" id="tahun_lulus" name="tahun_lulus" value="{{ old('tahun_lulus') }}" 
+                                   min="2000" max="{{ date('Y') + 1 }}"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                   placeholder="Contoh: {{ date('Y') }}">
                         </div>
                     </div>
                 </div>
@@ -287,34 +304,25 @@
     </div>
 
     <script>
-        // Filter Program Studi berdasarkan Fakultas
-        function filterProgramStudi() {
-            const fakultasId = document.getElementById('fakultas_id').value;
-            const prodiSelect = document.getElementById('program_studi_id');
-            const prodiOptions = prodiSelect.querySelectorAll('option');
+        // Tampilkan/sembunyikan field Tahun Lulus sesuai status yang dipilih
+        function toggleTahunLulus() {
+            const statusLulus = document.getElementById('status_lulus').checked;
+            const wrapper = document.getElementById('tahun_lulus_wrapper');
+            const tahunLulusInput = document.getElementById('tahun_lulus');
 
-            prodiSelect.value = '';
-            
-            prodiOptions.forEach(option => {
-                if (option.value === '') {
-                    option.style.display = 'block';
-                } else {
-                    const prodiFakultasId = option.getAttribute('data-fakultas');
-                    if (fakultasId === '' || prodiFakultasId === fakultasId) {
-                        option.style.display = 'block';
-                    } else {
-                        option.style.display = 'none';
-                    }
-                }
-            });
+            if (statusLulus) {
+                wrapper.classList.remove('hidden');
+                tahunLulusInput.setAttribute('required', 'required');
+            } else {
+                wrapper.classList.add('hidden');
+                tahunLulusInput.removeAttribute('required');
+                tahunLulusInput.value = '';
+            }
         }
 
-        // Filter saat halaman dimuat jika ada old value
+        // Set kondisi awal saat halaman dimuat (misalnya setelah validasi gagal)
         window.addEventListener('DOMContentLoaded', function() {
-            const fakultasId = document.getElementById('fakultas_id').value;
-            if (fakultasId) {
-                filterProgramStudi();
-            }
+            toggleTahunLulus();
         });
     </script>
 </body>

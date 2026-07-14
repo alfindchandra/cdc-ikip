@@ -17,29 +17,12 @@
             >
         </div>
         
-        <div>
-            <select name="fakultas" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                <option value="">Semua Fakultas</option>
-                @foreach ($fakultas as $f)
-                    <option value="{{ $f->id }}" {{ request('fakultas') == $f->id ? 'selected' : '' }}>{{ $f->nama }}</option>
-                @endforeach
-            </select>
-        </div>
-        
-        <div>
-            <select name="program_studi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                <option value="">Semua Program Studi</option>
-               @foreach ($program_studi as $ps)
-                    <option value="{{ $ps->id }}" {{ request('program_studi') == $ps->id ? 'selected' : '' }}>{{ $ps->nama }}</option>
-                @endforeach
-            </select>
-        </div>
+       
         
         <div>
             <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                 <option value="">Semua Status</option>
                 <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                <option value="Cuti" {{ request('status') == 'Cuti' ? 'selected' : '' }}>Cuti</option>
                 <option value="Lulus" {{ request('status') == 'Lulus' ? 'selected' : '' }}>Lulus</option>
             </select>
         </div>

@@ -21,19 +21,25 @@
                 radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(147, 197, 253, 0.1) 0%, transparent 50%);
         }
+        .login-type-tab {
+            color: #4b5563;
+            background-color: transparent;
+        }
+        .login-type-tab.active {
+            background-color: #ffffff;
+            color: #1d4ed8;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 via-white to-blue-50 min-h-screen flex items-center justify-center p-4 bg-pattern">
     <div class="w-full flex items-center justify-center">
-        <!-- Login Card -->
         <div class="max-w-md w-full mx-auto">
-            <!-- Logo & Header (Mobile) -->
             <div class="text-center mb-8 lg:hidden">
                 <h1 class="text-2xl font-bold text-gray-900">Login</h1>
                 <p class="text-gray-600 mt-1 text-sm">CDC IKIP PGRI Bojonegoro</p>
             </div>
 
-            <!-- Login Card -->
             <div class="bg-white rounded-3xl shadow-2xl p-8 lg:p-10 border border-gray-100">
                 <div class="mb-8 items-center text-center">
                     <h2 class="text-3xl font-bold text-gray-900 mb-2">Login</h2>
@@ -62,40 +68,50 @@
                 </div>
                 @endif
 
+                <div class="mb-6">
+                    <div class="grid grid-cols-2 gap-2 bg-gray-100 p-1.5 rounded-xl" role="tablist">
+                        <button type="button"
+                                id="tab-aktif"
+                                onclick="setLoginType('aktif')"
+                                class="login-type-tab py-2.5 px-3 rounded-lg text-sm font-semibold transition-all duration-200">
+                            Mahasiswa Aktif
+                        </button>
+                        <button type="button"
+                                id="tab-lulus"
+                                onclick="setLoginType('lulus')"
+                                class="login-type-tab py-2.5 px-3 rounded-lg text-sm font-semibold transition-all duration-200">
+                            Alumni (Lulus)
+                        </button>
+                    </div>
+                </div>
+
                 <form method="POST" action="{{ route('login') }}" class="space-y-6" id="loginForm">
                     @csrf
+                    <input type="hidden" name="login_type" id="login_type" value="{{ old('login_type', 'aktif') }}">
 
-                    <!-- Email -->
                     <div>
-                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <label for="identity_input" id="identity_label" class="block text-sm font-semibold text-gray-700 mb-2">
                             Email
                         </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
-                                </svg>
+                                <span id="identity_icon">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
+                                    </svg>
+                                </span>
                             </div>
-                            <input type="email" 
-                                   id="email" 
+                            <input type="text" 
+                                   id="identity_input" 
                                    name="email" 
-                                   value="{{ old('email') }}"
-                                   class="w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('email') border-red-500 ring-2 ring-red-200 @enderror" 
+                                   value="{{ old('email') ?? old('nim') }}"
+                                   class="w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('email') border-red-500 ring-2 ring-red-200 @enderror @error('nim') border-red-500 ring-2 ring-red-200 @enderror" 
                                    placeholder="nama@example.com"
                                    required 
                                    autofocus>
                         </div>
-                        @error('email')
-                        <p class="mt-2 text-sm text-red-600 flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                            </svg>
-                            {{ $message }}
-                        </p>
-                        @enderror
                     </div>
 
-                    <!-- Password -->
                     <div>
                         <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
                             Password
@@ -121,17 +137,8 @@
                                 </svg>
                             </button>
                         </div>
-                        @error('password')
-                        <p class="mt-2 text-sm text-red-600 flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                            </svg>
-                            {{ $message }}
-                        </p>
-                        @enderror
                     </div>
 
-                    <!-- Remember Me & Forgot Password -->
                     <div class="flex items-center justify-between">
                         <label class="flex items-center cursor-pointer group">
                             <input type="checkbox" 
@@ -139,11 +146,8 @@
                                    class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer">
                             <span class="ml-2 text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Ingat saya</span>
                         </label>
-
-                        
                     </div>
 
-                    <!-- reCAPTCHA -->
                     <div class="flex justify-center">
                         <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.sitekey') }}"></div>
                     </div>
@@ -151,7 +155,6 @@
                         <p class="text-sm text-red-600 text-center">{{ $message }}</p>
                     @enderror
 
-                    <!-- Submit Button -->
                     <button type="submit" 
                             class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center space-x-2">
                         <span>Masuk</span>
@@ -160,7 +163,6 @@
                         </svg>
                     </button>
 
-                    <!-- Divider --> 
                     <div class="relative">
                         <div class="absolute inset-0 flex items-center">
                             <div class="w-full border-t border-gray-300"></div>
@@ -170,7 +172,6 @@
                         </div>
                     </div>
 
-                    <!-- Register Link -->
                     <div class="text-center">
                         <p class="text-sm text-gray-600">
                             Belum punya akun? 
@@ -182,7 +183,6 @@
                 </form>
             </div>
 
-            <!-- Footer -->
             <p class="text-center text-sm text-gray-500 mt-8">
                 &copy; {{ date('Y') }} {{ config('app.ikip') }}. All rights reserved.
             </p>
@@ -190,6 +190,49 @@
     </div>
 
     <script>
+        function setLoginType(type) {
+            document.getElementById('login_type').value = type;
+
+            const tabAktif = document.getElementById('tab-aktif');
+            const tabLulus = document.getElementById('tab-lulus');
+            const identityLabel = document.getElementById('identity_label');
+            const identityInput = document.getElementById('identity_input');
+            const identityIcon = document.getElementById('identity_icon');
+
+            tabAktif.classList.toggle('active', type === 'aktif');
+            tabLulus.classList.toggle('active', type === 'lulus');
+
+            if (type === 'lulus') {
+                // Konfigurasi untuk Alumni (NIM)
+                identityLabel.innerText = 'NIM (Nomor Induk Mahasiswa)';
+                identityInput.name = 'nim';
+                identityInput.type = 'text';
+                identityInput.placeholder = 'Masukkan NIM Anda';
+                identityIcon.innerHTML = `
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/>
+                    </svg>
+                `;
+            } else {
+                // Konfigurasi untuk Mahasiswa Aktif (Email)
+                identityLabel.innerText = 'Email';
+                identityInput.name = 'email';
+                identityInput.type = 'email';
+                identityInput.placeholder = 'nama@example.com';
+                identityIcon.innerHTML = `
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
+                    </svg>
+                `;
+            }
+        }
+
+        // Set initial tab state based on old value or default
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentType = document.getElementById('login_type').value;
+            setLoginType(currentType === 'lulus' ? 'lulus' : 'aktif');
+        });
+
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eye-icon');

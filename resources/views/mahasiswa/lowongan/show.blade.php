@@ -35,7 +35,7 @@
                         
                         <div>
                             <h3 class="text-2xl font-bold text-gray-900">{{ $lowongan->posisi }}</h3>
-                            <p class="text-sm text-gray-500">{{ $lowongan->perusahaan->nama_perusahaan }}</p>
+                            <p class="text-sm text-gray-500">{{  $lowongan->perusahaan->user->name }}</p>
                         </div>
                     </div>
 

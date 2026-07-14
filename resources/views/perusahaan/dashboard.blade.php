@@ -10,7 +10,7 @@
         <div class="card-body">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold mb-2">{{ auth()->user()->perusahaan->nama_perusahaan }}</h2>
+                    <h2 class="text-2xl font-bold mb-2">{{ auth()->user()->name }}</h2>
                     <p class="text-purple-100 mb-3">{{ auth()->user()->perusahaan->bidang_usaha ?? 'Perusahaan Mitra' }}</p>
                     <div class="flex items-center space-x-2">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
@@ -27,7 +27,7 @@
                     <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="Logo" class="w-24 h-24 rounded-lg object-cover border-4 border-white shadow-lg">
                     @else
                     <div class="w-24 h-24 bg-white rounded-lg flex items-center justify-center">
-                        <span class="text-purple-600 text-4xl font-bold">{{ substr(auth()->user()->perusahaan->nama_perusahaan, 0, 1) }}</span>
+                        <span class="text-purple-600 text-4xl font-bold">{{ substr(auth()->user()->perusahaan->user->name, 0, 1) }}</span>
                     </div>
                     @endif
                 </div>

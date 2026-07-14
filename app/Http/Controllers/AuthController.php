@@ -24,11 +24,28 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
+        $loginType = $request->input('login_type');
+
+        // Validasi berbeda tergantung tab yang dipilih:
+        // - Mahasiswa Aktif -> login pakai email
+        // - Alumni (Lulus)  -> login pakai NIM
+        $rules = [
             'password' => 'required',
+            'login_type' => 'required|in:aktif,lulus',
             'g-recaptcha-response' => 'required',
-        ], [
+        ];
+
+        if ($loginType === 'lulus') {
+            $rules['nim'] = 'required|string';
+        } else {
+            $rules['email'] = 'required|email';
+        }
+
+        $request->validate($rules, [
+            'login_type.required' => 'Silakan pilih jenis akun (Mahasiswa Aktif / Alumni).',
+            'login_type.in' => 'Jenis akun yang dipilih tidak valid.',
+            'nim.required' => 'NIM wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
             'g-recaptcha-response.required' => 'Silakan verifikasi bahwa Anda bukan robot.',
         ]);
 
@@ -47,18 +64,69 @@ class AuthController extends Controller
         if (!$recaptchaResult['success']) {
             return back()->withErrors([
                 'g-recaptcha-response' => 'Verifikasi reCAPTCHA gagal. Silakan coba lagi.',
-            ])->onlyInput('email');
+            ])->onlyInput('email', 'nim', 'login_type');
+        }
+
+        // Tentukan email yang dipakai untuk otentikasi.
+        // Untuk tab alumni, cari email lewat NIM terlebih dahulu.
+        if ($loginType === 'lulus') {
+            $mahasiswaByNim = Mahasiswa::where('nim', $request->input('nim'))->first();
+
+            if (!$mahasiswaByNim || !$mahasiswaByNim->user) {
+                return back()->withErrors([
+                    'nim' => 'NIM tidak ditemukan.',
+                ])->onlyInput('nim', 'login_type');
+            }
+
+            $emailUntukLogin = $mahasiswaByNim->user->email;
+        } else {
+            $emailUntukLogin = $request->input('email');
         }
 
         // Proses login
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->filled('remember'))) {
-            $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+        if (!Auth::attempt(['email' => $emailUntukLogin, 'password' => $request->password], $request->filled('remember'))) {
+            $pesanGagal = $loginType === 'lulus' ? 'NIM atau password salah.' : 'Email atau password salah.';
+            $fieldGagal = $loginType === 'lulus' ? 'nim' : 'email';
+
+            return back()->withErrors([
+                $fieldGagal => $pesanGagal,
+            ])->onlyInput('email', 'nim', 'login_type');
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+        $user = Auth::user();
+
+        // Jika yang login adalah mahasiswa, pastikan status akun (aktif/lulus)
+        // sesuai dengan tab yang dipilih di halaman login.
+        if ($user->isMahasiswa()) {
+            $mahasiswa = $user->mahasiswa;
+            $statusAktual = $mahasiswa->status ?? null;
+
+            $cocok = ($loginType === 'aktif' && $statusAktual === 'aktif')
+                  || ($loginType === 'lulus' && $statusAktual === 'lulus');
+
+            if (!$cocok) {
+                Auth::logout();
+
+                $pesan = $loginType === 'aktif'
+                    ? 'Akun ini bukan akun mahasiswa aktif. Silakan pilih tab "Alumni (Lulus)" untuk masuk.'
+                    : 'Akun ini bukan akun alumni. Silakan pilih tab "Mahasiswa Aktif" untuk masuk.';
+
+                $fieldGagal = $loginType === 'lulus' ? 'nim' : 'email';
+
+                return back()->withErrors([
+                    $fieldGagal => $pesan,
+                ])->onlyInput('email', 'nim', 'login_type');
+            }
+        }
+
+        $request->session()->regenerate();
+
+        // Alumni diarahkan langsung ke halaman/menu tracer study
+        if ($user->isMahasiswa() && $loginType === 'lulus') {
+            return redirect()->intended(route('mahasiswa.tracer-study.form'));
+        }
+
+        return redirect()->intended('dashboard');
     }
 
     // Tampilkan halaman pilihan role
@@ -82,7 +150,7 @@ class AuthController extends Controller
     }
 
     // Proses register mahasiswa
-    public function registerMahasiswa(Request $request)
+       public function registerMahasiswa(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -95,14 +163,16 @@ class AuthController extends Controller
             'agama' => 'required|string|max:20',
             'alamat' => 'required|string',
             'no_telp' => 'required|string|max:15',
-            'fakultas_id' => 'required|exists:fakultas,id',
-            'program_studi_id' => 'required|exists:program_studis,id',
+            'fakultas_nama' => 'required|string|max:150',
+            'program_studi_nama' => 'required|string|max:200',
             'tahun_masuk' => 'required|integer|min:2000|max:' . (date('Y') + 1),
+            'status' => 'required|in:aktif,lulus',
+            'tahun_lulus' => 'required_if:status,lulus|nullable|integer|min:2000|max:' . (date('Y') + 1),
             'nama_ortu' => 'required|string|max:255',
             'pekerjaan_ortu' => 'nullable|string|max:100',
             'no_telp_ortu' => 'nullable|string|max:15',
         ]);
-
+ 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -110,7 +180,28 @@ class AuthController extends Controller
             'role' => 'mahasiswa',
             'is_active' => true,
         ]);
-
+ 
+        // Cari fakultas berdasarkan nama (tanpa memandang huruf besar/kecil),
+        // buat baru jika belum ada di database.
+        $fakultas = Fakultas::whereRaw('LOWER(nama) = ?', [strtolower(trim($validated['fakultas_nama']))])
+            ->first();
+        if (!$fakultas) {
+            $fakultas = Fakultas::create([
+                'nama' => trim($validated['fakultas_nama']),
+            ]);
+        }
+ 
+        // Cari program studi berdasarkan nama (kolom nama unique secara global di tabel program_studis),
+        // buat baru di bawah fakultas yang diketik jika belum ada di database.
+        $programStudi = Program_studi::whereRaw('LOWER(nama) = ?', [strtolower(trim($validated['program_studi_nama']))])
+            ->first();
+        if (!$programStudi) {
+            $programStudi = Program_studi::create([
+                'fakultas_id' => $fakultas->id,
+                'nama' => trim($validated['program_studi_nama']),
+            ]);
+        }
+ 
         Mahasiswa::create([
             'user_id' => $user->id,
             'nim' => $validated['nim'],
@@ -120,21 +211,22 @@ class AuthController extends Controller
             'agama' => $validated['agama'],
             'alamat' => $validated['alamat'],
             'no_telp' => $validated['no_telp'], 
-            'fakultas_id' => $validated['fakultas_id'],
-            'program_studi_id' => $validated['program_studi_id'],
+            'fakultas_id' => $fakultas->id,
+            'program_studi_id' => $programStudi->id,
             'tahun_masuk' => $validated['tahun_masuk'],
             'nama_ortu' => $validated['nama_ortu'],
             'pekerjaan_ortu' => $validated['pekerjaan_ortu'],
             'no_telp_ortu' => $validated['no_telp_ortu'],
-            'status' => 'aktif',
+            'status' => $validated['status'],
+            'tahun_lulus' => $validated['status'] === 'lulus' ? $validated['tahun_lulus'] : null,
         ]);
-
+ 
         // Generate dan kirim OTP
         $this->sendOtpToUser($user);
-
+ 
         // Store email untuk proses verifikasi
         session(['otp_email' => $user->email, 'otp_user_id' => $user->id]);
-
+ 
         return redirect()->route('otp.verify.show')->with('success', 'Registrasi berhasil! Silakan verifikasi email Anda dengan kode OTP yang telah dikirim.');
     }
 
