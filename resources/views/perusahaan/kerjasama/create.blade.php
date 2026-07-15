@@ -72,7 +72,7 @@
                     <select id="bentuk_kegiatan" name="bentuk_kegiatan" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm" required>
                         <option value="">-- Pilih Bentuk Kegiatan --</option>
                         <option value="Penelitian" {{ old('bentuk_kegiatan') == 'Penelitian' ? 'selected' : '' }}>Penelitian</option>
-                        <option value="PkM" {{ old('bentuk_kegiatan') == 'PkM' ? 'selected' : '' }}>PkM (Pengabdian kepada Masyarakat)</option>
+                        <option value="PkM" {{ old('bentuk_kegiatan') == 'PkM' ? 'selected' : '' }}>PkM </option>
                         <option value="Pendidikan" {{ old('bentuk_kegiatan') == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
                     </select>
                     @error('bentuk_kegiatan')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror

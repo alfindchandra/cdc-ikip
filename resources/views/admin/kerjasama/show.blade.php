@@ -28,6 +28,9 @@
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-sm">
                             {{ $kerjasama->lingkupLabel() }}
                         </span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-sm">
+                            {{ $kerjasama->bentuk_kerjasamaLabel() }}
+                        </span>
                         @php
                             $status_color_map = [
                                 'aktif' => 'bg-green-500',
@@ -359,15 +362,15 @@
                         <div class="flex items-start space-x-4 mb-4">
                             @if($kerjasama->perusahaan->logo)
                             <img src="{{ Storage::url($kerjasama->perusahaan->logo) }}" 
-                                 alt="{{ $kerjasama->perusahaan->nama_perusahaan }}" 
+                                 alt="{{ $kerjasama->perusahaan->user->name }}" 
                                  class="w-16 h-16 rounded-lg object-cover border border-gray-200 flex-shrink-0">
                             @else
                             <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <span class="text-gray-600 font-bold text-2xl">{{ substr($kerjasama->perusahaan->nama_perusahaan, 0, 1) }}</span>
+                                <span class="text-gray-600 font-bold text-2xl">{{ substr($kerjasama->perusahaan->user->name, 0, 1) }}</span>
                             </div>
                             @endif
                             <div class="flex-grow">
-                                <p class="font-bold text-gray-900 text-lg">{{ $kerjasama->perusahaan->nama_perusahaan }}</p>
+                                <p class="font-bold text-gray-900 text-lg">{{ $kerjasama->perusahaan->user->name }}</p>
                                 <p class="text-sm text-gray-600">{{ $kerjasama->perusahaan->bidang_usaha }}</p>
                             </div>
                         </div>

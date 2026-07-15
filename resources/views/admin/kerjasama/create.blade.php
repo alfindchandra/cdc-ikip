@@ -47,7 +47,7 @@
                     <select id="perusahaan_id" name="perusahaan_id" class="block w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm" required>
                         <option value="">-- Pilih Perusahaan --</option>
                         @foreach($perusahaan as $p)
-                            <option value="{{ $p->id }}" {{ old('perusahaan_id') == $p->id ? 'selected' : '' }}>{{ $p->nama_perusahaan }}</option>
+                            <option value="{{ $p->id }}" {{ old('perusahaan_id') == $p->id ? 'selected' : '' }}>{{ $p->user->name }}</option>
                         @endforeach
                     </select>
                     @error('perusahaan_id')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
@@ -74,7 +74,16 @@
                     </select>
                     @error('lingkup_kerjasama')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
                 </div>
-
+                <div>
+                    <label for="bentuk_kegiatan" class="block text-sm font-semibold text-gray-700 mb-2">Bentuk Kegiatan <span class="text-red-500">*</span></label>
+                    <select id="bentuk_kegiatan" name="bentuk_kegiatan" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm" required>
+                        <option value="">-- Pilih Bentuk Kegiatan --</option>
+                        <option value="Penelitian" {{ old('bentuk_kegiatan') == 'Penelitian' ? 'selected' : '' }}>Penelitian</option>
+                        <option value="PkM" {{ old('bentuk_kegiatan') == 'PkM' ? 'selected' : '' }}>PkM </option>
+                        <option value="Pendidikan" {{ old('bentuk_kegiatan') == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                    </select>
+                    @error('bentuk_kegiatan')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
                 <div class="md:col-span-2">
                     <label for="judul" class="block text-sm font-semibold text-gray-700 mb-2">Judul Kerjasama <span class="text-red-500">*</span></label>
                     <input type="text" id="judul" name="judul" value="{{ old('judul') }}" placeholder="Contoh: MoU Kerjasama Rekrutmen Lulusan 2025" class="block w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm" required>
