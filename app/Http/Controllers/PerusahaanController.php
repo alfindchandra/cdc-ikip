@@ -134,19 +134,45 @@ public function index(Request $request)
         return view('admin.perusahaan.show', compact('perusahaan'));
     }
 
-    public function update(Request $request, Perusahaan $perusahaan)
-    {
-        $validated = $request->validate([
-            'status_kerjasama' => 'required|in:aktif,nonaktif,pending',
-        ]);
+   public function update(Request $request, Perusahaan $perusahaan)
+{
+    $request->validate([
+        'nama_perusahaan' => 'required|string|max:255',
+        'email'           => 'required|email|unique:users,email,' . $perusahaan->user_id,
+        'password'        => 'nullable|string|min:6',
+        'bidang_usaha'    => 'required|string',
+        'jenis_pt'        => 'required|string',
+        'no_telp'         => 'required|string',
+        'nama_pimpinan'   => 'required|string',
+        'alamat'          => 'required|string',
+        'kota'            => 'required|string',
+        'provinsi'        => 'required|string',
+        'logo'            => 'nullable|image|max:2048',
+        'cv_perusahaan'   => 'nullable|mimes:pdf|max:5120',
+    ]);
 
-        $perusahaan->update([
-            'status_kerjasama' => $validated['status_kerjasama'],
-            'tanggal_kerjasama' => $validated['status_kerjasama'] === 'aktif' ? now() : null,
-        ]);
-
-        return back()->with('success', 'Status kerjasama berhasil diperbarui');
+    // 1. Update Tabel Users (Akun Relasi)
+    $userData = ['name' => $request->nama_perusahaan, 'email' => $request->email];
+    if ($request->filled('password')) {
+        $userData['password'] = bcrypt($request->password);
     }
+    $perusahaan->user()->update($userData);
+
+    // 2. Handle Upload File Logo & CV jika ada
+    $data = $request->except(['email', 'password']);
+    if ($request->hasFile('logo')) {
+        $data['logo'] = $request->file('logo')->store('logos', 'public');
+    }
+    if ($request->hasFile('cv_perusahaan')) {
+        $data['cv_perusahaan'] = $request->file('cv_perusahaan')->store('cv_perusahaan', 'public');
+    }
+
+    // 3. Update Tabel Perusahaan
+    $perusahaan->update($data);
+
+    return redirect()->route('admin.perusahaan.show', $perusahaan)
+                     ->with('success', 'Profil Perusahaan berhasil disinkronkan dan diperbarui.');
+}
     
 
 }

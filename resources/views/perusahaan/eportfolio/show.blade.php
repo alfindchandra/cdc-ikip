@@ -3,45 +3,54 @@
 @section('title', 'Lihat E-Portfolio')
 @section('home')
 
-<section class="py-16 bg-slate-50 min-h-screen">
-    <div class="container mx-auto px-4 max-w-6xl">
-        <div class="rounded-3xl bg-white shadow-sm border border-slate-200 overflow-hidden">
-            <div class="bg-gradient-to-r from-emerald-600 to-cyan-600 px-8 py-8 text-white">
-                <h1 class="text-3xl font-black">E-Portfolio {{ $mahasiswa->user->name }}</h1>
-                <p class="mt-3 text-emerald-100">Profil digital mahasiswa yang berisi dokumen prestasi, sertifikat, pengalaman kerja, dan kompetensi.</p>
+<section class="py-10 bg-gray-50 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">E-Portfolio {{ $mahasiswa->user->name }}</h2>
+            <p class="text-sm text-gray-500 mt-1">Berkas prestasi, sertifikat, dan pengalaman kerja yang diunggah mahasiswa.</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex items-center">
+                <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Berkas Portfolio</h3>
             </div>
 
-            <div class="p-8 space-y-6">
-                <div class="rounded-2xl border border-slate-200 p-5">
-                    <h2 class="text-lg font-bold text-slate-800">Profil Kompetensi</h2>
-                    <p class="mt-3 text-slate-600 whitespace-pre-line">{{ $portfolio->profil_kompetensi ?? 'Belum ada data.' }}</p>
-                    @if($portfolio && $portfolio->profil_path)
-                        <a href="{{ Storage::url($portfolio->profil_path) }}" target="_blank" class="mt-4 inline-flex text-sm font-semibold text-indigo-600">Lihat file profil</a>
-                    @endif
-                </div>
+            <div class="p-6 sm:p-8">
+                @php
+                    $items = [
+                        ['path' => 'profil_path', 'label' => 'Profil Kompetensi'],
+                        ['path' => 'pengalaman_path', 'label' => 'Pengalaman Kerja'],
+                        ['path' => 'prestasi_path', 'label' => 'Prestasi'],
+                        ['path' => 'sertifikat_path', 'label' => 'Sertifikat'],
+                    ];
+                @endphp
 
-                <div class="rounded-2xl border border-slate-200 p-5">
-                    <h2 class="text-lg font-bold text-slate-800">Pengalaman Kerja</h2>
-                    <p class="mt-3 text-slate-600 whitespace-pre-line">{{ $portfolio->pengalaman_kerja ?? 'Belum ada data.' }}</p>
-                    @if($portfolio && $portfolio->pengalaman_path)
-                        <a href="{{ Storage::url($portfolio->pengalaman_path) }}" target="_blank" class="mt-4 inline-flex text-sm font-semibold text-indigo-600">Lihat file pengalaman</a>
-                    @endif
-                </div>
+                <div class="divide-y divide-gray-100">
+                    @foreach ($items as $item)
+                        <div class="py-4 first:pt-0 last:pb-0 flex items-center justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <span class="text-sm font-medium text-gray-700">{{ $item['label'] }}</span>
+                            </div>
 
-                <div class="rounded-2xl border border-slate-200 p-5">
-                    <h2 class="text-lg font-bold text-slate-800">Prestasi</h2>
-                    <p class="mt-3 text-slate-600 whitespace-pre-line">{{ $portfolio->prestasi ?? 'Belum ada data.' }}</p>
-                    @if($portfolio && $portfolio->prestasi_path)
-                        <a href="{{ Storage::url($portfolio->prestasi_path) }}" target="_blank" class="mt-4 inline-flex text-sm font-semibold text-indigo-600">Lihat file prestasi</a>
-                    @endif
-                </div>
-
-                <div class="rounded-2xl border border-slate-200 p-5">
-                    <h2 class="text-lg font-bold text-slate-800">Sertifikat</h2>
-                    <p class="mt-3 text-slate-600 whitespace-pre-line">{{ $portfolio->sertifikat ?? 'Belum ada data.' }}</p>
-                    @if($portfolio && $portfolio->sertifikat_path)
-                        <a href="{{ Storage::url($portfolio->sertifikat_path) }}" target="_blank" class="mt-4 inline-flex text-sm font-semibold text-indigo-600">Lihat file sertifikat</a>
-                    @endif
+                            @if($portfolio && $portfolio->{$item['path']})
+                                <a href="{{ Storage::url($portfolio->{$item['path']}) }}" target="_blank"
+                                   class="text-sm font-semibold text-blue-600 hover:text-blue-700">
+                                    Lihat berkas
+                                </a>
+                            @else
+                                <span class="text-sm text-gray-400">Belum diunggah</span>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

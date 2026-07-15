@@ -135,6 +135,7 @@
                 <textarea name="benefit" rows="3" class="w-full rounded-lg p-2 border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Benefit yang didapatkan...">{{ old('benefit') }}</textarea>
                 @error('benefit')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Pendidikan</label>
                     <select name="pendidikan" class="w-full rounded-lg border-2 border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm p-2">
@@ -148,6 +149,13 @@
                     </select>
                     @error('pendidikan')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                 </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kuota</label>
+                    <input type="number" name="kuota" value="{{ old('kuota') }}" class="w-full p-2 rounded-lg border-gray-300 border-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="5">
+                    <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ada batasan</p>
+                    @error('kuota')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+                </div>
+            </div>
 
             <!-- Info pekerjaan -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -183,22 +191,7 @@
                 </div>
             </div>
 
-            <!-- Kuota & Thumbnail -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Kuota</label>
-                    <input type="number" name="kuota" value="{{ old('kuota') }}" class="w-full p-3 rounded-lg border-gray-300 border-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="5">
-                    <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ada batasan</p>
-                    @error('kuota')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Thumbnail</label>
-                    <input type="file" name="thumbnail" accept="image/*" class="w-full text-sm p-2.5 border-2 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    <p class="text-xs text-gray-500 mt-1">JPG/PNG/WEBP, maks. 2MB</p>
-                    @error('thumbnail')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
-                </div>
-              
-            </div>
+            
 
             <!-- Tanggal -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">

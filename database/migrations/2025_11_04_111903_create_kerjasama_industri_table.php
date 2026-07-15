@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('jenis_kerjasama', 100);
             $table->string('judul', 200);
             $table->text('deskripsi')->nullable();
+            $table->string('bentuk_kegiatan', 100)->nullable();
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_berakhir')->nullable();
             $table->string('dokumen_mou')->nullable(); 

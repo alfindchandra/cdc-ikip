@@ -74,7 +74,7 @@
                                 id="tab-aktif"
                                 onclick="setLoginType('aktif')"
                                 class="login-type-tab py-2.5 px-3 rounded-lg text-sm font-semibold transition-all duration-200">
-                            Mahasiswa Aktif
+                            Mahasiswa Aktif/Perusahaan
                         </button>
                         <button type="button"
                                 id="tab-lulus"

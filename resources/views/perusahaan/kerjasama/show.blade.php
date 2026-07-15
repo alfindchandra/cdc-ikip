@@ -28,7 +28,10 @@
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-sm">
                             {{ $kerjasama->lingkupLabel() }}
                         </span>
-                        @php
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-sm">
+                            {{ $kerjasama->bentuk_kerjasamaLabel() }}
+                        </span>
+                        @php 
                             $status_color_map = [
                                 'aktif' => 'bg-green-500',
                                 'selesai' => 'bg-purple-500',

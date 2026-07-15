@@ -67,7 +67,16 @@
                     </select>
                     @error('lingkup_kerjasama')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
                 </div>
-
+                <div>
+                    <label for="bentuk_kegiatan" class="block text-sm font-semibold text-gray-700 mb-2">Bentuk Kegiatan <span class="text-red-500">*</span></label>
+                    <select id="bentuk_kegiatan" name="bentuk_kegiatan" class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm" required>
+                        <option value="">-- Pilih Bentuk Kegiatan --</option>
+                        <option value="Penelitian" {{ old('bentuk_kegiatan') == 'Penelitian' ? 'selected' : '' }}>Penelitian</option>
+                        <option value="PkM" {{ old('bentuk_kegiatan') == 'PkM' ? 'selected' : '' }}>PkM (Pengabdian kepada Masyarakat)</option>
+                        <option value="Pendidikan" {{ old('bentuk_kegiatan') == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                    </select>
+                    @error('bentuk_kegiatan')<p class="mt-2 text-sm text-red-600 font-medium">{{ $message }}</p>@enderror
+                </div>
                 <div class="md:col-span-2">
                     <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-2">Deskripsi Kerjasama</label>
                     <textarea id="deskripsi" name="deskripsi" rows="4" placeholder="Jelaskan poin-poin penting kerjasama yang ditawarkan..." class="block w-full px-4 py-3 rounded-xl border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm">{{ old('deskripsi') }}</textarea>

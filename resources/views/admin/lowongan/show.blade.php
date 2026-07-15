@@ -13,12 +13,7 @@
     </a>
 
     <div class="space-y-6">
-        @if($lowongan->thumbnail)
-        <div class="card overflow-hidden shadow-lg border border-gray-100">
-            <img src="{{ Storage::url($lowongan->thumbnail) }}" alt="{{ $lowongan->judul }}" class="w-full h-64 object-cover">
-        </div>
-        @endif
-    
+        
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             <div class="lg:col-span-2 space-y-8">
@@ -26,12 +21,12 @@
                 <div class="card shadow-xl border border-gray-100">
                     <div class="card-header bg-white rounded-t-xl p-6 border-b border-gray-100">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                            <h1 class="text-3xl font-extrabold text-gray-900 mb-2 sm:mb-0">{{ $lowongan->judul }}</h1>
+                            <h1 class="text-3xl font-extrabold text-gray-900 mb-2 sm:mb-0">{{ $lowongan->posisi }}</h1>
                             <span class="badge badge-{{ $lowongan->status == 'aktif' ? 'success' : ($lowongan->status == 'expired' ? 'danger' : 'gray') }} text-sm px-3 py-1.5 font-semibold">
                                 {{ ucfirst($lowongan->status) }}
                             </span>
                         </div>
-                        <p class="text-xl text-gray-600 mt-1">{{ $lowongan->posisi }}</p>
+                        <p class="text-gray-600 mt-1">{{ $lowongan->perusahaan ? $lowongan->perusahaan->user->name : '—' }} - {{ $lowongan->lokasi }}</p>
                     </div>
 
                     <div class="card-body p-6 space-y-8">

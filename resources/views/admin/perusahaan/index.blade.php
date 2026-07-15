@@ -79,15 +79,15 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-4">
                                 @if($p->logo)
-                                <img src="{{ Storage::url($p->logo) }}" alt="{{ $p->nama_perusahaan }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100">
+                                <img src="{{ Storage::url($p->logo) }}" alt="{{ $p->user->name }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100">
                                 @else
                                 <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-lg">
-                                    {{ substr($p->nama_perusahaan, 0, 1) }}
+                                    {{ substr($p->user->name, 0, 1) }}
                                 </div>
                                 @endif
                                 <div>
-                                    <p class="font-semibold text-gray-900">{{ $p->nama_perusahaan }}</p>
-                                    <p class="text-sm text-gray-500">{{ $p->email }}</p>
+                                    <p class="font-semibold text-gray-900">{{ $p->user->name }}</p>
+                                    <p class="text-sm text-gray-500">{{ $p->user->email }}</p>
                                 </div>
                             </div>
                         </td>

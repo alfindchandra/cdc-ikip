@@ -12,17 +12,14 @@ use App\Models\Pengaturan;
 use Database\Seeders\FakultasSeeder;
 use Database\Seeders\ProgramStudiSeeder;
 
-
 class DatabaseSeeder extends Seeder
 {
-    
     public function run(): void
     {
-        
+        // 1. CALL SEEDERS UTAMA
         $this->call([
             FakultasSeeder::class,
             ProgramStudiSeeder::class,
-        
         ]);
 
         // 2. FAKULTAS DAN PROGRAM STUDI
@@ -36,7 +33,7 @@ class DatabaseSeeder extends Seeder
         // ==========================================================
         // CREATE USER ADMIN
         // ==========================================================
-        $admin = User::create([
+        User::create([
             'name' => 'Administrator CDC',
             'email' => 'admin@ikippgribojonegoro.ac.id',
             'password' => Hash::make('password'),
@@ -44,7 +41,8 @@ class DatabaseSeeder extends Seeder
             'is_active' => true,
             'email_verified_at' => now(),
         ]);
-        $admin = User::create([
+        
+        User::create([
             'name' => 'Administrator CDC 2',
             'email' => 'admin2@ikippgribojonegoro.ac.id',
             'password' => Hash::make('password'),
@@ -53,6 +51,10 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
+        // ==========================================================
+        // CREATE DATA MAHASISWA
+        // ==========================================================
+        // Mahasiswa 1
         $mahasiswaUser1 = User::create([
            'name' => 'Siti Nurhaliza',
            'email' => 'siti.nurhaliza@gmail.com',
@@ -70,11 +72,8 @@ class DatabaseSeeder extends Seeder
             'agama' => 'Islam',
             'alamat' => 'Jl. Raya Baureno No. 123',
             'no_telp' => '081234567890',
-            
-            // MENGGUNAKAN ID FAKULTAS DAN PROGRAM STUDI
             'fakultas_id' => $fpbsId, 
             'program_studi_id' => $pbsiId, 
-            
             'tahun_masuk' => 2021,
             'nama_ortu' => 'Budi Santoso',
             'pekerjaan_ortu' => 'Wiraswasta',
@@ -82,7 +81,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
 
-        // Mahasiswa 2: Salsabilla Zetia Ramadhani
+        // Mahasiswa 2
         $mahasiswaUser2 = User::create([
             'name' => 'Salsabilla Zetia Ramadhani',
             'email' => 'salsabilla@gmail.com',
@@ -100,11 +99,8 @@ class DatabaseSeeder extends Seeder
             'agama' => 'Islam',
             'alamat' => 'Jl. Merdeka No. 45',
             'no_telp' => '081234567892',
-            
-            // MENGGUNAKAN ID FAKULTAS DAN PROGRAM STUDI
             'fakultas_id' => $fpmipaId,
             'program_studi_id' => $ptiId,
-            
             'tahun_masuk' => 2021,
             'nama_ortu' => 'Slamet Riyadi',
             'pekerjaan_ortu' => 'PNS',
@@ -112,7 +108,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
         
-        // Mahasiswa 3: Ahmad Rizki
+        // Mahasiswa 3
         $mahasiswaUser3 = User::create([
             'name' => 'Ahmad Rizki',
             'email' => 'ahmad.rizki@gmail.com',
@@ -130,11 +126,8 @@ class DatabaseSeeder extends Seeder
             'agama' => 'Islam',
             'alamat' => 'Jl. Pahlawan No. 5',
             'no_telp' => '081300001111',
-            
-            // MENGGUNAKAN ID FAKULTAS DAN PROGRAM STUDI
             'fakultas_id' => $fpbsId,
             'program_studi_id' => $pbiId,
-            
             'tahun_masuk' => 2020,
             'nama_ortu' => 'Agus Salim',
             'pekerjaan_ortu' => 'Petani',
@@ -144,10 +137,12 @@ class DatabaseSeeder extends Seeder
 
 
         // ==========================================================
-        // CREATE SAMPLE PERUSAHAAN
+        // CREATE SAMPLE PERUSAHAAN (DISESUAIKAN DENGAN $FILLABLE BARU)
         // ==========================================================
+        
+        // Perusahaan 1
         $perusahaanUser1 = User::create([
-            'name' => 'PT Digital Teknologi Indonesia',
+            'name' => 'PT Digital Teknologi Indonesia', // Nama perusahaan disimpan di tabel Users
             'email' => 'hrd@digitaltek.co.id',
             'password' => Hash::make('password'),
             'role' => 'perusahaan',
@@ -156,26 +151,28 @@ class DatabaseSeeder extends Seeder
         ]);
         Perusahaan::create([
             'user_id' => $perusahaanUser1->id,
-            'nama_perusahaan' => 'PT Digital Teknologi Indonesia',
             'bidang_usaha' => 'Teknologi Informasi',
+            'jenis_pt' => 'Swasta',
             'alamat' => 'Jl. Sudirman No. 100',
             'kota' => 'Surabaya',
             'provinsi' => 'Jawa Timur',
             'kode_pos' => '60271',
             'no_telp' => '031-1234567',
-            'email' => 'info@digitaltek.co.id',
+            'no_hp' => '081234567894',
             'website' => 'https://www.digitaltek.co.id',
-            'nama_pic' => 'Rina Kusuma',
-            'jabatan_pic' => 'HRD Manager',
-            'no_telp_pic' => '081234567894',
-            'email_pic' => 'rina@digitaltek.co.id',
-            'status_kerjasama' => 'aktif',
-            'tanggal_kerjasama' => now(),
+            'nama_pimpinan' => 'Rina Kusuma',
+            'tahun_berdiri' => '2015',
+            'jumlah_karyawan' => '50',
+            'visi' => 'Menjadi perusahaan teknologi terdepan.',
+            'misi' => 'Mengembangkan perangkat lunak inovatif berkualitas tinggi.',
+            'cv_perusahaan' => null,
             'deskripsi' => 'Perusahaan yang bergerak di bidang pengembangan software dan aplikasi mobile.',
+            'status_kerjasama' => 'aktif',
         ]);
 
+        // Perusahaan 2
         $perusahaanUser2 = User::create([
-            'name' => 'CV Maju Jaya Komputer',
+            'name' => 'CV Maju Jaya Komputer', 
             'email' => 'admin@majujaya.com',
             'password' => Hash::make('password'),
             'role' => 'perusahaan',
@@ -184,22 +181,23 @@ class DatabaseSeeder extends Seeder
         ]);
         Perusahaan::create([
             'user_id' => $perusahaanUser2->id,
-            'nama_perusahaan' => 'CV Maju Jaya Komputer',
             'bidang_usaha' => 'Penjualan dan Service Komputer',
+            'jenis_pt' => 'CV',
             'alamat' => 'Jl. Ahmad Yani No. 50',
             'kota' => 'Bojonegoro',
             'provinsi' => 'Jawa Timur',
             'kode_pos' => '62111',
             'no_telp' => '0353-123456',
-            'email' => 'info@majujaya.com',
+            'no_hp' => '081234567895',
             'website' => 'https://www.majujaya.com',
-            'nama_pic' => 'Bambang Sutrisno',
-            'jabatan_pic' => 'Owner',
-            'no_telp_pic' => '081234567895',
-            'email_pic' => 'bambang@majujaya.com',
-            'status_kerjasama' => 'aktif',
-            'tanggal_kerjasama' => now(),
+            'nama_pimpinan' => 'Bambang Sutrisno',
+            'tahun_berdiri' => '2018',
+            'jumlah_karyawan' => '15',
+            'visi' => 'Menyediakan solusi hardware terbaik bagi masyarakat.',
+            'misi' => 'Memberikan pelayanan servis cepat dan terpercaya.',
+            'cv_perusahaan' => null,
             'deskripsi' => 'Toko komputer dan laptop yang melayani penjualan dan service.',
+            'status_kerjasama' => 'aktif',
         ]);
 
         // ==========================================================
@@ -217,10 +215,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($pengaturan as $setting) {
-            // Menggunakan updateOrCreate untuk mencegah duplikasi jika seeder dijalankan berkali-kali
             Pengaturan::updateOrCreate(['key_name' => $setting['key_name']], $setting);
         }
-
-       
     }
 }

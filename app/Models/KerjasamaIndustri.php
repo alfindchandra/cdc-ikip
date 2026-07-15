@@ -10,7 +10,7 @@ class KerjasamaIndustri extends Model
 
     protected $fillable = [
         'perusahaan_id', 'jenis_kerjasama', 'jenis_dokumen', 'lingkup_kerjasama', 'judul', 'deskripsi',
-        'tanggal_mulai', 'tanggal_berakhir',
+        'tanggal_mulai', 'tanggal_berakhir', 'bentuk_kegiatan',
         'dokumen_mou', 'dokumen_moa', 'dokumen_kontrak', 'dokumen_surat_kerjasama',
         'status', 'pic_sekolah', 'pic_industri',
         'jabatan_pic_industri', 'no_telp_pic_industri', 'email_pic_industri',
@@ -127,6 +127,15 @@ class KerjasamaIndustri extends Model
             'luar_negeri' => 'Luar Negeri',
             'swasta' => 'Swasta',
             'lainnya' => 'Lainnya',
+            default => '-',
+        };
+    }
+    public function bentuk_kerjasamaLabel(): string
+    {
+        return match ($this->bentuk_kegiatan) {
+            'Penelitian' => 'Penelitian',
+            'PkM' => 'PkM (Pengabdian kepada Masyarakat)',
+            'Pendidikan' => 'Pendidikan',
             default => '-',
         };
     }

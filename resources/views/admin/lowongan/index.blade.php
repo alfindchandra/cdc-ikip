@@ -76,23 +76,16 @@
                         {{-- Lowongan Title & Position --}}
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center space-x-3">
-                                @if($l->thumbnail)
-                                <img src="{{ Storage::url($l->thumbnail) }}" alt="{{ $l->judul }}" class="w-12 h-12 rounded-lg object-cover flex-shrink-0">
-                                @else
-                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                </div>
-                                @endif
+                                
                                 <div>
-                                    <p class="font-medium text-gray-900 line-clamp-1">{{ $l->judul }}</p>
-                                    <p class="text-sm text-gray-500">{{ $l->posisi }}</p>
+                                    <p class="font-medium text-gray-900 line-clamp-1">{{ $l->posisi }}</p>
                                 </div>
                             </div>
                         </td>
                         
                         {{-- Perusahaan & Lokasi --}}
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <p class="font-medium text-gray-800">{{ $l->perusahaan ? $l->perusahaan->nama_perusahaan : '—' }}</p>
+                            <p class="font-medium text-gray-800">{{ $l->perusahaan ? $l->perusahaan->user->name : '—' }}</p>
                             <p class="text-sm text-gray-500">{{ $l->lokasi }}</p>
                         </td>
                         
