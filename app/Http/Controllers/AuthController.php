@@ -193,6 +193,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
             'nim' => 'required|string|max:20|unique:mahasiswa,nim',
+            'tingkat_pendidikan' => 'required|in:SD,SMP,SMA,SMK,D1,D2,D3,S1,S2,S3',
             'tempat_lahir' => 'required|string|max:100',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
@@ -241,6 +242,7 @@ class AuthController extends Controller
         Mahasiswa::create([
             'user_id' => $user->id,
             'nim' => $validated['nim'],
+            'tingkat_pendidikan' => $validated['tingkat_pendidikan'],
             'tempat_lahir' => $validated['tempat_lahir'],
             'tanggal_lahir' => $validated['tanggal_lahir'],
             'jenis_kelamin' => $validated['jenis_kelamin'],

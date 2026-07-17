@@ -187,21 +187,56 @@
                     </h3>
 
                     <div class="grid md:grid-cols-2 gap-5">
-                        <!-- Fakultas -->
-                        <div>
-                            <label for="fakultas_nama" class="block text-sm font-semibold text-gray-700 mb-2">Fakultas *</label>
-                            <input type="text" id="fakultas_nama" name="fakultas_nama" value="{{ old('fakultas_nama') }}" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                                   placeholder="Contoh: Fakultas Teknik" maxlength="150" required>
+                        <!-- Tingkat Pendidikan -->
+                        <div class="md:col-span-2">
+                            <label for="tingkat_pendidikan" class="block text-sm font-semibold text-gray-700 mb-2">Tingkat Pendidikan *</label>
+                            <select id="tingkat_pendidikan" name="tingkat_pendidikan"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    onchange="handleTingkatPendidikanChange()" required>
+                                <option value="">Pilih Tingkat Pendidikan</option>
+                                <option value="SD" {{ old('tingkat_pendidikan') == 'SD' ? 'selected' : '' }}>SD</option>
+                                <option value="SMP" {{ old('tingkat_pendidikan') == 'SMP' ? 'selected' : '' }}>SMP</option>
+                                <option value="SMA" {{ old('tingkat_pendidikan') == 'SMA' ? 'selected' : '' }}>SMA</option>
+                                <option value="SMK" {{ old('tingkat_pendidikan') == 'SMK' ? 'selected' : '' }}>SMK</option>
+                                <option value="D1" {{ old('tingkat_pendidikan') == 'D1' ? 'selected' : '' }}>D1</option>
+                                <option value="D2" {{ old('tingkat_pendidikan') == 'D2' ? 'selected' : '' }}>D2</option>
+                                <option value="D3" {{ old('tingkat_pendidikan') == 'D3' ? 'selected' : '' }}>D3</option>
+                                <option value="S1" {{ old('tingkat_pendidikan') == 'S1' ? 'selected' : '' }}>S1</option>
+                                <option value="S2" {{ old('tingkat_pendidikan') == 'S2' ? 'selected' : '' }}>S2</option>
+                                <option value="S3" {{ old('tingkat_pendidikan') == 'S3' ? 'selected' : '' }}>S3</option>
+                            </select>
                         </div>
 
-                        <!-- Program Studi -->
-                        <div>
-                            <label for="program_studi_nama" class="block text-sm font-semibold text-gray-700 mb-2">Program Studi *</label>
-                            <input type="text" id="program_studi_nama" name="program_studi_nama" value="{{ old('program_studi_nama') }}" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                                   placeholder="Contoh: Teknik Informatika" maxlength="200" required>
+                        <!-- Nama Sekolah (khusus SD/SMP/SMA/SMK) -->
+                        <div id="sekolah_wrapper" class="hidden md:col-span-2">
+                            <label for="nama_sekolah" class="block text-sm font-semibold text-gray-700 mb-2">Nama Sekolah *</label>
+                            <input type="text" id="nama_sekolah"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="Contoh: SMK Negeri 2 Malang" maxlength="150"
+                                   oninput="syncSekolah()">
                         </div>
+
+                        <!-- Fakultas (khusus D1/D2/D3/S1/S2/S3) -->
+                        <div id="fakultas_wrapper" class="hidden">
+                            <label for="fakultas_input" class="block text-sm font-semibold text-gray-700 mb-2">Fakultas *</label>
+                            <input type="text" id="fakultas_input"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="Contoh: Fakultas Keguruan dan Ilmu Pendidikan" maxlength="150"
+                                   oninput="syncFakultas()">
+                        </div>
+
+                        <!-- Program Studi (khusus D1/D2/D3/S1/S2/S3) -->
+                        <div id="program_studi_wrapper" class="hidden">
+                            <label for="program_studi_input" class="block text-sm font-semibold text-gray-700 mb-2">Program Studi *</label>
+                            <input type="text" id="program_studi_input"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="Contoh: Pendidikan Matematika" maxlength="200"
+                                   oninput="syncProgramStudi()">
+                        </div>
+
+                        <!-- Field tersembunyi yang benar-benar dikirim ke server -->
+                        <input type="hidden" id="fakultas_nama" name="fakultas_nama" value="{{ old('fakultas_nama') }}">
+                        <input type="hidden" id="program_studi_nama" name="program_studi_nama" value="{{ old('program_studi_nama') }}">
 
                         <!-- Tahun Masuk -->
                         <div>
@@ -304,6 +339,88 @@
     </div>
 
     <script>
+        // ============================================================
+        // Tingkat Pendidikan menentukan field akademik yang ditampilkan
+        // ============================================================
+        // SD, SMP, SMA, SMK  -> input bebas "Nama Sekolah" (bukan combobox)
+        // D1, D2, D3, S1, S2, S3 -> input bebas "Fakultas" dan "Program Studi" (bukan combobox)
+        const SEKOLAH_LEVELS = ['SD', 'SMP', 'SMA', 'SMK'];
+        const PERGURUAN_TINGGI_LEVELS = ['D1', 'D2', 'D3', 'S1', 'S2', 'S3'];
+
+        const OLD_FAKULTAS = @json(old('fakultas_nama'));
+        const OLD_PROGRAM_STUDI = @json(old('program_studi_nama'));
+        const OLD_TINGKAT = @json(old('tingkat_pendidikan'));
+
+        function el(id) { return document.getElementById(id); }
+
+        function syncSekolah() {
+            // Nama sekolah dikirim lewat field fakultas_nama,
+            // sedangkan program_studi_nama otomatis mengikuti tingkat pendidikan.
+            el('fakultas_nama').value = el('nama_sekolah').value;
+            el('program_studi_nama').value = el('tingkat_pendidikan').value;
+        }
+
+        function syncFakultas() {
+            el('fakultas_nama').value = el('fakultas_input').value;
+        }
+
+        function syncProgramStudi() {
+            el('program_studi_nama').value = el('program_studi_input').value;
+        }
+
+        function handleTingkatPendidikanChange() {
+            const tingkat = el('tingkat_pendidikan').value;
+
+            const sekolahWrapper = el('sekolah_wrapper');
+            const fakultasWrapper = el('fakultas_wrapper');
+            const programWrapper = el('program_studi_wrapper');
+
+            const namaSekolahInput = el('nama_sekolah');
+            const fakultasInput = el('fakultas_input');
+            const programInput = el('program_studi_input');
+
+            // Reset dulu semua
+            sekolahWrapper.classList.add('hidden');
+            fakultasWrapper.classList.add('hidden');
+            programWrapper.classList.add('hidden');
+            namaSekolahInput.removeAttribute('required');
+            fakultasInput.removeAttribute('required');
+            programInput.removeAttribute('required');
+
+            if (SEKOLAH_LEVELS.includes(tingkat)) {
+                sekolahWrapper.classList.remove('hidden');
+                namaSekolahInput.setAttribute('required', 'required');
+                fakultasInput.value = '';
+                programInput.value = '';
+                syncSekolah();
+            } else if (PERGURUAN_TINGGI_LEVELS.includes(tingkat)) {
+                fakultasWrapper.classList.remove('hidden');
+                programWrapper.classList.remove('hidden');
+                fakultasInput.setAttribute('required', 'required');
+                programInput.setAttribute('required', 'required');
+                namaSekolahInput.value = '';
+                syncFakultas();
+                syncProgramStudi();
+            } else {
+                el('fakultas_nama').value = '';
+                el('program_studi_nama').value = '';
+            }
+        }
+
+        // Set kondisi awal untuk field akademik (misalnya setelah validasi gagal)
+        window.addEventListener('DOMContentLoaded', function () {
+            if (OLD_TINGKAT) {
+                el('tingkat_pendidikan').value = OLD_TINGKAT;
+            }
+            if (SEKOLAH_LEVELS.includes(OLD_TINGKAT)) {
+                el('nama_sekolah').value = OLD_FAKULTAS || '';
+            } else if (PERGURUAN_TINGGI_LEVELS.includes(OLD_TINGKAT)) {
+                el('fakultas_input').value = OLD_FAKULTAS || '';
+                el('program_studi_input').value = OLD_PROGRAM_STUDI || '';
+            }
+            handleTingkatPendidikanChange();
+        });
+
         // Tampilkan/sembunyikan field Tahun Lulus sesuai status yang dipilih
         function toggleTahunLulus() {
             const statusLulus = document.getElementById('status_lulus').checked;

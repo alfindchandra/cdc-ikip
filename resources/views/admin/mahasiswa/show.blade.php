@@ -17,7 +17,7 @@
                     <p class="text-md text-gray-600 font-mono mt-1">NIM:{{ $mahasiswa->nim }}</p>
                     <div class="flex flex-wrap items-center gap-3 mt-3">
                         <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                            
+                            {{ $mahasiswa->Fakultas->nama ?? '-' }}
                         </span>
                         <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                             {{ $mahasiswa->ProgramStudi->nama ?? '-' }}

@@ -9,7 +9,7 @@ class Mahasiswa extends Model
     protected $table = 'mahasiswa';
 
     protected $fillable = [
-        'user_id', 'nim',  'tempat_lahir', 'tanggal_lahir',
+        'user_id', 'nim', 'tingkat_pendidikan', 'tempat_lahir', 'tanggal_lahir',
         'jenis_kelamin', 'agama', 'alamat', 'no_telp', 'fakultas_id', 'program_studi_id',
          'tahun_masuk', 'nama_ortu', 'pekerjaan_ortu',
         'no_telp_ortu', 'status', 'tahun_lulus'
@@ -84,7 +84,24 @@ public function scopeBelumIsiTracerStudy($query)
 {
     return $query->whereDoesntHave('tracerStudy');
 }
- public function getStatusTextAttribute()
+ public function getTingkatPendidikanLabelAttribute()
+    {
+        $labels = [
+            'SD' => 'SD (Sekolah Dasar)',
+            'SMP' => 'SMP (Sekolah Menengah Pertama)',
+            'SMA' => 'SMA (Sekolah Menengah Atas)',
+            'SMK' => 'SMK (Sekolah Menengah Kejuruan)',
+            'D1' => 'D1 (Diploma 1)',
+            'D2' => 'D2 (Diploma 2)',
+            'D3' => 'D3 (Diploma 3)',
+            'S1' => 'S1 (Sarjana)',
+            'S2' => 'S2 (Magister)',
+            'S3' => 'S3 (Doktor)',
+        ];
+        return $labels[$this->tingkat_pendidikan] ?? $this->tingkat_pendidikan;
+    }
+
+    public function getStatusTextAttribute()
     {
         $statuses = [
             'aktif' => 'Aktif',
