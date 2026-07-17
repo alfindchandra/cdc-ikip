@@ -79,7 +79,9 @@
                             </div>
                         </td>
                         <!-- Menampilkan Sekolah menggunakan Accessor Label dari Model -->
-                        <td class="px-6 py-4 text-sm">{{ $s->tingkat_pendidikan_label }}</td> 
+                        <td class="px-6 py-4 text-sm">
+                            <div class="font-medium text-gray-900">{{ $s->asal_sekolah ?? '-' }}</div>
+                        </td>
                         <td class="px-6 py-4">{{ $s->no_telp }}</td>
                         <td class="px-6 py-4">
                             <span class="px-3 py-1 rounded-full text-xs font-semibold

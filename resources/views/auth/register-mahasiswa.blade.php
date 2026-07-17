@@ -207,13 +207,12 @@
                             </select>
                         </div>
 
-                        <!-- Nama Sekolah (khusus SD/SMP/SMA/SMK) -->
+                        <!-- Nama Sekolah / Kampus (tampil untuk semua jenjang) -->
                         <div id="sekolah_wrapper" class="hidden md:col-span-2">
-                            <label for="nama_sekolah" class="block text-sm font-semibold text-gray-700 mb-2">Nama Sekolah *</label>
-                            <input type="text" id="nama_sekolah"
+                            <label for="nama_sekolah" class="block text-sm font-semibold text-gray-700 mb-2" id="sekolah_label">Nama Sekolah *</label>
+                            <input type="text" id="nama_sekolah" name="asal_sekolah" value="{{ old('asal_sekolah') }}"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                   placeholder="Contoh: SMK Negeri 2 Malang" maxlength="150"
-                                   oninput="syncSekolah()">
+                                   placeholder="Contoh: SMK Negeri 2 Malang" maxlength="200">
                         </div>
 
                         <!-- Fakultas (khusus D1/D2/D3/S1/S2/S3) -->
@@ -234,7 +233,7 @@
                                    oninput="syncProgramStudi()">
                         </div>
 
-                        <!-- Field tersembunyi yang benar-benar dikirim ke server -->
+                        <!-- Field tersembunyi khusus fakultas & program studi (yang dikirim ke server) -->
                         <input type="hidden" id="fakultas_nama" name="fakultas_nama" value="{{ old('fakultas_nama') }}">
                         <input type="hidden" id="program_studi_nama" name="program_studi_nama" value="{{ old('program_studi_nama') }}">
 
@@ -342,23 +341,19 @@
         // ============================================================
         // Tingkat Pendidikan menentukan field akademik yang ditampilkan
         // ============================================================
-        // SD, SMP, SMA, SMK  -> input bebas "Nama Sekolah" (bukan combobox)
-        // D1, D2, D3, S1, S2, S3 -> input bebas "Fakultas" dan "Program Studi" (bukan combobox)
+        // SD, SMP, SMA, SMK       -> hanya input bebas "Nama Sekolah"
+        // D1, D2, D3, S1, S2, S3  -> input bebas "Nama Kampus/Universitas"
+        //                            DITAMBAH "Fakultas" dan "Program Studi"
+        // (semuanya input teks biasa, tanpa combobox)
         const SEKOLAH_LEVELS = ['SD', 'SMP', 'SMA', 'SMK'];
         const PERGURUAN_TINGGI_LEVELS = ['D1', 'D2', 'D3', 'S1', 'S2', 'S3'];
 
         const OLD_FAKULTAS = @json(old('fakultas_nama'));
         const OLD_PROGRAM_STUDI = @json(old('program_studi_nama'));
+        const OLD_ASAL_SEKOLAH = @json(old('asal_sekolah'));
         const OLD_TINGKAT = @json(old('tingkat_pendidikan'));
 
         function el(id) { return document.getElementById(id); }
-
-        function syncSekolah() {
-            // Nama sekolah dikirim lewat field fakultas_nama,
-            // sedangkan program_studi_nama otomatis mengikuti tingkat pendidikan.
-            el('fakultas_nama').value = el('nama_sekolah').value;
-            el('program_studi_nama').value = el('tingkat_pendidikan').value;
-        }
 
         function syncFakultas() {
             el('fakultas_nama').value = el('fakultas_input').value;
@@ -376,6 +371,7 @@
             const programWrapper = el('program_studi_wrapper');
 
             const namaSekolahInput = el('nama_sekolah');
+            const sekolahLabel = el('sekolah_label');
             const fakultasInput = el('fakultas_input');
             const programInput = el('program_studi_input');
 
@@ -389,19 +385,30 @@
 
             if (SEKOLAH_LEVELS.includes(tingkat)) {
                 sekolahWrapper.classList.remove('hidden');
+                sekolahLabel.textContent = 'Nama Sekolah *';
+                namaSekolahInput.placeholder = 'Contoh: SMK Negeri 2 Malang';
                 namaSekolahInput.setAttribute('required', 'required');
+
                 fakultasInput.value = '';
                 programInput.value = '';
-                syncSekolah();
+                el('fakultas_nama').value = tingkat;
+                el('program_studi_nama').value = tingkat;
             } else if (PERGURUAN_TINGGI_LEVELS.includes(tingkat)) {
+                sekolahWrapper.classList.remove('hidden');
+                sekolahLabel.textContent = 'Nama Kampus/Universitas *';
+                namaSekolahInput.placeholder = 'Contoh: Universitas IKIP PGRI';
+                namaSekolahInput.setAttribute('required', 'required');
+
                 fakultasWrapper.classList.remove('hidden');
                 programWrapper.classList.remove('hidden');
                 fakultasInput.setAttribute('required', 'required');
                 programInput.setAttribute('required', 'required');
-                namaSekolahInput.value = '';
                 syncFakultas();
                 syncProgramStudi();
             } else {
+                namaSekolahInput.value = '';
+                fakultasInput.value = '';
+                programInput.value = '';
                 el('fakultas_nama').value = '';
                 el('program_studi_nama').value = '';
             }
@@ -412,9 +419,8 @@
             if (OLD_TINGKAT) {
                 el('tingkat_pendidikan').value = OLD_TINGKAT;
             }
-            if (SEKOLAH_LEVELS.includes(OLD_TINGKAT)) {
-                el('nama_sekolah').value = OLD_FAKULTAS || '';
-            } else if (PERGURUAN_TINGGI_LEVELS.includes(OLD_TINGKAT)) {
+            el('nama_sekolah').value = OLD_ASAL_SEKOLAH || '';
+            if (PERGURUAN_TINGGI_LEVELS.includes(OLD_TINGKAT)) {
                 el('fakultas_input').value = OLD_FAKULTAS || '';
                 el('program_studi_input').value = OLD_PROGRAM_STUDI || '';
             }

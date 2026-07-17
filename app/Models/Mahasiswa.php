@@ -9,9 +9,9 @@ class Mahasiswa extends Model
     protected $table = 'mahasiswa';
 
     protected $fillable = [
-        'user_id', 'nim', 'tingkat_pendidikan', 'tempat_lahir', 'tanggal_lahir',
+        'user_id', 'nim', 'tingkat_pendidikan', 'asal_sekolah', 'tempat_lahir', 'tanggal_lahir',
         'jenis_kelamin', 'agama', 'alamat', 'no_telp', 'fakultas_id', 'program_studi_id',
-         'tahun_masuk', 'nama_ortu', 'pekerjaan_ortu',
+        'tahun_masuk', 'nama_ortu', 'pekerjaan_ortu',
         'no_telp_ortu', 'status', 'tahun_lulus'
     ];
 
@@ -42,49 +42,34 @@ class Mahasiswa extends Model
                     ->withTimestamps();
     }
 
-
-    // Relasi ke Fakultas
     public function fakultas()
     {
-        // Pastikan nama tabel dan kunci asing benar
         return $this->belongsTo(Fakultas::class, 'fakultas_id');
     }
 
-    // Relasi ke Program Studi
     public function programStudi()
     {
-        // Asumsi foreign key di tabel Mahasiswa adalah 'program_studi_id'
         return $this->belongsTo(Program_studi::class, 'program_studi_id');
     }
+
     public function tracerStudy()
-{
-    return $this->hasOne(TracerStudy::class);
-}
+    {
+        return $this->hasOne(TracerStudy::class);
+    }
 
-/**
- * Cek apakah alumni sudah mengisi tracer study
- */
-public function haFilledTracerStudy()
-{
-    return $this->tracerStudy()->exists();
-}
+    // Scopes
+    public function scopeAlumni($query)
+    {
+        return $query->where('status', 'lulus');
+    }
 
-/**
- * Scope untuk alumni yang sudah lulus
- */
-public function scopeAlumni($query)
-{
-    return $query->where('status', 'lulus');
-}
+    public function scopeBelumIsiTracerStudy($query)
+    {
+        return $query->whereDoesntHave('tracerStudy');
+    }
 
-/**
- * Scope untuk alumni yang belum mengisi tracer study
- */
-public function scopeBelumIsiTracerStudy($query)
-{
-    return $query->whereDoesntHave('tracerStudy');
-}
- public function getTingkatPendidikanLabelAttribute()
+    // Accessors
+    public function getTingkatPendidikanLabelAttribute()
     {
         $labels = [
             'SD' => 'SD (Sekolah Dasar)',
@@ -118,17 +103,12 @@ public function scopeBelumIsiTracerStudy($query)
         return $this->tanggal_lahir->age;
     }
 
-    /**
-     * Check apakah sudah mengisi tracer study
-     */
+    // Helper Methods
     public function hasFilledTracerStudy()
     {
         return $this->tracerStudy()->exists();
     }
 
-    /**
-     * Check apakah sudah lulus dan eligible untuk tracer study
-     */
     public function isEligibleForTracerStudy()
     {
         return $this->status === 'lulus' && $this->tahun_lulus !== null;
