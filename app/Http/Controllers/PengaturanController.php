@@ -8,6 +8,9 @@ use App\Models\Fakultas;
 use App\Models\Program_studi;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PengaturanController extends Controller
 {
@@ -26,45 +29,52 @@ class PengaturanController extends Controller
  
     public function updateProfile(Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::user();
+        $isMahasiswa = $user->isMahasiswa();
+        $isPerusahaan = $user->isPerusahaan();
 
-        // 1. Validasi dasar global (User data)
+        // 1. ATURAN VALIDASI DINAMIS BERDASARKAN ROLE
         $rules = [
-            'name' => 'required|string|max:255',
+            'name'  => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:6|confirmed',
-            'avatar' => 'nullable|image|max:2048',
+            'avatar'=> 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'password' => 'nullable|string|min:6|confirmed',
         ];
 
-        // 2. Tambah validasi sesuai role
-        if ($user->isMahasiswa()) {
+        if ($isMahasiswa) {
+            $mahasiswa = $user->mahasiswa;
+            $tingkat = $request->input('tingkat_pendidikan');
+            $isSekolahDasar = in_array($tingkat, ['SD', 'SMP']);
+            $isMenengahAtas = in_array($tingkat, ['SMA', 'SMK']);
+
             $rules = array_merge($rules, [
-                'nim' => 'nullable|string|max:20|unique:mahasiswa,nim,' . $user->mahasiswa->id,
+                'nim' => 'required|string|max:20|unique:mahasiswa,nim,' . $mahasiswa->id,
+                'tingkat_pendidikan' => 'required|in:SD,SMP,SMA,SMK,D1,D2,D3,S1,S2,S3',
+                'asal_sekolah' => ($isSekolahDasar || $isMenengahAtas) ? 'required|string|max:200' : 'nullable|string|max:200',
                 'tempat_lahir' => 'nullable|string|max:100',
                 'tanggal_lahir' => 'nullable|date',
                 'jenis_kelamin' => 'required|in:L,P',
-                'agama' => 'nullable|string',
+                'agama' => 'nullable|string|max:20',
                 'alamat' => 'nullable|string',
                 'no_telp' => 'nullable|string|max:15',
-                'kelas' => 'nullable|string|max:10',
-                'jurusan' => 'nullable|string|max:50',
-                'tahun_masuk' => 'nullable|integer|min:2000|max:' . date('Y'),
-                'nama_ortu' => 'nullable|string',
-                'pekerjaan_ortu' => 'nullable|string',
+                'fakultas' => (!$isSekolahDasar && !$isMenengahAtas) ? 'required|string|max:150' : 'nullable|string|max:150', 
+                'program_studi' => ($isMenengahAtas || (!$isSekolahDasar && !$isMenengahAtas)) ? 'required|string|max:200' : 'nullable|string|max:200', 
+                'nama_ortu' => 'nullable|string|max:255',
+                'pekerjaan_ortu' => 'nullable|string|max:100',
                 'no_telp_ortu' => 'nullable|string|max:15',
             ]);
-        } elseif ($user->isPerusahaan()) {
-            // Sesuai $fillable Model Perusahaan Anda
+        } elseif ($isPerusahaan) {
+            $perusahaan = $user->perusahaan;
             $rules = array_merge($rules, [
-                'bidang_usaha' => 'nullable|string|max:255',
-                'jenis_pt' => 'nullable|string|max:100',
+                'bidang_usaha' => 'nullable|string|max:100',
+                'jenis_pt' => 'required|string|max:100',
                 'alamat' => 'required|string',
                 'kota' => 'required|string|max:100',
                 'provinsi' => 'required|string|max:100',
                 'kode_pos' => 'nullable|string|max:10',
-                'no_telp' => 'required|string|max:20',
-                'no_hp' => 'nullable|string|max:20',
-                'website' => 'nullable|url|max:255',
+                'no_telp' => 'required|string|max:15',
+                'no_hp' => 'nullable|string|max:15',
+                'website' => 'nullable|url',
                 'nama_pimpinan' => 'required|string|max:255',
                 'tahun_berdiri' => 'nullable|integer|min:1900|max:' . date('Y'),
                 'jumlah_karyawan' => 'nullable|integer|min:0',
@@ -77,76 +87,82 @@ class PengaturanController extends Controller
 
         $validated = $request->validate($rules);
 
-        // 3. Handle upload Avatar (Logo/Foto Profil)
-        if ($request->hasFile('avatar')) {
-            if ($user->avatar) {
-                Storage::disk('public')->delete($user->avatar);
-            }
-            $validated['avatar'] = $request->file('avatar')->store('avatars', 'public');
-        }
-
-        // 4. Update data Tabel `users`
+        // 2. PROSES UPDATE TABEL USERS (COMMON DATA)
         $userData = [
-            'name' => $validated['name'],
+            'name'  => $validated['name'],
             'email' => $validated['email'],
-            'avatar' => $validated['avatar'] ?? $user->avatar,
         ];
 
+        // Jika ganti password
         if ($request->filled('password')) {
             $userData['password'] = Hash::make($validated['password']);
         }
 
+        // Jika mengunggah Avatar / Logo baru
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            $userData['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        }
+
         $user->update($userData);
 
-        // 5. Jalankan update ke tabel spesifik
-        if ($user->isMahasiswa()) {
-            $user->mahasiswa->update([
-                'nim' => $validated['nim'] ?? null,
-                'tempat_lahir' => $validated['tempat_lahir'] ?? null,
-                'tanggal_lahir' => $validated['tanggal_lahir'] ?? null,
-                'jenis_kelamin' => $validated['jenis_kelamin'],
-                'agama' => $validated['agama'] ?? null,
-                'alamat' => $validated['alamat'] ?? null,
-                'no_telp' => $validated['no_telp'] ?? null,
-                'kelas' => $validated['kelas'] ?? null,
-                'jurusan' => $validated['jurusan'] ?? null,
-                'tahun_masuk' => $validated['tahun_masuk'] ?? null,
-                'nama_ortu' => $validated['nama_ortu'] ?? null,
-                'pekerjaan_ortu' => $validated['pekerjaan_ortu'] ?? null,
-                'no_telp_ortu' => $validated['no_telp_ortu'] ?? null,
-            ]);
-        } elseif ($user->isPerusahaan()) {
+       if ($isMahasiswa) {
+    $mahasiswa = $user->mahasiswa;
+    $mahasiswa->update([
+        'nim'                => $validated['nim'],
+        'tingkat_pendidikan' => $validated['tingkat_pendidikan'],
+        'tempat_lahir'       => $request->tempat_lahir, // Menggunakan $request lebih aman untuk data nullable
+        'tanggal_lahir'      => $request->tanggal_lahir,
+        'jenis_kelamin'      => $validated['jenis_kelamin'],
+        'agama'              => $request->agama,
+        'alamat'             => $request->alamat,
+        'no_telp'            => $request->no_telp,
+        'asal_sekolah'       => $request->asal_sekolah,
+        
+        // Menggunakan request agar data string bebas terpetakan dengan baik
+        'fakultas_id'        => (!$isSekolahDasar && !$isMenengahAtas) ? $request->fakultas : null,
+        'program_studi_id'   => ($isMenengahAtas || (!$isSekolahDasar && !$isMenengahAtas)) ? $request->program_studi : null,
+        
+        'nama_ortu'          => $request->nama_ortu,
+        'pekerjaan_ortu'     => $request->pekerjaan_ortu, // Menggunakan $request mencegah error undefined key
+        'no_telp_ortu'       => $request->no_telp_ortu,
+    ]);
+
+        } elseif ($isPerusahaan) {
+            $perusahaan = $user->perusahaan;
             
-            // Handle upload berkas PDF profil/CV Perusahaan jika ada file baru
-            $cvPath = $user->perusahaan->cv_perusahaan;
+            // Jika mengunggah berkas PDF baru
+            $cvPath = $perusahaan->cv_perusahaan;
             if ($request->hasFile('cv_perusahaan')) {
-                if ($cvPath) {
-                    Storage::disk('public')->delete($cvPath);
+                if ($perusahaan->cv_perusahaan) {
+                    Storage::disk('public')->delete($perusahaan->cv_perusahaan);
                 }
                 $cvPath = $request->file('cv_perusahaan')->store('perusahaan/cv', 'public');
             }
 
-            $user->perusahaan->update([
-                'bidang_usaha' => $validated['bidang_usaha'] ?? $user->perusahaan->bidang_usaha,
-                'jenis_pt' => $validated['jenis_pt'] ?? $user->perusahaan->jenis_pt,
-                'alamat' => $validated['alamat'],
-                'kota' => $validated['kota'],
-                'provinsi' => $validated['provinsi'],
-                'kode_pos' => $validated['kode_pos'] ?? $user->perusahaan->kode_pos,
-                'no_telp' => $validated['no_telp'],
-                'no_hp' => $validated['no_hp'] ?? $user->perusahaan->no_hp,
-                'website' => $validated['website'] ?? $user->perusahaan->website,
-                'nama_pimpinan' => $validated['nama_pimpinan'],
-                'tahun_berdiri' => $validated['tahun_berdiri'] ?? $user->perusahaan->tahun_berdiri,
-                'jumlah_karyawan' => $validated['jumlah_karyawan'] ?? $user->perusahaan->jumlah_karyawan,
-                'visi' => $validated['visi'] ?? $user->perusahaan->visi,
-                'misi' => $validated['misi'] ?? $user->perusahaan->misi,
-                'deskripsi' => $validated['deskripsi'] ?? $user->perusahaan->deskripsi,
-                'cv_perusahaan' => $cvPath,
+            $perusahaan->update([
+                'bidang_usaha'    => $validated['bidang_usaha'],
+                'jenis_pt'        => $validated['jenis_pt'],
+                'alamat'          => $validated['alamat'],
+                'kota'            => $validated['kota'],
+                'provinsi'        => $validated['provinsi'],
+                'kode_pos'        => $validated['kode_pos'],
+                'no_telp'         => $validated['no_telp'],
+                'no_hp'           => $validated['no_hp'],
+                'website'         => $validated['website'],
+                'nama_pimpinan'   => $validated['nama_pimpinan'],
+                'tahun_berdiri'   => $validated['tahun_berdiri'],
+                'jumlah_karyawan' => $validated['jumlah_karyawan'],
+                'visi'            => $validated['visi'],
+                'misi'            => $validated['misi'],
+                'deskripsi'       => $validated['deskripsi'],
+                'cv_perusahaan'   => $cvPath,
             ]);
         }
 
-        return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui');
+        return redirect()->route('profile')->with('success', 'Profil Anda berhasil diperbarui.');
     }
     public function updateProfilePerusahaan(Request $request)
 {

@@ -16,7 +16,6 @@
                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 >
             </div>
-            
             <div>
                 <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                     <option value="">Semua Status</option>
@@ -57,7 +56,7 @@
                     <tr>
                         <th class="px-6 py-3 text-left">NIM</th>
                         <th class="px-6 py-3 text-left">Nama</th>
-                        <th class="px-6 py-3 text-left">Sekolah / Pendidikan</th>
+                        <th class="px-6 py-3 text-left">Sekolah</th>
                         <th class="px-6 py-3 text-left">No. Telp</th>
                         <th class="px-6 py-3 text-left">Status</th>
                         <th class="px-6 py-3 text-center">Aksi</th>

@@ -31,27 +31,35 @@
                     <p class="text-sm font-medium text-slate-500 font-mono">NIM {{ $mahasiswa->nim }}</p>
                     
                     <div class="flex flex-wrap items-center gap-2 pt-1">
-                        @if(in_array($mahasiswa->tingkat_pendidikan, ['SD', 'SMP', 'SMA', 'SMK']))
-                            <!-- Ditampilkan jika tingkat pendidikan adalah SD, SMP, SMA, atau SMK -->
+                        @if(in_array($mahasiswa->tingkat_pendidikan, ['SD', 'SMP']))
                             <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700">
                                 {{ $mahasiswa->tingkat_pendidikan_label }}
                             </span>
                             <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-700">
                                 {{ $mahasiswa->asal_sekolah ?? '-' }}
+                            </span>
+                        @elseif(in_array($mahasiswa->tingkat_pendidikan, ['SMA', 'SMK']))
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700">
+                                {{ $mahasiswa->tingkat_pendidikan_label }}
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-700">
+                                {{ $mahasiswa->asal_sekolah ?? '-' }}
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                                Jurusan: {{ $mahasiswa->program_studi_id ?? '-' }}
                             </span>
                         @else
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700">
                                 {{ $mahasiswa->tingkat_pendidikan_label }}
                             </span>
                             <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-700">
-                                {{ $mahasiswa->asal_sekolah ?? '-' }}
+                                Asal: {{ $mahasiswa->asal_sekolah ?? '-' }}
                             </span>
-                            <!-- Ditampilkan jika tingkat pendidikan tinggi / kuliah (D1-S3) -->
                             <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700">
-                                {{ $mahasiswa->fakultas->nama ?? '-' }}
+                                {{ $mahasiswa->fakultas_id ?? '-' }}
                             </span>
                             <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-700">
-                                {{ $mahasiswa->programStudi->nama ?? '-' }}
+                                Prodi: {{ $mahasiswa->program_studi_id ?? '-' }}
                             </span>
                         @endif
                     </div>

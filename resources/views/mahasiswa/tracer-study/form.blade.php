@@ -1,6 +1,6 @@
-@extends('layouts.index')
+@extends('layouts.app')
 
-@section('home')
+@section('content')
 <div class="container mx-auto px-4 py-8 my-10 max-w-6xl">
     <div class="bg-white shadow-2xl rounded-2xl overflow-hidden">
         {{-- Header --}}

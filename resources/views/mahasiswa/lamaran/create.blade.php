@@ -1,9 +1,9 @@
-@extends('layouts.index')
+@extends('layouts.app')
 
 @section('title', 'Lamar Pekerjaan')
 @section('page-title', 'Lamar Pekerjaan')
 
-@section('home')
+@section('content')
 <div class="max-w-4xl mx-auto">
     <div class="space-y-6">
         

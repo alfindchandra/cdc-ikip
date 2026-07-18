@@ -1,9 +1,9 @@
-@extends('layouts.index')
+@extends('layouts.app')
 
 @section('title', $lowongan->judul)
 @section('page-title', '')
 
-@section('home')
+@section('content')
 <div class="max-w-7xl mx-auto">
     <div class="space-y-6">
         <!-- Back Button -->

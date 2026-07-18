@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,8 +18,11 @@ return new class extends Migration
             $table->string('agama', 20)->nullable();
             $table->text('alamat')->nullable();
             $table->string('no_telp', 15)->nullable();
-            $table->string('fakultas_id')->constrained()->onDelete('cascade');
-            $table->string('program_studi_id')->constrained()->onDelete('cascade');
+            
+            // PERBAIKAN: Ubah menjadi string biasa dan buat menjadi nullable (bisa kosong)
+            $table->string('fakultas_id')->nullable();
+            $table->string('program_studi_id')->nullable();
+            
             $table->year('tahun_masuk')->nullable();
             $table->year('tahun_lulus')->nullable();
             $table->string('nama_ortu')->nullable();

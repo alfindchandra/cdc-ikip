@@ -1,9 +1,9 @@
-@extends('layouts.index')
+@extends('layouts.app')
 
 @section('title', 'Riwayat Lamaran')
 @section('page-title', 'Riwayat Lamaran Saya')
 
-@section('home')
+@section('content')
 <div class="max-w-4xl mx-auto pt-12 md:pt-24 space-y-6">
 
     {{-- === HEADER INFO === --}}

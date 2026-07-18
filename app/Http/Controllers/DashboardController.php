@@ -8,7 +8,22 @@ use App\Models\Perusahaan;
 use App\Models\Pkl;
 use App\Models\LowonganKerja;
 use App\Models\Pelatihan;
-
+use App\Models\Lamaran;
+use App\Models\Notifikasi;
+use App\Models\KerjasamaIndustri;
+use App\Models\KerjasamaPerusahaan;
+use App\Models\TracerStudy;
+use App\Models\TracerStudyMahasiswa;
+use App\Models\Fakultas;
+use App\Models\Program_studi;
+use App\Models\User;
+use App\Models\Otp;
+use App\Notifications\SendOtpNotification;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth; // <-- PASTIKAN BARIS INI ADA
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 class DashboardController extends Controller
 {
     public function index()
@@ -54,9 +69,36 @@ class DashboardController extends Controller
 
     private function mahasiswaDashboard()
     {
-        $mahasiswa = auth()->user()->mahasiswa;
+        $user = Auth::user();
+        $mahasiswa = $user->mahasiswa;
 
-return redirect()->route('welcome');    }
+        // 1. Hitung jumlah lamaran kerja dengan status 'diproses' (pending)
+        $lamaran_pending = Lamaran::where('mahasiswa_id', $mahasiswa->id)
+            ->where('status', 'diproses')
+            ->count();
+
+        // 2. Hitung jumlah pelatihan yang sedang atau telah diikuti oleh mahasiswa
+        $pelatihan_terdaftar = $mahasiswa->pelatihan()->count();
+
+        // 3. Ambil 3 data lowongan pekerjaan terbaru yang aktif beserta info perusahaan
+        $lowongan_terbaru = LowonganKerja::with('perusahaan')
+            ->latest()
+            ->take(3)
+            ->get();
+
+        // 4. Ambil 3 program pelatihan terbaru yang belum kadaluarsa
+        $pelatihan_tersedia = Pelatihan::latest()
+            ->take(3)
+            ->get();
+
+        // 5. Kirim seluruh data ke view dashboard mahasiswa
+        return view('mahasiswa.dashboard', compact(
+            'lamaran_pending',
+            'pelatihan_terdaftar',
+            'lowongan_terbaru',
+            'pelatihan_tersedia'
+        ));
+    }
 
     private function perusahaanDashboard()
     {
