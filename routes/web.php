@@ -102,9 +102,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 
         // Data Mahasiswa
-        Route::resource('mahasiswa', MahasiswaController::class);
         Route::post('mahasiswa/import', [MahasiswaController::class, 'import'])->name('mahasiswa.import');
+        Route::get('mahasiswa/template', [MahasiswaController::class, 'downloadTemplate'])->name('mahasiswa.template');
         Route::get('mahasiswa/export', [MahasiswaController::class, 'export'])->name('mahasiswa.export');
+        Route::resource('mahasiswa', MahasiswaController::class);
         
         // Data Perusahaan
         Route::resource('perusahaan', PerusahaanController::class);
@@ -135,6 +136,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
         Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/status', [PelatihanController::class, 'updateStatusPeserta'])->name('pelatihan.peserta.status');
 Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanController::class, 'inputNilai'])->name('pelatihan.peserta.nilai');
         // Kerjasama Industri (Admin mengelola & kirim ke Perusahaan / ACC pengajuan dari Perusahaan)
+        Route::post('kerjasama/import', [KerjasamaIndustriController::class, 'import'])->name('kerjasama.import');
+        Route::get('kerjasama/template', [KerjasamaIndustriController::class, 'downloadTemplate'])->name('kerjasama.template');
         Route::resource('kerjasama', KerjasamaIndustriController::class);
         Route::put('kerjasama/{kerjasama}/status', [KerjasamaIndustriController::class, 'updateStatus'])->name('kerjasama.status');
         // Admin ACC / Tolak pengajuan dari perusahaan
@@ -148,6 +151,10 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
           Route::resource('tracer-study', TracerStudyController::class);
     Route::get('tracer-study-laporan', [TracerStudyController::class, 'laporan'])->name('tracer-study.laporan');
     Route::get('tracer-study-export', [TracerStudyController::class, 'exportExcel'])->name('tracer-study.export');
+    Route::get('tracer-study-pertanyaan', [TracerStudyController::class, 'editPertanyaan'])->name('tracer-study.pertanyaan');
+    Route::put('tracer-study-pertanyaan', [TracerStudyController::class, 'updatePertanyaan'])->name('tracer-study.pertanyaan.update');
+    Route::post('tracer-study-import', [TracerStudyController::class, 'importTracerStudy'])->name('tracer-study.import');
+    Route::get('tracer-study-template', [TracerStudyController::class, 'downloadTemplate'])->name('tracer-study.template');
         // Pengaturan
         Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
         Route::put('pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Fakultas;
 use App\Models\Program_studi;
+use Illuminate\Support\Str;
 
 class MahasiswaController extends Controller
 {
@@ -203,5 +204,185 @@ public function update(Request $request, Mahasiswa $mahasiswa)
         $mahasiswa->user->delete(); 
         return redirect()->route('admin.mahasiswa.index')
                          ->with('success', 'Data mahasiswa berhasil dihapus');
+    }
+
+    // ─── Import ──────────────────────────────────────────────────────────────
+
+    /**
+     * Download template CSV untuk import mahasiswa.
+     */
+    public function downloadTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="template-import-mahasiswa.csv"',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fwrite($file, "\xEF\xBB\xBF"); // BOM UTF-8
+            fputcsv($file, [
+                'name',
+                'email',
+                'password',
+                'nim',
+                'tingkat_pendidikan',
+                'tempat_lahir',
+                'tanggal_lahir',
+                'jenis_kelamin',
+                'agama',
+                'alamat',
+                'no_telp',
+                'asal_sekolah',
+                'fakultas_id',
+                'program_studi_id',
+                'tahun_masuk',
+                'tahun_lulus',
+                'nama_ortu',
+                'pekerjaan_ortu',
+                'no_telp_ortu',
+                'status',
+            ]);
+            fputcsv($file, [
+                'Budi Santoso',
+                'budi@email.com',
+                'password123',
+                '202300001',
+                'S1',
+                'Jakarta',
+                '2000-01-15',
+                'L',
+                'Islam',
+                'Jl. Contoh No. 1, Jakarta',
+                '08123456789',
+                '',
+                '1',
+                '1',
+                '2023',
+                '',
+                'Siti Rahayu',
+                'Guru',
+                '08987654321',
+                'aktif',
+            ]);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Proses import data mahasiswa dari file CSV.
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:10240',
+        ], [
+            'file.required' => 'File CSV harus diunggah.',
+            'file.mimes'    => 'File harus berformat CSV.',
+            'file.max'      => 'Ukuran file maksimal 10 MB.',
+        ]);
+
+        $path   = $request->file('file')->getRealPath();
+        $handle = fopen($path, 'r');
+
+        if (!$handle) {
+            return back()->with('error', 'Gagal membaca file CSV.');
+        }
+
+        $header = fgetcsv($handle);
+        if ($header) {
+            $header[0] = ltrim($header[0], "\xEF\xBB\xBF");
+            $header    = array_map('trim', $header);
+        }
+
+        $requiredCols = ['name', 'email', 'nim'];
+        foreach ($requiredCols as $col) {
+            if (!in_array($col, $header)) {
+                fclose($handle);
+                return back()->with('error', "Kolom wajib '{$col}' tidak ditemukan di file CSV.");
+            }
+        }
+
+        $imported = 0;
+        $skipped  = 0;
+        $errors   = [];
+        $row      = 1;
+
+        while (($line = fgetcsv($handle)) !== false) {
+            $row++;
+            if (count($line) < 2) continue;
+
+            $data  = array_combine($header, array_pad($line, count($header), null));
+            $nim   = trim($data['nim']   ?? '');
+            $email = trim($data['email'] ?? '');
+            $name  = trim($data['name']  ?? '');
+
+            if (empty($nim) || empty($email) || empty($name)) {
+                $skipped++;
+                continue;
+            }
+
+            // Cek duplikat
+            if (User::where('email', $email)->exists()) {
+                $errors[] = "Baris {$row}: Email '{$email}' sudah terdaftar, dilewati.";
+                $skipped++;
+                continue;
+            }
+            if (Mahasiswa::where('nim', $nim)->exists()) {
+                $errors[] = "Baris {$row}: NIM '{$nim}' sudah terdaftar, dilewati.";
+                $skipped++;
+                continue;
+            }
+
+            // Buat User
+            $rawPassword = trim($data['password'] ?? '') ?: Str::random(10);
+            $user = User::create([
+                'name'      => $name,
+                'email'     => $email,
+                'password'  => Hash::make($rawPassword),
+                'role'      => 'mahasiswa',
+                'is_active' => true,
+            ]);
+
+            $tingkat   = trim($data['tingkat_pendidikan'] ?? 'S1');
+            $isSekolah = in_array($tingkat, ['SD', 'SMP', 'SMA', 'SMK']);
+
+            Mahasiswa::create([
+                'user_id'          => $user->id,
+                'nim'              => $nim,
+                'tingkat_pendidikan' => $tingkat,
+                'tempat_lahir'     => trim($data['tempat_lahir']    ?? ''),
+                'tanggal_lahir'    => $data['tanggal_lahir']        ?? null,
+                'jenis_kelamin'    => strtoupper(trim($data['jenis_kelamin'] ?? 'L')),
+                'agama'            => trim($data['agama']            ?? ''),
+                'alamat'           => trim($data['alamat']           ?? ''),
+                'no_telp'          => trim($data['no_telp']          ?? ''),
+                'asal_sekolah'     => $isSekolah ? trim($data['asal_sekolah'] ?? '') : null,
+                'fakultas_id'      => !$isSekolah && is_numeric($data['fakultas_id'] ?? '') ? (int)$data['fakultas_id'] : null,
+                'program_studi_id' => is_numeric($data['program_studi_id'] ?? '') ? (int)$data['program_studi_id'] : null,
+                'tahun_masuk'      => is_numeric($data['tahun_masuk'] ?? '') ? (int)$data['tahun_masuk'] : null,
+                'tahun_lulus'      => is_numeric($data['tahun_lulus'] ?? '') ? (int)$data['tahun_lulus'] : null,
+                'nama_ortu'        => trim($data['nama_ortu']        ?? ''),
+                'pekerjaan_ortu'   => trim($data['pekerjaan_ortu']   ?? ''),
+                'no_telp_ortu'     => trim($data['no_telp_ortu']     ?? ''),
+                'status'           => trim($data['status']           ?? 'aktif'),
+            ]);
+
+            $imported++;
+        }
+
+        fclose($handle);
+
+        $message = "Import selesai: {$imported} mahasiswa berhasil ditambahkan, {$skipped} dilewati.";
+        if (!empty($errors)) {
+            $message .= ' Catatan: ' . implode('; ', array_slice($errors, 0, 5));
+            if (count($errors) > 5) {
+                $message .= ' ... dan ' . (count($errors) - 5) . ' pesan lainnya.';
+            }
+        }
+
+        return redirect()->route('admin.mahasiswa.index')->with('success', $message);
     }
 }

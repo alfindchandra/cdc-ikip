@@ -4,7 +4,7 @@
 @section('page-title', 'Tracer Study')
 
 @section('content')
-<div class="p-4 sm:p-6 lg:p-8 space-y-8" x-data="{ openFilter: false }">
+<div class="p-4 sm:p-6 lg:p-8 space-y-8" x-data="{ openFilter: false, openImport: false }">
 
     {{-- Header & Aksi --}}
     <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-200 pb-4">
@@ -12,12 +12,77 @@
             <i class="fas fa-chart-line mr-3 text-indigo-600"></i>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Tracer Study</span>
         </h1>
-        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-            <a href="{{ route('admin.tracer-study.laporan') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:scale-105">
+        <div class="flex flex-wrap gap-2">
+            {{-- Edit Pertanyaan --}}
+            <a href="{{ route('admin.tracer-study.pertanyaan') }}"
+               class="inline-flex items-center px-4 py-2 bg-white border border-indigo-300 text-indigo-700 text-sm font-medium rounded-xl shadow-sm hover:bg-indigo-50 transition">
+                <i class="fas fa-list-alt mr-2"></i>Edit Pertanyaan
+            </a>
+            {{-- Download Template --}}
+            <a href="{{ route('admin.tracer-study.template') }}"
+               class="inline-flex items-center px-4 py-2 bg-white border border-green-300 text-green-700 text-sm font-medium rounded-xl shadow-sm hover:bg-green-50 transition">
+                <i class="fas fa-file-csv mr-2"></i>Template CSV
+            </a>
+            {{-- Import --}}
+            <button @click="openImport = true"
+                    class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-xl shadow-sm transition">
+                <i class="fas fa-file-import mr-2"></i>Import CSV
+            </button>
+            {{-- Laporan --}}
+            <a href="{{ route('admin.tracer-study.laporan') }}"
+               class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl shadow-lg text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:scale-105">
                 <i class="fas fa-file-alt mr-2"></i>Laporan Analisis
             </a>
         </div>
     </header>
+
+    {{-- Modal Import Tracer Study --}}
+    <div x-show="openImport" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+         @click.self="openImport = false">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+            <div class="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-white font-bold text-lg"><i class="fas fa-file-import mr-2"></i>Import Data Tracer Study</h3>
+                <button @click="openImport = false" class="text-white/80 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form method="POST" action="{{ route('admin.tracer-study.import') }}" enctype="multipart/form-data" class="p-6 space-y-4">
+                @csrf
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-sm text-amber-800">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Upload file CSV dengan format sesuai template. Kolom wajib: <strong>nim</strong>, <strong>status_pekerjaan</strong>.
+                    Data yang sudah ada akan diperbarui (berdasarkan NIM).
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Pilih File CSV</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-green-400 transition cursor-pointer"
+                         onclick="document.getElementById('fileTracerStudy').click()">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                        <p class="text-sm text-gray-500">Klik untuk memilih file atau drag & drop</p>
+                        <p class="text-xs text-gray-400 mt-1">Format: .csv | Maks: 5MB</p>
+                    </div>
+                    <input type="file" name="file" id="fileTracerStudy" accept=".csv,.txt"
+                           class="hidden"
+                           onchange="document.getElementById('fileNameTracer').textContent = this.files[0]?.name || 'Belum ada file'">
+                    <p id="fileNameTracer" class="text-sm text-indigo-600 text-center font-medium">Belum ada file dipilih</p>
+                    @error('file')
+                        <p class="text-red-500 text-xs">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex gap-3 justify-end pt-2">
+                    <button type="button" @click="openImport = false"
+                            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition">
+                        Batal
+                    </button>
+                    <button type="submit"
+                            class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-xl shadow transition">
+                        <i class="fas fa-upload mr-2"></i>Proses Import
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     {{-- Statistik Cards (Key Metrics) --}}
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

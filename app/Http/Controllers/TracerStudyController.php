@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
  
 use App\Models\TracerStudy;
+use App\Models\TracerStudyQuestion;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -481,20 +482,262 @@ class TracerStudyController extends Controller
                         ->with('success', 'Terima kasih telah mengisi tracer study! Data Anda telah tersimpan.');
     }
 
-    // Private Methods
+    // ─── Manajemen Pertanyaan ────────────────────────────────────────────────
+
+    /**
+     * Tampilkan halaman edit pertanyaan tracer study.
+     */
+    public function editPertanyaan()
+    {
+        $questions = TracerStudyQuestion::ordered()->get()->groupBy('section');
+        $sectionLabels = [
+            'status_pekerjaan'  => 'Status Pekerjaan',
+            'data_pekerjaan'    => 'Data Pekerjaan',
+            'pencarian_kerja'   => 'Pencarian Kerja',
+            'data_wirausaha'    => 'Data Wirausaha',
+            'data_studi'        => 'Data Melanjutkan Studi',
+            'data_ppg'          => 'Pendidikan Profesi Guru (PPG)',
+            'kompetensi'        => 'Kompetensi & Metode Pembelajaran',
+            'kepuasan_feedback' => 'Kepuasan & Saran',
+            'kontak'            => 'Informasi Kontak',
+        ];
+        return view('admin.tracer-study.pertanyaan', compact('questions', 'sectionLabels'));
+    }
+
+    /**
+     * Simpan perubahan konfigurasi pertanyaan.
+     */
+    public function updatePertanyaan(Request $request)
+    {
+        $data = $request->input('questions', []);
+
+        foreach ($data as $id => $values) {
+            $q = TracerStudyQuestion::find($id);
+            if (!$q) continue;
+
+            $q->label       = $values['label']      ?? $q->label;
+            $q->helper_text = $values['helper_text'] ?? null;
+            $q->is_active   = isset($values['is_active']) ? true : false;
+            $q->is_required = isset($values['is_required']) ? true : false;
+            $q->sort_order  = (int) ($values['sort_order'] ?? $q->sort_order);
+            $q->save();
+        }
+
+        return redirect()->route('admin.tracer-study.pertanyaan')
+                        ->with('success', 'Konfigurasi pertanyaan berhasil disimpan.');
+    }
+
+    // ─── Import Tracer Study ─────────────────────────────────────────────────
+
+    /**
+     * Download template CSV untuk import tracer study.
+     */
+    public function downloadTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="template-import-tracer-study.csv"',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            // BOM UTF-8 agar Excel bisa baca karakter Indonesia
+            fwrite($file, "\xEF\xBB\xBF");
+            fputcsv($file, [
+                'nim',
+                'status_pekerjaan',
+                'nama_perusahaan',
+                'posisi',
+                'bidang_pekerjaan',
+                'jenis_perusahaan',
+                'penghasilan',
+                'relevansi_pekerjaan',
+                'waktu_tunggu_kerja',
+                'nama_usaha',
+                'bidang_usaha',
+                'jumlah_karyawan',
+                'omzet_usaha',
+                'nama_institusi',
+                'jurusan_studi',
+                'sumber_biaya',
+                'kepuasan_pendidikan',
+                'saran_kurikulum',
+                'saran_fasilitas',
+                'saran_umum',
+                'email_saat_ini',
+                'no_telp_saat_ini',
+                'linkedin',
+                'tanggal_isi',
+            ]);
+            // Baris contoh
+            fputcsv($file, [
+                '123456789',
+                'bekerja',
+                'PT Contoh Maju',
+                'Staff IT',
+                'Teknologi Informasi',
+                'swasta_nasional',
+                '5000000',
+                'sangat_relevan',
+                '3',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '5',
+                '',
+                '',
+                'Tingkatkan praktik lapangan',
+                'alumni@email.com',
+                '08123456789',
+                '',
+                date('Y-m-d'),
+            ]);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Proses import data tracer study dari file CSV.
+     */
+    public function importTracerStudy(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:5120',
+        ], [
+            'file.required' => 'File CSV harus diunggah.',
+            'file.mimes'    => 'File harus berformat CSV.',
+            'file.max'      => 'Ukuran file maksimal 5 MB.',
+        ]);
+
+        $file    = $request->file('file');
+        $path    = $file->getRealPath();
+        $handle  = fopen($path, 'r');
+
+        if (!$handle) {
+            return back()->with('error', 'Gagal membaca file CSV.');
+        }
+
+        // Baca header
+        $header = fgetcsv($handle);
+        // Hapus BOM jika ada
+        if ($header) {
+            $header[0] = ltrim($header[0], "\xEF\xBB\xBF");
+            $header    = array_map('trim', $header);
+        }
+
+        $required = ['nim', 'status_pekerjaan'];
+        foreach ($required as $col) {
+            if (!in_array($col, $header)) {
+                fclose($handle);
+                return back()->with('error', "Kolom wajib '{$col}' tidak ditemukan di file CSV.");
+            }
+        }
+
+        $imported = 0;
+        $skipped  = 0;
+        $errors   = [];
+        $row      = 1;
+
+        $validStatus = [
+            'bekerja', 'wirausaha', 'melanjutkan_studi',
+            'ppg', 'belum_bekerja', 'belum_memungkinkan_bekerja',
+        ];
+
+        while (($line = fgetcsv($handle)) !== false) {
+            $row++;
+            if (count($line) < 2) continue;
+
+            $data = array_combine($header, array_pad($line, count($header), null));
+            $nim  = trim($data['nim'] ?? '');
+
+            if (empty($nim)) {
+                $skipped++;
+                continue;
+            }
+
+            $mahasiswa = Mahasiswa::where('nim', $nim)->first();
+            if (!$mahasiswa) {
+                $errors[] = "Baris {$row}: NIM '{$nim}' tidak ditemukan.";
+                $skipped++;
+                continue;
+            }
+
+            $status = trim($data['status_pekerjaan'] ?? '');
+            if (!in_array($status, $validStatus)) {
+                $errors[] = "Baris {$row}: Status pekerjaan '{$status}' tidak valid.";
+                $skipped++;
+                continue;
+            }
+
+            $tracerData = [
+                'mahasiswa_id'        => $mahasiswa->id,
+                'status_pekerjaan'    => $status,
+                'nama_perusahaan'     => $data['nama_perusahaan']     ?? null,
+                'posisi'              => $data['posisi']              ?? null,
+                'bidang_pekerjaan'    => $data['bidang_pekerjaan']    ?? null,
+                'jenis_perusahaan'    => $data['jenis_perusahaan']    ?? null,
+                'penghasilan'         => $data['penghasilan']         ?? null,
+                'relevansi_pekerjaan' => $data['relevansi_pekerjaan'] ?? null,
+                'waktu_tunggu_kerja'  => is_numeric($data['waktu_tunggu_kerja'] ?? '') ? (int)$data['waktu_tunggu_kerja'] : null,
+                'nama_usaha'          => $data['nama_usaha']          ?? null,
+                'bidang_usaha'        => $data['bidang_usaha']        ?? null,
+                'jumlah_karyawan'     => is_numeric($data['jumlah_karyawan'] ?? '') ? (int)$data['jumlah_karyawan'] : null,
+                'omzet_usaha'         => $data['omzet_usaha']         ?? null,
+                'nama_institusi'      => $data['nama_institusi']      ?? null,
+                'jurusan_studi'       => $data['jurusan_studi']       ?? null,
+                'sumber_biaya'        => $data['sumber_biaya']        ?? null,
+                'kepuasan_pendidikan' => is_numeric($data['kepuasan_pendidikan'] ?? '') ? (int)$data['kepuasan_pendidikan'] : null,
+                'saran_kurikulum'     => $data['saran_kurikulum']     ?? null,
+                'saran_fasilitas'     => $data['saran_fasilitas']     ?? null,
+                'saran_umum'          => $data['saran_umum']          ?? null,
+                'email_saat_ini'      => $data['email_saat_ini']      ?? null,
+                'no_telp_saat_ini'    => $data['no_telp_saat_ini']    ?? null,
+                'linkedin'            => $data['linkedin']            ?? null,
+                'tanggal_isi'         => !empty($data['tanggal_isi']) ? $data['tanggal_isi'] : now(),
+            ];
+
+            TracerStudy::updateOrCreate(
+                ['mahasiswa_id' => $mahasiswa->id],
+                $tracerData
+            );
+            $imported++;
+        }
+
+        fclose($handle);
+
+        $message = "Import selesai: {$imported} data berhasil diimpor, {$skipped} dilewati.";
+        if (!empty($errors)) {
+            $message .= ' Catatan: ' . implode('; ', array_slice($errors, 0, 5));
+            if (count($errors) > 5) {
+                $message .= ' ... dan ' . (count($errors) - 5) . ' kesalahan lainnya.';
+            }
+        }
+
+        return redirect()->route('admin.tracer-study.index')
+                        ->with('success', $message);
+    }
+
+    // ─── Private Helpers ─────────────────────────────────────────────────────
+
     private function getStatistik()
-{
-    return [
-        'total_alumni' => Mahasiswa::where('status', 'lulus')->count(),
-        'total_responden' => TracerStudy::count(),
-        'bekerja' => TracerStudy::where('status_pekerjaan', 'bekerja')->count(),
-        'wirausaha' => TracerStudy::where('status_pekerjaan', 'wirausaha')->count(),
-        'melanjutkan_studi' => TracerStudy::where('status_pekerjaan', 'melanjutkan_studi')->count(),
-        'belum_bekerja' => TracerStudy::where('status_pekerjaan', 'belum_bekerja')->count(),
-        'belum_memungkinkan_bekerja' => TracerStudy::where('status_pekerjaan', 'belum_memungkinkan_bekerja')->count(),
-        'ppg' => TracerStudy::where('status_pekerjaan', 'ppg')->count(), // <-- Tambahkan baris ini
-        'rata_waktu_tunggu' => round(TracerStudy::where('waktu_tunggu_kerja', '>', 0)->avg('waktu_tunggu_kerja'), 2),
-        'rata_kepuasan' => round(TracerStudy::where('kepuasan_pendidikan', '>', 0)->avg('kepuasan_pendidikan'), 2),
-    ];
-}
+    {
+        return [
+            'total_alumni'               => Mahasiswa::where('status', 'lulus')->count(),
+            'total_responden'            => TracerStudy::count(),
+            'bekerja'                    => TracerStudy::where('status_pekerjaan', 'bekerja')->count(),
+            'wirausaha'                  => TracerStudy::where('status_pekerjaan', 'wirausaha')->count(),
+            'melanjutkan_studi'          => TracerStudy::where('status_pekerjaan', 'melanjutkan_studi')->count(),
+            'belum_bekerja'              => TracerStudy::where('status_pekerjaan', 'belum_bekerja')->count(),
+            'belum_memungkinkan_bekerja' => TracerStudy::where('status_pekerjaan', 'belum_memungkinkan_bekerja')->count(),
+            'ppg'                        => TracerStudy::where('status_pekerjaan', 'ppg')->count(),
+            'rata_waktu_tunggu'          => round(TracerStudy::where('waktu_tunggu_kerja', '>', 0)->avg('waktu_tunggu_kerja'), 2),
+            'rata_kepuasan'              => round(TracerStudy::where('kepuasan_pendidikan', '>', 0)->avg('kepuasan_pendidikan'), 2),
+        ];
+    }
 }

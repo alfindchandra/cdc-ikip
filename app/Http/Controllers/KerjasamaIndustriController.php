@@ -364,4 +364,166 @@ class KerjasamaIndustriController extends Controller
 
         return back()->with('success', 'Kerjasama telah ditolak.');
     }
+
+    // ─── Import Data Kerjasama ─────────────────────────────────────────────────
+
+    /**
+     * Download template CSV untuk import kerjasama industri.
+     */
+    public function downloadTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="template-import-kerjasama.csv"',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fwrite($file, "\xEF\xBB\xBF"); // BOM UTF-8
+            fputcsv($file, [
+                'nama_perusahaan',
+                'jenis_kerjasama',
+                'jenis_dokumen',
+                'lingkup_kerjasama',
+                'bentuk_kegiatan',
+                'judul',
+                'deskripsi',
+                'tanggal_mulai',
+                'tanggal_berakhir',
+                'status',
+                'nilai_kontrak',
+                'pic_sekolah',
+                'catatan',
+            ]);
+            fputcsv($file, [
+                'PT Maju Sejahtera',
+                'pkl',
+                'mou',
+                'dalam_negeri',
+                'Pendidikan',
+                'Kerjasama PKL Mahasiswa 2025',
+                'Kerjasama PKL untuk mahasiswa Teknik Informatika',
+                '2025-01-01',
+                '2025-12-31',
+                'aktif',
+                '',
+                'Dr. Budi Santoso',
+                '',
+            ]);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Proses import data kerjasama industri dari file CSV.
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:5120',
+        ], [
+            'file.required' => 'File CSV harus diunggah.',
+            'file.mimes'    => 'File harus berformat CSV.',
+            'file.max'      => 'Ukuran file maksimal 5 MB.',
+        ]);
+
+        $path   = $request->file('file')->getRealPath();
+        $handle = fopen($path, 'r');
+
+        if (!$handle) {
+            return back()->with('error', 'Gagal membaca file CSV.');
+        }
+
+        $header = fgetcsv($handle);
+        if ($header) {
+            $header[0] = ltrim($header[0], "\xEF\xBB\xBF");
+            $header    = array_map('trim', $header);
+        }
+
+        $requiredCols = ['nama_perusahaan', 'judul', 'jenis_kerjasama'];
+        foreach ($requiredCols as $col) {
+            if (!in_array($col, $header)) {
+                fclose($handle);
+                return back()->with('error', "Kolom wajib '{$col}' tidak ditemukan di file CSV.");
+            }
+        }
+
+        $imported = 0;
+        $skipped  = 0;
+        $errors   = [];
+        $row      = 1;
+
+        $validJenis    = ['pkl', 'rekrutmen', 'pelatihan', 'penelitian', 'sponsorship', 'lainnya'];
+        $validDokumen  = ['mou', 'moa', 'surat_kerjasama'];
+        $validLingkup  = ['dalam_negeri', 'luar_negeri', 'swasta', 'lainnya'];
+        $validStatus   = ['draft', 'proposal', 'aktif', 'selesai', 'batal', 'nonaktif'];
+
+        while (($line = fgetcsv($handle)) !== false) {
+            $row++;
+            if (count($line) < 2) continue;
+
+            $data         = array_combine($header, array_pad($line, count($header), null));
+            $namaPerusahaan = trim($data['nama_perusahaan'] ?? '');
+            $judul          = trim($data['judul']           ?? '');
+
+            if (empty($namaPerusahaan) || empty($judul)) {
+                $skipped++;
+                continue;
+            }
+
+            // Cari perusahaan berdasarkan nama (case-insensitive)
+            $perusahaan = Perusahaan::whereRaw('LOWER(nama_pt) LIKE ?', ['%' . strtolower($namaPerusahaan) . '%'])
+                ->orWhereRaw('LOWER(nama) LIKE ?', ['%' . strtolower($namaPerusahaan) . '%'])
+                ->first();
+
+            if (!$perusahaan) {
+                $errors[] = "Baris {$row}: Perusahaan '{$namaPerusahaan}' tidak ditemukan dalam database.";
+                $skipped++;
+                continue;
+            }
+
+            $jenis   = trim($data['jenis_kerjasama'] ?? 'lainnya');
+            $dokumen = trim($data['jenis_dokumen']   ?? 'mou');
+            $lingkup = trim($data['lingkup_kerjasama'] ?? 'dalam_negeri');
+            $status  = trim($data['status'] ?? 'draft');
+
+            if (!in_array($jenis,   $validJenis))   $jenis   = 'lainnya';
+            if (!in_array($dokumen, $validDokumen)) $dokumen = 'mou';
+            if (!in_array($lingkup, $validLingkup)) $lingkup = 'dalam_negeri';
+            if (!in_array($status,  $validStatus))  $status  = 'draft';
+
+            KerjasamaIndustri::create([
+                'perusahaan_id'    => $perusahaan->id,
+                'jenis_kerjasama'  => $jenis,
+                'jenis_dokumen'    => $dokumen,
+                'lingkup_kerjasama'=> $lingkup,
+                'bentuk_kegiatan'  => trim($data['bentuk_kegiatan'] ?? 'Pendidikan'),
+                'judul'            => $judul,
+                'deskripsi'        => $data['deskripsi']      ?? null,
+                'tanggal_mulai'    => !empty($data['tanggal_mulai'])    ? $data['tanggal_mulai']    : now()->toDateString(),
+                'tanggal_berakhir' => !empty($data['tanggal_berakhir']) ? $data['tanggal_berakhir'] : null,
+                'status'           => $status,
+                'nilai_kontrak'    => is_numeric($data['nilai_kontrak'] ?? '') ? $data['nilai_kontrak'] : null,
+                'pic_sekolah'      => $data['pic_sekolah'] ?? null,
+                'catatan'          => $data['catatan']     ?? null,
+                'pengirim'         => 'admin',
+            ]);
+
+            $imported++;
+        }
+
+        fclose($handle);
+
+        $message = "Import selesai: {$imported} data kerjasama berhasil ditambahkan, {$skipped} dilewati.";
+        if (!empty($errors)) {
+            $message .= ' Catatan: ' . implode('; ', array_slice($errors, 0, 5));
+            if (count($errors) > 5) {
+                $message .= ' ... dan ' . (count($errors) - 5) . ' pesan lainnya.';
+            }
+        }
+
+        return redirect()->route('admin.kerjasama.index')->with('success', $message);
+    }
 }
