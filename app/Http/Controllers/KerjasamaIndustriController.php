@@ -473,10 +473,10 @@ class KerjasamaIndustriController extends Controller
                 continue;
             }
 
-            // Cari perusahaan berdasarkan nama (case-insensitive)
-            $perusahaan = Perusahaan::whereRaw('LOWER(nama_pt) LIKE ?', ['%' . strtolower($namaPerusahaan) . '%'])
-                ->orWhereRaw('LOWER(nama) LIKE ?', ['%' . strtolower($namaPerusahaan) . '%'])
-                ->first();
+            // Cari perusahaan berdasarkan nama user (nama perusahaan disimpan di tabel users)
+            $perusahaan = Perusahaan::whereHas('user', function ($q) use ($namaPerusahaan) {
+                $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($namaPerusahaan) . '%']);
+            })->first();
 
             if (!$perusahaan) {
                 $errors[] = "Baris {$row}: Perusahaan '{$namaPerusahaan}' tidak ditemukan dalam database.";

@@ -108,6 +108,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
         Route::resource('mahasiswa', MahasiswaController::class);
         
         // Data Perusahaan
+        Route::post('perusahaan/import', [PerusahaanController::class, 'import'])->name('perusahaan.import');
+        Route::get('perusahaan/template', [PerusahaanController::class, 'downloadTemplate'])->name('perusahaan.template');
         Route::resource('perusahaan', PerusahaanController::class);
         Route::post('perusahaan/{perusahaan}/status', [PerusahaanController::class, 'updateStatus'])->name('perusahaan.status');
         

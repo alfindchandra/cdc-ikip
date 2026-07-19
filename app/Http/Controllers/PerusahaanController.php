@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PerusahaanController extends Controller
 {
@@ -134,7 +135,7 @@ public function index(Request $request)
         return view('admin.perusahaan.show', compact('perusahaan'));
     }
 
-   public function update(Request $request, Perusahaan $perusahaan)
+    public function update(Request $request, Perusahaan $perusahaan)
 {
     $request->validate([
         'nama_perusahaan' => 'required|string|max:255',
@@ -173,6 +174,176 @@ public function index(Request $request)
     return redirect()->route('admin.perusahaan.show', $perusahaan)
                      ->with('success', 'Profil Perusahaan berhasil disinkronkan dan diperbarui.');
 }
-    
 
+    // ─── Import Data Perusahaan ───────────────────────────────────────────────
+
+    /**
+     * Download template CSV untuk import perusahaan.
+     */
+    public function downloadTemplate()
+    {
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="template-import-perusahaan.csv"',
+        ];
+
+        $callback = function () {
+            $file = fopen('php://output', 'w');
+            fwrite($file, "\xEF\xBB\xBF"); // BOM UTF-8 agar Excel terbaca
+            fputcsv($file, [
+                'nama_perusahaan',   // wajib — juga dipakai sebagai nama akun login
+                'email',             // wajib — email login perusahaan
+                'password',          // opsional — jika kosong, dibuat otomatis
+                'bidang_usaha',
+                'jenis_pt',
+                'alamat',
+                'kota',
+                'provinsi',
+                'kode_pos',
+                'no_telp',
+                'no_hp',
+                'website',
+                'nama_pimpinan',
+                'tahun_berdiri',
+                'jumlah_karyawan',
+                'deskripsi',
+                'status_kerjasama',  // aktif / pending / nonaktif
+            ]);
+            // Baris contoh
+            fputcsv($file, [
+                'PT Maju Sejahtera',
+                'maju.sejahtera@email.com',
+                'password123',
+                'Teknologi Informasi',
+                'PT Persekutuan Modal',
+                'Jl. Sudirman No. 10',
+                'Surabaya',
+                'Jawa Timur',
+                '60115',
+                '031-12345678',
+                '08123456789',
+                'https://majusejahtera.co.id',
+                'Budi Santoso',
+                '2010',
+                '50',
+                'Perusahaan teknologi terkemuka di Jawa Timur',
+                'aktif',
+            ]);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Proses import data perusahaan dari file CSV.
+     * Nama perusahaan disimpan di tabel `users` (kolom `name`).
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:csv,txt|max:10240',
+        ], [
+            'file.required' => 'File CSV harus diunggah.',
+            'file.mimes'    => 'File harus berformat CSV.',
+            'file.max'      => 'Ukuran file maksimal 10 MB.',
+        ]);
+
+        $path   = $request->file('file')->getRealPath();
+        $handle = fopen($path, 'r');
+
+        if (!$handle) {
+            return back()->with('error', 'Gagal membaca file CSV.');
+        }
+
+        // Baca & bersihkan header
+        $header = fgetcsv($handle);
+        if ($header) {
+            $header[0] = ltrim($header[0], "\xEF\xBB\xBF");
+            $header    = array_map('trim', $header);
+        }
+
+        // Cek kolom wajib
+        $requiredCols = ['nama_perusahaan', 'email'];
+        foreach ($requiredCols as $col) {
+            if (!in_array($col, $header)) {
+                fclose($handle);
+                return back()->with('error', "Kolom wajib '{$col}' tidak ditemukan di file CSV.");
+            }
+        }
+
+        $imported = 0;
+        $skipped  = 0;
+        $errors   = [];
+        $row      = 1;
+
+        $validStatus = ['aktif', 'pending', 'nonaktif'];
+
+        while (($line = fgetcsv($handle)) !== false) {
+            $row++;
+            if (count($line) < 2) continue;
+
+            $data  = array_combine($header, array_pad($line, count($header), null));
+            $nama  = trim($data['nama_perusahaan'] ?? '');
+            $email = trim($data['email']           ?? '');
+
+            if (empty($nama) || empty($email)) {
+                $skipped++;
+                continue;
+            }
+
+            // Cek duplikat email
+            if (User::where('email', $email)->exists()) {
+                $errors[] = "Baris {$row}: Email '{$email}' sudah terdaftar, dilewati.";
+                $skipped++;
+                continue;
+            }
+
+            // Buat akun User
+            $rawPassword = trim($data['password'] ?? '') ?: Str::random(10);
+            $user = User::create([
+                'name'      => $nama,
+                'email'     => $email,
+                'password'  => Hash::make($rawPassword),
+                'role'      => 'perusahaan',
+                'is_active' => true,
+            ]);
+
+            $status = trim($data['status_kerjasama'] ?? 'pending');
+            if (!in_array($status, $validStatus)) $status = 'pending';
+
+            // Buat profil Perusahaan
+            Perusahaan::create([
+                'user_id'         => $user->id,
+                'bidang_usaha'    => trim($data['bidang_usaha']    ?? '') ?: null,
+                'jenis_pt'        => trim($data['jenis_pt']        ?? '') ?: null,
+                'alamat'          => trim($data['alamat']          ?? '') ?: null,
+                'kota'            => trim($data['kota']            ?? '') ?: null,
+                'provinsi'        => trim($data['provinsi']        ?? '') ?: null,
+                'kode_pos'        => trim($data['kode_pos']        ?? '') ?: null,
+                'no_telp'         => trim($data['no_telp']         ?? '') ?: null,
+                'no_hp'           => trim($data['no_hp']           ?? '') ?: null,
+                'website'         => trim($data['website']         ?? '') ?: null,
+                'nama_pimpinan'   => trim($data['nama_pimpinan']   ?? '') ?: null,
+                'tahun_berdiri'   => is_numeric($data['tahun_berdiri'] ?? '') ? (int)$data['tahun_berdiri'] : null,
+                'jumlah_karyawan' => is_numeric($data['jumlah_karyawan'] ?? '') ? (int)$data['jumlah_karyawan'] : null,
+                'deskripsi'       => trim($data['deskripsi']       ?? '') ?: null,
+                'status_kerjasama'=> $status,
+            ]);
+
+            $imported++;
+        }
+
+        fclose($handle);
+
+        $message = "Import selesai: {$imported} perusahaan berhasil ditambahkan, {$skipped} dilewati.";
+        if (!empty($errors)) {
+            $message .= ' Catatan: ' . implode('; ', array_slice($errors, 0, 5));
+            if (count($errors) > 5) {
+                $message .= ' ... dan ' . (count($errors) - 5) . ' pesan lainnya.';
+            }
+        }
+
+        return redirect()->route('admin.perusahaan.index')->with('success', $message);
+    }
 }

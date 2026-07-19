@@ -4,7 +4,7 @@
 @section('page-title', 'Daftar Perusahaan Mitra')
 
 @section('content')
-<div class="space-y-8 p-4 sm:p-6 lg:p-8">
+<div class="space-y-8 p-4 sm:p-6 lg:p-8" x-data="{ openImport: false }">
     
     {{-- Filter & Search Card --}}
     <div class="bg-white shadow-xl rounded-2xl p-6 border-t-4 border-blue-600">
@@ -54,10 +54,93 @@
 
  
     {{-- Actions & Header --}}
-    <div class="flex justify-between items-center pt-4">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-4">
         <h3 class="text-xl font-bold text-gray-900">
             Daftar Perusahaan Mitra ({{ $perusahaan->total() }})
         </h3>
+        <div class="flex flex-wrap gap-2">
+            {{-- Template CSV --}}
+            <a href="{{ route('admin.perusahaan.template') }}"
+               class="inline-flex items-center px-4 py-2 bg-white border border-green-300 text-green-700 text-sm font-medium rounded-xl shadow-sm hover:bg-green-50 transition">
+                <i class="fas fa-file-csv mr-2"></i>Template CSV
+            </a>
+            {{-- Import CSV --}}
+            <button @click="openImport = true"
+                    class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-xl shadow-sm transition">
+                <i class="fas fa-file-import mr-2"></i>Import CSV
+            </button>
+            {{-- Tambah Manual --}}
+            <a href="{{ route('admin.perusahaan.create') }}"
+               class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl shadow-sm transition">
+                <i class="fas fa-plus mr-2"></i>Tambah Manual
+            </a>
+        </div>
+    </div>
+
+    {{-- Alert --}}
+    @if(session('success'))
+        <div class="flex items-center p-4 bg-green-50 border border-green-200 rounded-xl text-green-800">
+            <i class="fas fa-check-circle mr-3 text-green-500 text-lg"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="flex items-center p-4 bg-red-50 border border-red-200 rounded-xl text-red-800">
+            <i class="fas fa-exclamation-circle mr-3 text-red-500 text-lg"></i>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
+    {{-- Modal Import Perusahaan --}}
+    <div x-show="openImport" x-cloak
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+         @click.self="openImport = false">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-white font-bold text-lg"><i class="fas fa-file-import mr-2"></i>Import Data Perusahaan</h3>
+                <button @click="openImport = false" class="text-white/80 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form method="POST" action="{{ route('admin.perusahaan.import') }}" enctype="multipart/form-data" class="p-6 space-y-4">
+                @csrf
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-sm text-amber-800">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Upload file CSV dengan format sesuai template. Kolom wajib: <strong>nama_perusahaan</strong>, <strong>email</strong>.
+                    Email yang sudah terdaftar akan dilewati. Password otomatis dibuat jika dikosongkan.
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-xs text-blue-700">
+                    <i class="fas fa-lightbulb mr-1"></i>
+                    <strong>Tips:</strong> Import perusahaan dulu sebelum import data kerjasama, karena import kerjasama memerlukan perusahaan yang sudah ada.
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">Pilih File CSV</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 transition cursor-pointer"
+                         onclick="document.getElementById('filePerusahaan').click()">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                        <p class="text-sm text-gray-500">Klik untuk memilih file atau drag & drop</p>
+                        <p class="text-xs text-gray-400 mt-1">Format: .csv | Maks: 10MB</p>
+                    </div>
+                    <input type="file" name="file" id="filePerusahaan" accept=".csv,.txt"
+                           class="hidden"
+                           onchange="document.getElementById('fileNamePerusahaan').textContent = this.files[0]?.name || 'Belum ada file'">
+                    <p id="fileNamePerusahaan" class="text-sm text-blue-600 text-center font-medium">Belum ada file dipilih</p>
+                    @error('file')
+                        <p class="text-red-500 text-xs">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex gap-3 justify-end pt-2">
+                    <button type="button" @click="openImport = false"
+                            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition">
+                        Batal
+                    </button>
+                    <button type="submit"
+                            class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow transition">
+                        <i class="fas fa-upload mr-2"></i>Proses Import
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     {{-- Data Table --}}
