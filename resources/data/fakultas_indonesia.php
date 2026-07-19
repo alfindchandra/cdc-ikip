@@ -1,0 +1,67 @@
+<?php
+
+/**
+ * Data referensi nama Fakultas di Indonesia, disusun berdasarkan pengelompokan
+ * rumpun ilmu resmi pada Keputusan Dirjen Dikti Nomor 96/B/KPT/2025 tentang
+ * Nama Program Studi pada Jenis Pendidikan Akademik dan Pendidikan Profesi.
+ *
+ * Setiap item: nama (nama fakultas utama/paling umum dipakai kampus di Indonesia),
+ * rumpun (rumpun ilmu induk), kelompok_asal (nama kelompok program studi resmi),
+ * aliases (variasi nama fakultas yang umum dipakai berbagai kampus, dipakai untuk pencarian).
+ */
+
+return [
+    ['nama' => 'Fakultas Seni', 'rumpun' => 'Humaniora', 'kelompok_asal' => 'Seni', 'aliases' => ['Fakultas Seni', 'Fakultas Seni dan Desain', 'Fakultas Seni Pertunjukan']],
+    ['nama' => 'Fakultas Ilmu Budaya', 'rumpun' => 'Humaniora', 'kelompok_asal' => 'Sejarah', 'aliases' => ['Fakultas Ilmu Budaya', 'Fakultas Humaniora']],
+    ['nama' => 'Fakultas Ilmu Budaya', 'rumpun' => 'Humaniora', 'kelompok_asal' => 'Linguistik', 'aliases' => ['Fakultas Ilmu Budaya', 'Fakultas Bahasa dan Seni', 'Fakultas Humaniora']],
+    ['nama' => 'Fakultas Sastra', 'rumpun' => 'Humaniora', 'kelompok_asal' => 'Susastra atau Sastra', 'aliases' => ['Fakultas Sastra', 'Fakultas Ilmu Budaya', 'Fakultas Bahasa dan Seni']],
+    ['nama' => 'Fakultas Filsafat', 'rumpun' => 'Humaniora', 'kelompok_asal' => 'Filsafat', 'aliases' => ['Fakultas Filsafat', 'Fakultas Ushuluddin']],
+    ['nama' => 'Fakultas Ilmu Sosial dan Ilmu Politik', 'rumpun' => 'Sosial', 'kelompok_asal' => 'Sosial', 'aliases' => ['Fakultas Ilmu Sosial dan Ilmu Politik', 'Fakultas Ilmu Sosial']],
+    ['nama' => 'Fakultas Ekonomi', 'rumpun' => 'Sosial', 'kelompok_asal' => 'Ekonomi', 'aliases' => ['Fakultas Ekonomi', 'Fakultas Ekonomi dan Bisnis']],
+    ['nama' => 'Fakultas Keamanan Nasional', 'rumpun' => 'Sosial', 'kelompok_asal' => 'Pertahanan', 'aliases' => ['Fakultas Keamanan Nasional', 'Fakultas Manajemen Pertahanan']],
+    ['nama' => 'Fakultas Psikologi', 'rumpun' => 'Sosial', 'kelompok_asal' => 'Psikologi', 'aliases' => ['Fakultas Psikologi']],
+    ['nama' => 'Fakultas Matematika dan Ilmu Pengetahuan Alam', 'rumpun' => 'Alam', 'kelompok_asal' => 'Kimia', 'aliases' => ['Fakultas Matematika dan Ilmu Pengetahuan Alam', 'Fakultas Sains dan Teknologi', 'Fakultas Sains']],
+    ['nama' => 'Fakultas Ilmu Kebumian dan Teknologi Mineral', 'rumpun' => 'Alam', 'kelompok_asal' => 'Ilmu atau Sains Kebumian', 'aliases' => ['Fakultas Ilmu Kebumian dan Teknologi Mineral', 'Fakultas Teknik Geologi', 'Fakultas Sains dan Teknologi']],
+    ['nama' => 'Fakultas Perikanan dan Ilmu Kelautan', 'rumpun' => 'Alam', 'kelompok_asal' => 'Ilmu atau Sains Kelautan', 'aliases' => ['Fakultas Perikanan dan Ilmu Kelautan', 'Fakultas Ilmu Kelautan']],
+    ['nama' => 'Fakultas Biologi', 'rumpun' => 'Alam', 'kelompok_asal' => 'Biologi', 'aliases' => ['Fakultas Biologi', 'Fakultas Matematika dan Ilmu Pengetahuan Alam']],
+    ['nama' => 'Fakultas Matematika dan Ilmu Pengetahuan Alam', 'rumpun' => 'Alam', 'kelompok_asal' => 'Biofisika', 'aliases' => ['Fakultas Matematika dan Ilmu Pengetahuan Alam', 'Fakultas Sains dan Teknologi']],
+    ['nama' => 'Fakultas Matematika dan Ilmu Pengetahuan Alam', 'rumpun' => 'Alam', 'kelompok_asal' => 'Fisika', 'aliases' => ['Fakultas Matematika dan Ilmu Pengetahuan Alam', 'Fakultas Sains dan Teknologi']],
+    ['nama' => 'Fakultas Matematika dan Ilmu Pengetahuan Alam', 'rumpun' => 'Alam', 'kelompok_asal' => 'Astronomi', 'aliases' => ['Fakultas Matematika dan Ilmu Pengetahuan Alam', 'Fakultas Sains dan Teknologi']],
+    ['nama' => 'Fakultas Ilmu Komputer', 'rumpun' => 'Formal', 'kelompok_asal' => 'Komputer', 'aliases' => ['Fakultas Ilmu Komputer', 'Fakultas Teknologi Informasi', 'Fakultas Informatika']],
+    ['nama' => 'Fakultas Filsafat', 'rumpun' => 'Formal', 'kelompok_asal' => 'Logika', 'aliases' => ['Fakultas Filsafat', 'Fakultas Matematika dan Ilmu Pengetahuan Alam']],
+    ['nama' => 'Fakultas Matematika dan Ilmu Pengetahuan Alam', 'rumpun' => 'Formal', 'kelompok_asal' => 'Matematika', 'aliases' => ['Fakultas Matematika dan Ilmu Pengetahuan Alam', 'Fakultas Sains dan Teknologi']],
+    ['nama' => 'Fakultas Pertanian', 'rumpun' => 'Terapan - Pertanian', 'kelompok_asal' => 'Ilmu atau Sains Pertanian', 'aliases' => ['Fakultas Pertanian']],
+    ['nama' => 'Fakultas Teknologi Pertanian', 'rumpun' => 'Terapan - Pertanian', 'kelompok_asal' => 'Teknologi Pertanian', 'aliases' => ['Fakultas Teknologi Pertanian']],
+    ['nama' => 'Fakultas Peternakan', 'rumpun' => 'Terapan - Pertanian', 'kelompok_asal' => 'Peternakan', 'aliases' => ['Fakultas Peternakan']],
+    ['nama' => 'Fakultas Perikanan dan Ilmu Kelautan', 'rumpun' => 'Terapan - Pertanian', 'kelompok_asal' => 'Ilmu atau Sains Perikanan', 'aliases' => ['Fakultas Perikanan dan Ilmu Kelautan']],
+    ['nama' => 'Fakultas Arsitektur dan Desain', 'rumpun' => 'Terapan - Arsitektur, Desain, dan Perencanaan', 'kelompok_asal' => 'Arsitektur', 'aliases' => ['Fakultas Arsitektur dan Desain', 'Fakultas Teknik']],
+    ['nama' => 'Fakultas Teknik', 'rumpun' => 'Terapan - Arsitektur, Desain, dan Perencanaan', 'kelompok_asal' => 'Perencanaan Wilayah dan Kota', 'aliases' => ['Fakultas Teknik', 'Fakultas Arsitektur Lanskap dan Teknologi Lingkungan']],
+    ['nama' => 'Fakultas Seni Rupa dan Desain', 'rumpun' => 'Terapan - Arsitektur, Desain, dan Perencanaan', 'kelompok_asal' => 'Desain', 'aliases' => ['Fakultas Seni Rupa dan Desain', 'Fakultas Desain Kreatif dan Bisnis Digital']],
+    ['nama' => 'Fakultas Ekonomi dan Bisnis', 'rumpun' => 'Terapan - Bisnis', 'kelompok_asal' => 'Ilmu atau Sains Akuntansi', 'aliases' => ['Fakultas Ekonomi dan Bisnis']],
+    ['nama' => 'Fakultas Ekonomi dan Bisnis', 'rumpun' => 'Terapan - Bisnis', 'kelompok_asal' => 'Ilmu atau Sains Manajemen', 'aliases' => ['Fakultas Ekonomi dan Bisnis', 'Fakultas Bisnis dan Manajemen']],
+    ['nama' => 'Fakultas Ekonomi dan Bisnis', 'rumpun' => 'Terapan - Bisnis', 'kelompok_asal' => 'Logistik', 'aliases' => ['Fakultas Ekonomi dan Bisnis', 'Fakultas Teknik Industri']],
+    ['nama' => 'Fakultas Ilmu Administrasi', 'rumpun' => 'Terapan - Bisnis', 'kelompok_asal' => 'Administrasi Bisnis', 'aliases' => ['Fakultas Ilmu Administrasi', 'Fakultas Ekonomi dan Bisnis']],
+    ['nama' => 'Fakultas Bisnis', 'rumpun' => 'Terapan - Bisnis', 'kelompok_asal' => 'Bisnis', 'aliases' => ['Fakultas Bisnis', 'Fakultas Ekonomi dan Bisnis']],
+    ['nama' => 'Fakultas Ilmu Komunikasi', 'rumpun' => 'Terapan - Komunikasi', 'kelompok_asal' => 'Ilmu atau Sains Komunikasi', 'aliases' => ['Fakultas Ilmu Komunikasi', 'Fakultas Ilmu Sosial dan Ilmu Politik']],
+    ['nama' => 'Fakultas Keguruan dan Ilmu Pendidikan', 'rumpun' => 'Terapan - Pendidikan', 'kelompok_asal' => 'Pendidikan', 'aliases' => ['Fakultas Keguruan dan Ilmu Pendidikan', 'Fakultas Ilmu Pendidikan', 'Fakultas Tarbiyah dan Keguruan']],
+    ['nama' => 'Fakultas Teknik', 'rumpun' => 'Terapan - Rekayasa', 'kelompok_asal' => 'Rekayasa (Teknik)', 'aliases' => ['Fakultas Teknik', 'Fakultas Teknologi Industri']],
+    ['nama' => 'Fakultas Ilmu Lingkungan', 'rumpun' => 'Terapan - Lingkungan', 'kelompok_asal' => 'Ilmu atau Sains Lingkungan', 'aliases' => ['Fakultas Ilmu Lingkungan', 'Fakultas Teknik']],
+    ['nama' => 'Fakultas Kehutanan', 'rumpun' => 'Terapan - Lingkungan', 'kelompok_asal' => 'Kehutanan', 'aliases' => ['Fakultas Kehutanan']],
+    ['nama' => 'Fakultas Kedokteran', 'rumpun' => 'Terapan - Kesehatan', 'kelompok_asal' => 'Ilmu atau Sains Kedokteran', 'aliases' => ['Fakultas Kedokteran']],
+    ['nama' => 'Fakultas Kedokteran Gigi', 'rumpun' => 'Terapan - Kesehatan', 'kelompok_asal' => 'Ilmu atau Sains Kedokteran Gigi', 'aliases' => ['Fakultas Kedokteran Gigi']],
+    ['nama' => 'Fakultas Kedokteran Hewan', 'rumpun' => 'Terapan - Kesehatan', 'kelompok_asal' => 'Ilmu atau Sains Veteriner', 'aliases' => ['Fakultas Kedokteran Hewan']],
+    ['nama' => 'Fakultas Farmasi', 'rumpun' => 'Terapan - Kesehatan', 'kelompok_asal' => 'Ilmu Farmasi', 'aliases' => ['Fakultas Farmasi']],
+    ['nama' => 'Fakultas Ilmu Kesehatan', 'rumpun' => 'Terapan - Kesehatan', 'kelompok_asal' => 'Ilmu atau Sains Gizi', 'aliases' => ['Fakultas Ilmu Kesehatan', 'Fakultas Kesehatan Masyarakat']],
+    ['nama' => 'Fakultas Kesehatan Masyarakat', 'rumpun' => 'Terapan - Kesehatan', 'kelompok_asal' => 'Kesehatan Masyarakat', 'aliases' => ['Fakultas Kesehatan Masyarakat']],
+    ['nama' => 'Fakultas Ilmu Kesehatan', 'rumpun' => 'Terapan - Kesehatan', 'kelompok_asal' => 'Kebidanan', 'aliases' => ['Fakultas Ilmu Kesehatan', 'Fakultas Kebidanan']],
+    ['nama' => 'Fakultas Keperawatan', 'rumpun' => 'Terapan - Kesehatan', 'kelompok_asal' => 'Keperawatan', 'aliases' => ['Fakultas Keperawatan']],
+    ['nama' => 'Fakultas Ilmu Kesehatan', 'rumpun' => 'Terapan - Kesehatan', 'kelompok_asal' => 'Kesehatan', 'aliases' => ['Fakultas Ilmu Kesehatan', 'Fakultas Vokasi Kesehatan']],
+    ['nama' => 'Fakultas Ilmu Komputer', 'rumpun' => 'Terapan - Sains Informasi', 'kelompok_asal' => 'Ilmu atau Sains Informasi', 'aliases' => ['Fakultas Ilmu Komputer', 'Fakultas Ilmu Informasi dan Perpustakaan']],
+    ['nama' => 'Fakultas Hukum', 'rumpun' => 'Terapan - Hukum', 'kelompok_asal' => 'Hukum', 'aliases' => ['Fakultas Hukum', 'Fakultas Syariah dan Hukum']],
+    ['nama' => 'Fakultas Ilmu Pertahanan', 'rumpun' => 'Terapan - Militer', 'kelompok_asal' => 'Ilmu atau Sains Militer', 'aliases' => ['Fakultas Ilmu Pertahanan', 'Fakultas Manajemen Pertahanan']],
+    ['nama' => 'Fakultas Ilmu Administrasi', 'rumpun' => 'Terapan - Sosial', 'kelompok_asal' => 'Urusan Publik', 'aliases' => ['Fakultas Ilmu Administrasi', 'Fakultas Ilmu Sosial dan Ilmu Politik']],
+    ['nama' => 'Fakultas Ilmu Keolahragaan', 'rumpun' => 'Terapan - Keolahragaan', 'kelompok_asal' => 'Ilmu atau Sains Keolahragaan', 'aliases' => ['Fakultas Ilmu Keolahragaan', 'Fakultas Olahraga dan Kesehatan']],
+    ['nama' => 'Fakultas Pariwisata', 'rumpun' => 'Terapan - Pariwisata', 'kelompok_asal' => 'Pariwisata', 'aliases' => ['Fakultas Pariwisata', 'Fakultas Ilmu Budaya']],
+    ['nama' => 'Fakultas Teknik', 'rumpun' => 'Terapan - Transportasi', 'kelompok_asal' => 'Transportasi', 'aliases' => ['Fakultas Teknik']],
+    ['nama' => 'Sekolah Pascasarjana', 'rumpun' => 'Multidisiplin', 'kelompok_asal' => 'Jejaring Keilmuan Multi, Inter, atau Transdisiplin', 'aliases' => ['Sekolah Pascasarjana', 'Sekolah Interdisiplin']],
+];

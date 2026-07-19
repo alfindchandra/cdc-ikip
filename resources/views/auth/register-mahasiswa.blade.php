@@ -224,10 +224,26 @@
 
                         <!-- Asal Sekolah / Kampus -->
                         <div id="asal_sekolah_field" class="md:col-span-1">
-                            <label id="sekolah_label" for="nama_sekolah" class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Asal Sekolah</label>
-                            <input type="text" id="nama_sekolah" name="asal_sekolah" value="{{ old('asal_sekolah') }}"
-                                   class="w-full border-slate-200 rounded-xl shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500/10 text-sm p-2.5"
-                                   placeholder="Nama Sekolah Asal">
+                            <label id="sekolah_label" for="nama_sekolah_search" class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Asal Sekolah</label>
+                            <!-- Hidden actual value -->
+                            <input type="hidden" id="nama_sekolah" name="asal_sekolah" value="{{ old('asal_sekolah') }}">
+                            <div class="relative">
+                                <input type="text" id="nama_sekolah_search"
+                                       class="w-full border-slate-200 rounded-xl shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500/10 text-sm p-2.5 pr-9"
+                                       placeholder="Cari nama kampus/universitas..."
+                                       value="{{ old('asal_sekolah') }}"
+                                       autocomplete="off">
+                                <span id="sekolah_spinner" class="hidden absolute right-2.5 top-2.5">
+                                    <svg class="animate-spin w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                </span>
+                                <ul id="sekolah_dropdown"
+                                    class="hidden absolute z-50 w-full bg-white border border-slate-200 rounded-xl shadow-lg mt-1 max-h-56 overflow-y-auto text-sm"
+                                    role="listbox">
+                                </ul>
+                            </div>
                         </div>
 
                         <div>
@@ -483,6 +499,12 @@
             return json.data || [];
         }
 
+        async function fetchUniversitas(keyword) {
+            const res = await fetch(`/api/universitas/search?q=${encodeURIComponent(keyword)}`);
+            const json = await res.json();
+            return json.data || [];
+        }
+
         // =====================================================
         // INISIALISASI AUTOCOMPLETE
         // =====================================================
@@ -509,6 +531,17 @@
                 valueKey:    'nama',
             });
 
+            // Autocomplete Asal Sekolah / Nama Kampus-Universitas
+            createAutocomplete({
+                searchInput: document.getElementById('nama_sekolah_search'),
+                hiddenInput: document.getElementById('nama_sekolah'),
+                dropdown:    document.getElementById('sekolah_dropdown'),
+                spinner:     document.getElementById('sekolah_spinner'),
+                fetchFn:     fetchUniversitas,
+                labelKey:    'label',
+                valueKey:    'nama',
+            });
+
             // =====================================================
             // LOGIKA TOGGLE JENJANG PENDIDIKAN
             // =====================================================
@@ -530,6 +563,8 @@
 
                 if (!val) return;
 
+                const sekolahSearch = document.getElementById('nama_sekolah_search');
+
                 if (['SD', 'SMP'].includes(val)) {
                     fakultasField.classList.add('hidden');
                     prodiField.classList.add('hidden');
@@ -537,8 +572,9 @@
                     document.getElementById('fakultas_search').value = '';
                     document.getElementById('program_studi_input').value = '';
                     document.getElementById('prodi_search').value = '';
-                    
+
                     sekolahLabel.innerText = "Asal Sekolah";
+                    sekolahSearch.placeholder = "Cari/ketik nama sekolah...";
                     asalSekolahField.className = "md:col-span-3";
                 } 
                 else if (['SMA', 'SMK'].includes(val)) {
@@ -548,8 +584,9 @@
                     prodiSearch.placeholder = "Cari jurusan...";
                     document.getElementById('fakultas_input').value = '';
                     document.getElementById('fakultas_search').value = '';
-                    
+
                     sekolahLabel.innerText = "Asal Sekolah";
+                    sekolahSearch.placeholder = "Cari/ketik nama sekolah...";
                     prodiField.className = "md:col-span-1";
                     asalSekolahField.className = "md:col-span-2";
                 } 
@@ -559,7 +596,8 @@
                     prodiLabel.innerText = "Program Studi";
                     prodiSearch.placeholder = "Cari program studi...";
                     sekolahLabel.innerText = "Nama Kampus/Universitas";
-                    
+                    sekolahSearch.placeholder = "Cari nama kampus/universitas...";
+
                     fakultasField.className = "md:col-span-1";
                     prodiField.className = "md:col-span-1";
                     asalSekolahField.className = "md:col-span-1";
