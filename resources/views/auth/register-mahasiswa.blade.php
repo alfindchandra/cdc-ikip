@@ -176,18 +176,50 @@
 
                         <!-- Fakultas -->
                         <div id="fakultas_field" class="md:col-span-1">
-                            <label for="fakultas_input" class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Fakultas</label>
-                            <input type="text" id="fakultas_input" name="fakultas" value="{{ old('fakultas') }}"
-                                   class="w-full border-slate-200 rounded-xl shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500/10 text-sm p-2.5"
-                                   placeholder="Nama Fakultas">
+                            <label for="fakultas_search" class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Fakultas</label>
+                            <!-- Hidden actual value -->
+                            <input type="hidden" id="fakultas_input" name="fakultas" value="{{ old('fakultas') }}">
+                            <div class="relative">
+                                <input type="text" id="fakultas_search"
+                                       class="w-full border-slate-200 rounded-xl shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500/10 text-sm p-2.5 pr-9"
+                                       placeholder="Cari nama fakultas..."
+                                       value="{{ old('fakultas') }}"
+                                       autocomplete="off">
+                                <span id="fakultas_spinner" class="hidden absolute right-2.5 top-2.5">
+                                    <svg class="animate-spin w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                </span>
+                                <ul id="fakultas_dropdown"
+                                    class="hidden absolute z-50 w-full bg-white border border-slate-200 rounded-xl shadow-lg mt-1 max-h-56 overflow-y-auto text-sm"
+                                    role="listbox">
+                                </ul>
+                            </div>
                         </div>
 
                         <!-- Program Studi / Jurusan -->
                         <div id="prodi_field" class="md:col-span-1">
-                            <label id="prodi_label" for="program_studi_input" class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Program Studi</label>
-                            <input type="text" id="program_studi_input" name="program_studi" value="{{ old('program_studi') }}"
-                                   class="w-full border-slate-200 rounded-xl shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500/10 text-sm p-2.5"
-                                   placeholder="Nama Program Studi / Jurusan">
+                            <label id="prodi_label" for="prodi_search" class="block text-xs font-semibold text-slate-500 uppercase mb-1.5">Program Studi</label>
+                            <!-- Hidden actual value -->
+                            <input type="hidden" id="program_studi_input" name="program_studi" value="{{ old('program_studi') }}">
+                            <div class="relative">
+                                <input type="text" id="prodi_search"
+                                       class="w-full border-slate-200 rounded-xl shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500/10 text-sm p-2.5 pr-9"
+                                       placeholder="Cari program studi..."
+                                       value="{{ old('program_studi') }}"
+                                       autocomplete="off">
+                                <span id="prodi_spinner" class="hidden absolute right-2.5 top-2.5">
+                                    <svg class="animate-spin w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                </span>
+                                <ul id="prodi_dropdown"
+                                    class="hidden absolute z-50 w-full bg-white border border-slate-200 rounded-xl shadow-lg mt-1 max-h-56 overflow-y-auto text-sm"
+                                    role="listbox">
+                                </ul>
+                            </div>
                         </div>
 
                         <!-- Asal Sekolah / Kampus -->
@@ -288,12 +320,203 @@
         </div>
     </div>
 
+    <style>
+        .autocomplete-item {
+            cursor: pointer;
+            padding: 8px 14px;
+            transition: background 0.15s;
+        }
+        .autocomplete-item:hover,
+        .autocomplete-item.is-active {
+            background-color: #eef2ff;
+            color: #4338ca;
+        }
+        .autocomplete-item .item-sub {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 1px;
+        }
+        .autocomplete-item.no-result {
+            color: #94a3b8;
+            cursor: default;
+        }
+        .autocomplete-item.no-result:hover {
+            background: transparent;
+            color: #94a3b8;
+        }
+    </style>
     <script>
+        // =====================================================
+        // AUTOCOMPLETE HELPER
+        // =====================================================
+        function createAutocomplete({
+            searchInput, hiddenInput, dropdown, spinner,
+            fetchFn, labelKey = 'label', valueKey = 'nama'
+        }) {
+            let debounceTimer;
+            let activeIndex = -1;
+            let currentItems = [];
+
+            function getItems() {
+                return dropdown.querySelectorAll('.autocomplete-item:not(.no-result)');
+            }
+
+            function updateActive(idx) {
+                const items = getItems();
+                items.forEach((el, i) => el.classList.toggle('is-active', i === idx));
+                activeIndex = idx;
+            }
+
+            function showDropdown(items) {
+                dropdown.innerHTML = '';
+                currentItems = items;
+
+                if (!items.length) {
+                    const li = document.createElement('li');
+                    li.className = 'autocomplete-item no-result';
+                    li.textContent = 'Tidak ditemukan, ketik nama manual';
+                    dropdown.appendChild(li);
+                } else {
+                    items.forEach((item, idx) => {
+                        const li = document.createElement('li');
+                        li.className = 'autocomplete-item';
+                        li.setAttribute('role', 'option');
+                        li.innerHTML = `<div class="font-medium">${item[labelKey] || item[valueKey]}</div>`;
+                        if (item.pt) {
+                            li.innerHTML += `<div class="item-sub">${item.pt}</div>`;
+                        } else if (item.kota) {
+                            li.innerHTML += `<div class="item-sub">${item.kota}</div>`;
+                        }
+                        li.addEventListener('mousedown', (e) => {
+                            e.preventDefault();
+                            selectItem(item);
+                        });
+                        dropdown.appendChild(li);
+                    });
+                }
+
+                dropdown.classList.remove('hidden');
+                activeIndex = -1;
+            }
+
+            function selectItem(item) {
+                searchInput.value = item[valueKey] || item[labelKey];
+                hiddenInput.value = item[valueKey] || item[labelKey];
+                dropdown.classList.add('hidden');
+                activeIndex = -1;
+            }
+
+            function closeDropdown() {
+                dropdown.classList.add('hidden');
+                activeIndex = -1;
+                // Sinkronkan hidden input dengan text input saat menutup
+                if (hiddenInput.value !== searchInput.value) {
+                    hiddenInput.value = searchInput.value;
+                }
+            }
+
+            searchInput.addEventListener('input', () => {
+                const q = searchInput.value.trim();
+                hiddenInput.value = q; // real-time sync
+                clearTimeout(debounceTimer);
+
+                if (q.length < 2) {
+                    dropdown.classList.add('hidden');
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    spinner.classList.remove('hidden');
+                    fetchFn(q)
+                        .then(items => {
+                            spinner.classList.add('hidden');
+                            showDropdown(items);
+                        })
+                        .catch(() => {
+                            spinner.classList.add('hidden');
+                            dropdown.classList.add('hidden');
+                        });
+                }, 350);
+            });
+
+            searchInput.addEventListener('keydown', (e) => {
+                const items = getItems();
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    updateActive(Math.min(activeIndex + 1, items.length - 1));
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    updateActive(Math.max(activeIndex - 1, 0));
+                } else if (e.key === 'Enter') {
+                    if (activeIndex >= 0 && currentItems[activeIndex]) {
+                        e.preventDefault();
+                        selectItem(currentItems[activeIndex]);
+                    }
+                } else if (e.key === 'Escape') {
+                    closeDropdown();
+                }
+            });
+
+            searchInput.addEventListener('blur', () => {
+                setTimeout(() => closeDropdown(), 150);
+            });
+
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value.trim().length >= 2) {
+                    searchInput.dispatchEvent(new Event('input'));
+                }
+            });
+        }
+
+        // =====================================================
+        // API FETCH FUNCTIONS
+        // =====================================================
+        async function fetchFakultas(keyword) {
+            const res = await fetch(`/api/fakultas/list?q=${encodeURIComponent(keyword)}`);
+            const json = await res.json();
+            return json.data || [];
+        }
+
+        async function fetchProdi(keyword) {
+            const res = await fetch(`/api/prodi/search?q=${encodeURIComponent(keyword)}`);
+            const json = await res.json();
+            return json.data || [];
+        }
+
+        // =====================================================
+        // INISIALISASI AUTOCOMPLETE
+        // =====================================================
         document.addEventListener('DOMContentLoaded', function () {
+            // Autocomplete Fakultas
+            createAutocomplete({
+                searchInput: document.getElementById('fakultas_search'),
+                hiddenInput: document.getElementById('fakultas_input'),
+                dropdown:    document.getElementById('fakultas_dropdown'),
+                spinner:     document.getElementById('fakultas_spinner'),
+                fetchFn:     fetchFakultas,
+                labelKey:    'label',
+                valueKey:    'nama',
+            });
+
+            // Autocomplete Program Studi
+            createAutocomplete({
+                searchInput: document.getElementById('prodi_search'),
+                hiddenInput: document.getElementById('program_studi_input'),
+                dropdown:    document.getElementById('prodi_dropdown'),
+                spinner:     document.getElementById('prodi_spinner'),
+                fetchFn:     fetchProdi,
+                labelKey:    'label',
+                valueKey:    'nama',
+            });
+
+            // =====================================================
+            // LOGIKA TOGGLE JENJANG PENDIDIKAN
+            // =====================================================
             const tingkatPendidikan = document.getElementById('tingkat_pendidikan');
             const fakultasField = document.getElementById('fakultas_field');
             const prodiField = document.getElementById('prodi_field');
             const prodiLabel = document.getElementById('prodi_label');
+            const prodiSearch = document.getElementById('prodi_search');
             const asalSekolahField = document.getElementById('asal_sekolah_field');
             const sekolahLabel = document.getElementById('sekolah_label');
             
@@ -311,7 +534,9 @@
                     fakultasField.classList.add('hidden');
                     prodiField.classList.add('hidden');
                     document.getElementById('fakultas_input').value = '';
+                    document.getElementById('fakultas_search').value = '';
                     document.getElementById('program_studi_input').value = '';
+                    document.getElementById('prodi_search').value = '';
                     
                     sekolahLabel.innerText = "Asal Sekolah";
                     asalSekolahField.className = "md:col-span-3";
@@ -320,7 +545,9 @@
                     fakultasField.classList.add('hidden');
                     prodiField.classList.remove('hidden');
                     prodiLabel.innerText = "Jurusan";
+                    prodiSearch.placeholder = "Cari jurusan...";
                     document.getElementById('fakultas_input').value = '';
+                    document.getElementById('fakultas_search').value = '';
                     
                     sekolahLabel.innerText = "Asal Sekolah";
                     prodiField.className = "md:col-span-1";
@@ -330,6 +557,7 @@
                     fakultasField.classList.remove('hidden');
                     prodiField.classList.remove('hidden');
                     prodiLabel.innerText = "Program Studi";
+                    prodiSearch.placeholder = "Cari program studi...";
                     sekolahLabel.innerText = "Nama Kampus/Universitas";
                     
                     fakultasField.className = "md:col-span-1";
@@ -349,12 +577,12 @@
                 }
             }
 
-            // Inisialisasi awal event listener
+            // Event listeners
             tingkatPendidikan.addEventListener('change', toggleJenjangPendidikan);
             statusAktif.addEventListener('change', toggleTahunLulus);
             statusLulus.addEventListener('change', toggleTahunLulus);
 
-            // Eksekusi fungsi saat reload/old data ada
+            // Inisialisasi saat halaman dimuat
             toggleJenjangPendidikan();
             toggleTahunLulus();
         });

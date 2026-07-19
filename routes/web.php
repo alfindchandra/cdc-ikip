@@ -18,9 +18,17 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\TracerStudyController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\EPortfolioController;
+use App\Http\Controllers\ApiController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
+
+// ========== API Routes (Proxy PDDikti) ==========
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('/prodi/search', [ApiController::class, 'searchProdi'])->name('prodi.search');
+    Route::get('/universitas/search', [ApiController::class, 'searchUniversitas'])->name('universitas.search');
+    Route::get('/fakultas/list', [ApiController::class, 'listFakultas'])->name('fakultas.list');
+});
 
 // Guest routes
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
