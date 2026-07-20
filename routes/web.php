@@ -47,7 +47,8 @@ Route::get('/faq', [HomeController::class, 'faxFaq'])->name('index.faq');
 
 Route::get('/kerjasama', [WelcomeController::class, 'kerjasama'])->name('index.kerjasama');
 Route::get('/kerjasama/{kerjasama}', [WelcomeController::class, 'kerjasamaShow'])->name('show.kerjasama');
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/login-mahasiswa', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/login-perusahaan', [AuthController::class, 'showLoginperusahaan'])->name('login.perusahaan');
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/email/verify', function () {return view('auth.verify-email');})->middleware('auth')->name('verification.notice');

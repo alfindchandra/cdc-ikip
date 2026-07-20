@@ -65,54 +65,7 @@
 
                    
 
-                    <div id="field-nim">
-                        <label for="nim" class="block text-sm font-semibold text-gray-700 mb-2">
-                            NIM (Nomor Induk Mahasiswa)
-                        </label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/>
-                                </svg>
-                            </div>
-                            <input type="text" 
-                                   id="nim" 
-                                   name="nim" 
-                                   value="{{ old('nim') }}"
-                                   inputmode="numeric" pattern="[0-9]*"
-                                   class="w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('nim') border-red-500 ring-2 ring-red-200 @enderror" 
-                                   placeholder="Masukkan NIM Anda"
-                                   autofocus>
-                        </div>
-                    </div>
-
-                    <div id="field-tanggal-lahir">
-                        <label for="tanggal_lahir" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Tanggal Lahir
-                        </label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
-                            <input type="password" 
-                                   id="tanggal_lahir" 
-                                   name="tanggal_lahir" 
-                                   value="{{ old('tanggal_lahir') }}"
-                                   class="w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('tanggal_lahir') border-red-500 ring-2 ring-red-200 @enderror"
-                                   placeholder="DD/MM/YYYY">
-                            <button type="button" 
-                                    onclick="togglePassword('tanggal_lahir', 'eye-icon-tgllahir')"
-                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
-                                <svg id="eye-icon-tgllahir" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1">Sesuai tanggal lahir yang didaftarkan saat registrasi.</p>
-                    </div>
+                    
 
                     <div id="field-email" class="hidden">
                         <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -168,25 +121,7 @@
                         </label>
                     </div>
                      <!-- DROPDOWN TIPE LOGIN (DIPINDAH KE ATAS) -->
-                    <div class="mb-2">
-                        <label for="login-type-select" class="block text-sm font-semibold text-gray-700 mb-2"></label>
-                        <div class="relative">
-                            <select 
-                                id="login-type-select" 
-                                onchange="setLoginType(this.value)"
-                                class="w-full appearance-none bg-gray-50 border border-gray-300 text-gray-900 py-3 px-4 pr-8 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
-                            >
-                                <option value="aktif">Mahasiswa Aktif</option>
-                                <option value="umum">Alumni / Perusahaan</option>
-                            </select>
-                            
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                    
 
 
                     <div class="flex justify-center mt-5">
@@ -220,7 +155,20 @@
                                 Daftar sekarang &rarr;
                             </a>
                         </p>
-                        
+                        <div class="relative p-5">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-4 bg-white text-gray-500">Login Perusahaan</span>
+                        </div>
+                    </div>
+
+                        <div>
+                            <a href="" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center space-x-2 ">
+                                Login Perusahaan
+                            </a>
+                        </div>
                         
                     </div>
                 </form>

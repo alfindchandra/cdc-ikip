@@ -3,7 +3,8 @@
     open: false, 
     dropdownMobile: false,
     dropdownDesktop: false,
-    isScrolled: false 
+    isScrolled: false,
+    loginModalOpen: false 
   }"
   x-init="window.addEventListener('scroll', () => { isScrolled = window.scrollY > 20 })"
 >
@@ -105,10 +106,11 @@
                 </div>
               </div>
             @else
-              <a href="{{ route('login') }}" class="text-gray-950 hover:text-blue-800 inline-flex items-center gap-1.5 font-semibold px-4 py-2 text-sm rounded-xl transition duration-200">
+              <!-- DIUBAH: Pemicu modal login untuk desktop -->
+              <button @click="loginModalOpen = true" class="text-gray-950 hover:text-blue-800 inline-flex items-center gap-1.5 font-semibold px-4 py-2 text-sm rounded-xl transition duration-200 cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
                 Masuk
-              </a>
+              </button>
               @if (Route::has('register'))
                 <a href="{{ route('register') }}" class="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 text-sm rounded-xl shadow-sm hover:shadow active:scale-98 transition-all duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" x2="20" y1="8" y2="14"/><line x1="23" x2="17" y1="11" y2="11"/></svg>
@@ -137,6 +139,7 @@
     </div>
   </nav>
 
+  <!-- MOBILE MENU -->
   <div x-show="open" class="lg:hidden fixed inset-0 z-[100] flex justify-end" style="display: none;">
     
     <div x-show="open" 
@@ -184,9 +187,10 @@
             Hi, {{ Auth::user()->name }}
           </a>
         @else
-          <a href="{{ route('login') }}" @click="open = false" class="w-full inline-flex items-center justify-center gap-1.5 text-white bg-white/5 hover:bg-white/10 border border-white/10 font-semibold py-2.5 text-sm rounded-xl transition">
+          <!-- DIUBAH: Pemicu modal login untuk Mobile (sekaligus menutup menu mobile) -->
+          <button @click="open = false; loginModalOpen = true" class="w-full inline-flex items-center justify-center gap-1.5 text-white bg-white/5 hover:bg-white/10 border border-white/10 font-semibold py-2.5 text-sm rounded-xl transition">
           Masuk
-          </a>
+          </button>
           @if (Route::has('register'))
             <a href="{{ route('register') }}" @click="open = false" class="w-full inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 text-sm rounded-xl text-center shadow-sm">
               Daftar Akun
@@ -196,6 +200,69 @@
       </div>
 
     </div>
+  </div>
+
+  <!-- MODAL PILIH LOGIN -->
+  <div 
+      x-show="loginModalOpen" 
+      style="display: none;"
+      class="fixed inset-0 z-[200] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/60 backdrop-blur-sm"
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="transition ease-in duration-200"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+  >
+      <div 
+          @click.away="loginModalOpen = false"
+          x-show="loginModalOpen"
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+          x-transition:leave="transition ease-in duration-200"
+          x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+          x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          class="relative w-full max-w-md p-6 mx-4 bg-white rounded-2xl shadow-2xl"
+      >
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-6">
+              <h3 class="text-xl font-bold text-slate-800">Masuk Ke Akun Anda</h3>
+              <button @click="loginModalOpen = false" class="text-slate-400 hover:text-slate-600 transition p-1 bg-slate-100 hover:bg-slate-200 rounded-full">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+          </div>
+
+          <!-- Pilihan Login -->
+          <div class="space-y-4">
+              <!-- GANTI route('login') dengan route yang ada di project kamu -->
+              <a href="{{ route('login') }}" class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition group">
+                  <div class="p-3 bg-blue-100 text-blue-600 rounded-lg group-hover:scale-110 transition">
+                      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                      </svg>
+                  </div>
+                  <div>
+                      <h4 class="font-bold text-slate-800">Login Mahasiswa</h4>
+                      <p class="text-xs text-slate-500">Masuk sebagai pencari kerja atau alumni</p>
+                  </div>
+              </a>
+
+              <!-- GANTI route('login.perusahaan') dengan route yang ada di project kamu -->
+              <a href="{{ route('login.perusahaan')}}" class="flex items-center gap-4 p-4 border border-slate-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition group">
+                  <div class="p-3 bg-blue-100 text-blue-600 rounded-lg group-hover:scale-110 transition">
+                      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                      </svg>
+                  </div>
+                  <div>
+                      <h4 class="font-bold text-slate-800">Login Perusahaan</h4>
+                      <p class="text-xs text-slate-500">Masuk untuk mengelola lowongan kerja</p>
+                  </div>
+              </a>
+          </div>
+      </div>
   </div>
 
 </div>
