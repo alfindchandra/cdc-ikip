@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - CDC {{ config('app.ikip') }}</title>
+    <title>Login Perusahaan - CDC {{ config('app.ikip') }}</title>
     @vite(['resources/css/app.css'])
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
@@ -17,7 +17,7 @@
             animation: float 6s ease-in-out infinite;
         }
         .bg-pattern {
-            background-image: 
+            background-image:
                 radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(147, 197, 253, 0.1) 0%, transparent 50%);
         }
@@ -27,14 +27,14 @@
     <div class="w-full flex items-center justify-center">
         <div class="max-w-md w-full mx-auto">
             <div class="text-center mb-8 lg:hidden">
-                <h1 class="text-2xl font-bold text-gray-900">Login</h1>
+                <h1 class="text-2xl font-bold text-gray-900">Login Perusahaan</h1>
                 <p class="text-gray-600 mt-1 text-sm">CDC IKIP PGRI Bojonegoro</p>
             </div>
 
             <div class="bg-white rounded-3xl shadow-2xl p-8 lg:p-10 border border-gray-100">
                 <div class="mb-8 items-center text-center">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Login</h2>
-                    <p class="text-gray-600">CDC IKIP PGRI Bojonegoro</p>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Login Perusahaan</h2>
+                    <p class="text-gray-600">Khusus akun mitra / perusahaan CDC IKIP PGRI Bojonegoro</p>
                 </div>
 
                 @if($errors->any())
@@ -59,17 +59,12 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" class="space-y-6" id="loginForm">
+                <form method="POST" action="{{ route('login.perusahaan.submit') }}" class="space-y-6" id="loginPerusahaanForm">
                     @csrf
-                    <input type="hidden" name="login_type" id="login_type" value="{{ old('login_type', 'aktif') }}">
 
-                   
-
-                    
-
-                    <div id="field-email" class="hidden">
+                    <div>
                         <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
-                            Email
+                            Email Perusahaan
                         </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -77,16 +72,21 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
                                 </svg>
                             </div>
-                            <input type="email" 
-                                   id="email" 
-                                   name="email" 
+                            <input type="email"
+                                   id="email"
+                                   name="email"
                                    value="{{ old('email') }}"
-                                   class="w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('email') border-red-500 ring-2 ring-red-200 @enderror" 
-                                   placeholder="nama@example.com">
+                                   required
+                                   autofocus
+                                   class="w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('email') border-red-500 ring-2 ring-red-200 @enderror"
+                                   placeholder="perusahaan@example.com">
                         </div>
+                        @error('email')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <div id="field-password" class="hidden">
+                    <div>
                         <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
                             Password
                         </label>
@@ -96,12 +96,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                                 </svg>
                             </div>
-                            <input type="password" 
-                                   id="password" 
-                                   name="password" 
-                                   class="w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('password') border-red-500 ring-2 ring-red-200 @enderror" 
+                            <input type="password"
+                                   id="password"
+                                   name="password"
+                                   required
+                                   class="w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 @error('password') border-red-500 ring-2 ring-red-200 @enderror"
                                    placeholder="••••••••">
-                            <button type="button" 
+                            <button type="button"
                                     onclick="togglePassword('password', 'eye-icon-pass')"
                                     class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
                                 <svg id="eye-icon-pass" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,19 +111,19 @@
                                 </svg>
                             </button>
                         </div>
+                        @error('password')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="flex items-center justify-between">
                         <label class="flex items-center cursor-pointer group">
-                            <input type="checkbox" 
-                                   name="remember" 
+                            <input type="checkbox"
+                                   name="remember"
                                    class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer">
                             <span class="ml-2 text-sm text-gray-700 group-hover:text-gray-900 transition-colors">Ingat saya</span>
                         </label>
                     </div>
-                     <!-- DROPDOWN TIPE LOGIN (DIPINDAH KE ATAS) -->
-                    
-
 
                     <div class="flex justify-center mt-5">
                         <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.sitekey') }}"></div>
@@ -131,9 +132,9 @@
                         <p class="text-sm text-red-600 text-center">{{ $message }}</p>
                     @enderror
 
-                    <button type="submit" 
+                    <button type="submit"
                             class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center space-x-2">
-                        <span>Masuk</span>
+                        <span>Masuk sebagai Perusahaan</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                         </svg>
@@ -148,28 +149,19 @@
                         </div>
                     </div>
 
-                    <div class="text-center">
+                    <div class="text-center space-y-2">
                         <p class="text-sm text-gray-600">
-                            Belum punya akun? 
-                            <a href="{{ route('register') }}" class="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                            Belum punya akun perusahaan?
+                            <a href="{{ route('register.perusahaan') }}" class="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
                                 Daftar sekarang &rarr;
                             </a>
                         </p>
-                        <div class="relative p-5">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-4 bg-white text-gray-500">Login Perusahaan</span>
-                        </div>
-                    </div>
-
-                        <div>
-                            <a href="" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center space-x-2 ">
-                                Login Perusahaan
+                        <p class="text-sm text-gray-600">
+                            Anda mahasiswa/alumni?
+                            <a href="{{ route('login') }}" class="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                                Login di sini &rarr;
                             </a>
-                        </div>
-                        
+                        </p>
                     </div>
                 </form>
             </div>
@@ -181,61 +173,11 @@
     </div>
 
     <script>
-        function setLoginType(type) {
-            // Update input hidden
-            document.getElementById('login_type').value = type;
-
-            // Sync dropdown value (berguna jika fungsi dipanggil saat DOMContentLoaded)
-            const selectElement = document.getElementById('login-type-select');
-            if (selectElement.value !== type) {
-                selectElement.value = type;
-            }
-
-            const fieldNim = document.getElementById('field-nim');
-            const fieldTanggalLahir = document.getElementById('field-tanggal-lahir');
-            const fieldEmail = document.getElementById('field-email');
-            const fieldPassword = document.getElementById('field-password');
-
-            const nimInput = document.getElementById('nim');
-            const tanggalLahirInput = document.getElementById('tanggal_lahir');
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-
-            if (type === 'aktif') {
-                fieldNim.classList.remove('hidden');
-                fieldTanggalLahir.classList.remove('hidden');
-                fieldEmail.classList.add('hidden');
-                fieldPassword.classList.add('hidden');
-
-                nimInput.setAttribute('required', 'required');
-                tanggalLahirInput.setAttribute('required', 'required');
-                emailInput.removeAttribute('required');
-                passwordInput.removeAttribute('required');
-
-            } else {
-                fieldNim.classList.add('hidden');
-                fieldTanggalLahir.classList.add('hidden');
-                fieldEmail.classList.remove('hidden');
-                fieldPassword.classList.remove('hidden');
-
-                nimInput.removeAttribute('required');
-                tanggalLahirInput.removeAttribute('required');
-                emailInput.setAttribute('required', 'required');
-                passwordInput.setAttribute('required', 'required');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Membaca tipe login dari session old() yang tersimpan di input hidden
-            const currentType = document.getElementById('login_type').value;
-            setLoginType(currentType === 'umum' ? 'umum' : 'aktif');
-        });
-
         // FUNGSI TOGGLE PASSWORD
         function togglePassword(inputId, iconId) {
             const inputField = document.getElementById(inputId);
             const eyeIcon = document.getElementById(iconId);
-            
+
             if (inputField.type === 'password') {
                 inputField.type = 'text';
                 eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>';
@@ -251,7 +193,7 @@
             alerts.forEach(alert => {
                 alert.style.transition = 'opacity 0.5s';
                 alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 500);  
+                setTimeout(() => alert.remove(), 500);
             });
         }, 5000);
     </script>

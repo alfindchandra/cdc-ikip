@@ -49,7 +49,10 @@ Route::get('/kerjasama', [WelcomeController::class, 'kerjasama'])->name('index.k
 Route::get('/kerjasama/{kerjasama}', [WelcomeController::class, 'kerjasamaShow'])->name('show.kerjasama');
 Route::get('/login-mahasiswa', [AuthController::class, 'showLogin'])->name('login');
 Route::get('/login-perusahaan', [AuthController::class, 'showLoginperusahaan'])->name('login.perusahaan');
-Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login-admin', [AuthController::class, 'showLoginadmin'])->name('login.admin');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::post('/login-perusahaan', [AuthController::class, 'loginPerusahaan'])->name('login.perusahaan.submit');
+Route::post('/login-admin', [AuthController::class, 'loginAdmin'])->name('login.admin.submit');
 
 Route::get('/email/verify', function () {return view('auth.verify-email');})->middleware('auth')->name('verification.notice');
 

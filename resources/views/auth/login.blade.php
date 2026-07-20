@@ -59,7 +59,7 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" class="space-y-6" id="loginForm">
+                <form method="POST" action="{{ route('login.submit') }}" class="space-y-6" id="loginForm">
                     @csrf
                     <input type="hidden" name="login_type" id="login_type" value="{{ old('login_type', 'aktif') }}">
 
@@ -177,7 +177,7 @@
                                 class="w-full appearance-none bg-gray-50 border border-gray-300 text-gray-900 py-3 px-4 pr-8 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                             >
                                 <option value="aktif">Mahasiswa Aktif</option>
-                                <option value="umum">Alumni / Perusahaan</option>
+                                <option value="umum">Alumni</option>
                             </select>
                             
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
@@ -213,15 +213,19 @@
                         </div>
                     </div>
 
-                    <div class="text-center">
+                    <div class="text-center space-y-2">
                         <p class="text-sm text-gray-600">
                             Belum punya akun? 
                             <a href="{{ route('register') }}" class="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
                                 Daftar sekarang &rarr;
                             </a>
                         </p>
-                        
-                        
+                        <p class="text-sm text-gray-600">
+                            Anda perwakilan perusahaan/mitra?
+                            <a href="{{ route('login.perusahaan') }}" class="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                                Login Perusahaan &rarr;
+                            </a>
+                        </p>
                     </div>
                 </form>
             </div>

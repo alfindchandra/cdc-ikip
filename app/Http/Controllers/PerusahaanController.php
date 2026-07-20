@@ -15,13 +15,16 @@ public function index(Request $request)
 {
     $query = Perusahaan::with('user');
 
-    // Pencarian text (Nama, Bidang Usaha, atau Kota)
+    // Pencarian text (Nama Perusahaan via tabel users, Bidang Usaha, atau Kota)
     if ($request->has('search') && $request->search != '') {
         $search = $request->search;
         $query->where(function ($q) use ($search) {
-            $q->where('nama_perusahaan', 'like', "%$search%")
-              ->orWhere('bidang_usaha', 'like', "%$search%")
-              ->orWhere('kota', 'like', "%$search%");
+            // PERBAIKAN: Mencari nama perusahaan lewat relasi ke tabel 'users' kolom 'name'
+            $q->whereHas('user', function ($userQuery) use ($search) {
+                $userQuery->where('name', 'like', "%$search%");
+            })
+            ->orWhere('bidang_usaha', 'like', "%$search%")
+            ->orWhere('kota', 'like', "%$search%");
         });
     }
 

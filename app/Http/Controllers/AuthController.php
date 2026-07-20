@@ -27,6 +27,10 @@ class AuthController extends Controller
     {
         return view('auth.loginperusahaan');
     }
+    public function showLoginadmin()
+    {
+        return view('auth.loginadmin');
+    }
 
     public function login(Request $request)
     {
@@ -156,6 +160,66 @@ class AuthController extends Controller
         if ($user->isMahasiswa()) {
             return redirect()->intended(route('mahasiswa.tracer-study.form'));
         }
+
+        return redirect()->intended('dashboard');
+    }
+
+    public function loginPerusahaan(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+            'g-recaptcha-response' => 'required',
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
+            'g-recaptcha-response.required' => 'Silakan verifikasi bahwa Anda bukan robot.',
+        ]);
+
+        // Validasi reCAPTCHA
+        $recaptchaResponse = $request->input('g-recaptcha-response');
+        $recaptchaSecret = config('services.recaptcha.secret');
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $recaptchaSecret,
+            'response' => $recaptchaResponse,
+            'remoteip' => $request->ip()
+        ]);
+
+        $recaptchaResult = $response->json();
+
+        if (!$recaptchaResult['success']) {
+            return back()->withErrors([
+                'g-recaptcha-response' => 'Verifikasi reCAPTCHA gagal. Silakan coba lagi.',
+            ])->onlyInput('email');
+        }
+
+        if (!Auth::attempt(['email' => $request->input('email'), 'password' => $request->password], $request->filled('remember'))) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah.',
+            ])->onlyInput('email');
+        }
+
+        $user = Auth::user();
+
+        // Pastikan akun ini memang akun perusahaan, bukan mahasiswa/admin
+        if (!$user->isPerusahaan()) {
+            Auth::logout();
+
+            return back()->withErrors([
+                'email' => 'Akun ini bukan akun perusahaan. Silakan gunakan halaman login mahasiswa.',
+            ])->onlyInput('email');
+        }
+
+        if (!$user->is_active) {
+            Auth::logout();
+
+            return back()->withErrors([
+                'email' => 'Akun perusahaan Anda dinonaktifkan. Silakan hubungi admin.',
+            ])->onlyInput('email');
+        }
+
+        $request->session()->regenerate();
 
         return redirect()->intended('dashboard');
     }
