@@ -11,7 +11,6 @@ use App\Models\Perusahaan;
 use App\Models\Pengaturan;
 use Database\Seeders\FakultasSeeder;
 use Database\Seeders\ProgramStudiSeeder;
-use Database\Seeders\TracerStudyQuestionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,7 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             FakultasSeeder::class,
             ProgramStudiSeeder::class,
-            TracerStudyQuestionSeeder::class,
         ]);
 
         // 2. FAKULTAS DAN PROGRAM STUDI

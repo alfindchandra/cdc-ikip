@@ -162,14 +162,16 @@ Route::post('pelatihan/{pelatihan}/peserta/{mahasiswa}/nilai', [PelatihanControl
         Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
         Route::get('laporan/download', [LaporanController::class, 'download'])->name('laporan.download');
         
-          Route::resource('tracer-study', TracerStudyController::class);
+         Route::resource('tracer-study', TracerStudyController::class);
     Route::get('tracer-study-laporan', [TracerStudyController::class, 'laporan'])->name('tracer-study.laporan');
     Route::get('tracer-study-export', [TracerStudyController::class, 'exportExcel'])->name('tracer-study.export');
     Route::get('tracer-study-pertanyaan', [TracerStudyController::class, 'editPertanyaan'])->name('tracer-study.pertanyaan');
     Route::put('tracer-study-pertanyaan', [TracerStudyController::class, 'updatePertanyaan'])->name('tracer-study.pertanyaan.update');
+    Route::post('tracer-study-pertanyaan', [TracerStudyController::class, 'storePertanyaan'])->name('tracer-study.pertanyaan.store');
+    Route::delete('tracer-study-pertanyaan/{pertanyaan}', [TracerStudyController::class, 'destroyPertanyaan'])->name('tracer-study.pertanyaan.destroy');
     Route::post('tracer-study-import', [TracerStudyController::class, 'importTracerStudy'])->name('tracer-study.import');
     Route::get('tracer-study-template', [TracerStudyController::class, 'downloadTemplate'])->name('tracer-study.template');
-        // Pengaturan
+         // Pengaturan
         Route::get('pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
         Route::put('pengaturan', [PengaturanController::class, 'update'])->name('pengaturan.update');
     });

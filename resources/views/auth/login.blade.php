@@ -220,12 +220,7 @@
                                 Daftar sekarang &rarr;
                             </a>
                         </p>
-                        <p class="text-sm text-gray-600">
-                            Anda perwakilan perusahaan/mitra?
-                            <a href="{{ route('login.perusahaan') }}" class="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
-                                Login Perusahaan &rarr;
-                            </a>
-                        </p>
+                       
                     </div>
                 </form>
             </div>

@@ -135,6 +135,24 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
+        // Halaman login ini hanya untuk Mahasiswa/Alumni.
+        // Akun admin dan perusahaan wajib login lewat halaman masing-masing.
+        if ($user->isAdmin()) {
+            Auth::logout();
+
+            return back()->withErrors([
+                'email' => 'Akun ini adalah akun admin. Silakan login melalui halaman khusus admin.',
+            ])->onlyInput('email', 'login_type');
+        }
+
+        if ($user->isPerusahaan()) {
+            Auth::logout();
+
+            return back()->withErrors([
+                'email' => 'Akun ini adalah akun perusahaan. Silakan login melalui halaman khusus perusahaan.',
+            ])->onlyInput('email', 'login_type');
+        }
+
         if ($user->isMahasiswa()) {
             $mahasiswa = $user->mahasiswa;
             $statusAktual = $mahasiswa->status ?? null;
@@ -206,8 +224,12 @@ class AuthController extends Controller
         if (!$user->isPerusahaan()) {
             Auth::logout();
 
+            $pesan = $user->isAdmin()
+                ? 'Akun ini adalah akun admin. Silakan login melalui halaman khusus admin.'
+                : 'Akun ini bukan akun perusahaan. Silakan gunakan halaman login mahasiswa.';
+
             return back()->withErrors([
-                'email' => 'Akun ini bukan akun perusahaan. Silakan gunakan halaman login mahasiswa.',
+                'email' => $pesan,
             ])->onlyInput('email');
         }
 
@@ -222,6 +244,66 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         return redirect()->intended('dashboard');
+    }
+
+    public function loginAdmin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+            'g-recaptcha-response' => 'required',
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
+            'g-recaptcha-response.required' => 'Silakan verifikasi bahwa Anda bukan robot.',
+        ]);
+
+        // Validasi reCAPTCHA
+        $recaptchaResponse = $request->input('g-recaptcha-response');
+        $recaptchaSecret = config('services.recaptcha.secret');
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $recaptchaSecret,
+            'response' => $recaptchaResponse,
+            'remoteip' => $request->ip()
+        ]);
+
+        $recaptchaResult = $response->json();
+
+        if (!$recaptchaResult['success']) {
+            return back()->withErrors([
+                'g-recaptcha-response' => 'Verifikasi reCAPTCHA gagal. Silakan coba lagi.',
+            ])->onlyInput('email');
+        }
+
+        if (!Auth::attempt(['email' => $request->input('email'), 'password' => $request->password], $request->filled('remember'))) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah.',
+            ])->onlyInput('email');
+        }
+
+        $user = Auth::user();
+
+        // Halaman ini khusus untuk akun admin. Mahasiswa/perusahaan ditolak.
+        if (!$user->isAdmin()) {
+            Auth::logout();
+
+            return back()->withErrors([
+                'email' => 'Akun ini bukan akun admin. Silakan gunakan halaman login yang sesuai.',
+            ])->onlyInput('email');
+        }
+
+        if (!$user->is_active) {
+            Auth::logout();
+
+            return back()->withErrors([
+                'email' => 'Akun admin Anda dinonaktifkan. Silakan hubungi administrator sistem.',
+            ])->onlyInput('email');
+        }
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard'));
     }
 
    public function showRegisterChoice()

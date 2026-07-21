@@ -244,8 +244,7 @@
                       </svg>
                   </div>
                   <div>
-                      <h4 class="font-bold text-slate-800">Login Mahasiswa</h4>
-                      <p class="text-xs text-slate-500">Masuk sebagai pencari kerja atau alumni</p>
+                      <h4 class="font-bold text-slate-800">Login Pengguna</h4>
                   </div>
               </a>
 
@@ -258,7 +257,6 @@
                   </div>
                   <div>
                       <h4 class="font-bold text-slate-800">Login Perusahaan</h4>
-                      <p class="text-xs text-slate-500">Masuk untuk mengelola lowongan kerja</p>
                   </div>
               </a>
           </div>

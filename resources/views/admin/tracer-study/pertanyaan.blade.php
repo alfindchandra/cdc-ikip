@@ -23,6 +23,16 @@
         </a>
     </header>
 
+    <div x-data="{ showAddModal: false }">
+
+    {{-- Tombol Tambah --}}
+    <div class="flex justify-end">
+        <button type="button" @click="showAddModal = true"
+                class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-sm font-semibold rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-[1.02]">
+            <i class="fas fa-plus mr-2"></i>Tambah Pertanyaan Baru
+        </button>
+    </div>
+
     {{-- Alert --}}
     @if(session('success'))
         <div class="flex items-center p-4 bg-green-50 border border-green-200 rounded-xl text-green-800">
@@ -164,6 +174,12 @@
                                                {{ $q->is_required ? 'checked' : '' }}
                                                class="w-4 h-4 text-red-500 rounded border-gray-300 focus:ring-red-300">
                                     </div>
+                                    <button type="button"
+                                            title="Hapus pertanyaan ini"
+                                            @click="if (confirm('Hapus pertanyaan &quot;{{ addslashes($q->label) }}&quot;? Tindakan ini tidak dapat dibatalkan.')) document.getElementById('delete-form-{{ $q->id }}').submit()"
+                                            class="inline-flex items-center px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-medium rounded-lg transition">
+                                        <i class="fas fa-trash-alt mr-1"></i>Hapus
+                                    </button>
                                 </div>
                             </div>
 
@@ -196,6 +212,127 @@
             </button>
         </div>
     </form>
+
+    {{-- Hidden delete forms (di luar form utama agar tidak nested) --}}
+    @foreach($questions as $items)
+        @foreach($items as $q)
+            <form id="delete-form-{{ $q->id }}" method="POST"
+                  action="{{ route('admin.tracer-study.pertanyaan.destroy', $q->id) }}" class="hidden">
+                @csrf
+                @method('DELETE')
+            </form>
+        @endforeach
+    @endforeach
+
+    {{-- Modal: Tambah Pertanyaan Baru --}}
+    <div x-show="showAddModal"
+         x-cloak
+         style="display: none;"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+        <div @click.outside="showAddModal = false"
+             class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                <h3 class="text-lg font-bold text-gray-900">
+                    <i class="fas fa-plus-circle text-emerald-600 mr-2"></i>Tambah Pertanyaan Baru
+                </h3>
+                <button type="button" @click="showAddModal = false" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <form method="POST" action="{{ route('admin.tracer-study.pertanyaan.store') }}" class="p-6 space-y-4">
+                @csrf
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">Bagian / Section</label>
+                        <select name="section" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-300 focus:border-emerald-500">
+                            @foreach($sectionLabels as $key => $lbl)
+                                <option value="{{ $key }}">{{ $lbl }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">Tipe Input</label>
+                        <select name="type" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-300 focus:border-emerald-500">
+                            <option value="text">Teks Singkat</option>
+                            <option value="textarea">Teks Panjang</option>
+                            <option value="number">Angka</option>
+                            <option value="email">Email</option>
+                            <option value="url">URL/Link</option>
+                            <option value="date">Tanggal</option>
+                            <option value="radio">Pilihan Tunggal (Radio)</option>
+                            <option value="select">Dropdown</option>
+                            <option value="checkbox">Pilihan Ganda (Checkbox)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Nama Field (unik, tanpa spasi)</label>
+                    <input type="text" name="field_name" required placeholder="contoh: pengalaman_magang"
+                           pattern="[a-zA-Z0-9_\-]+"
+                           title="Hanya huruf, angka, strip, dan underscore"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-emerald-300 focus:border-emerald-500">
+                    <p class="mt-1 text-xs text-gray-400">Dipakai sebagai identitas internal pertanyaan. Gunakan huruf kecil dan underscore, misal: <code>pengalaman_magang</code>.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Label Pertanyaan</label>
+                    <input type="text" name="label" required placeholder="Contoh: Apakah Anda pernah magang?"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-300 focus:border-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Pilihan Jawaban (khusus tipe Radio/Dropdown/Checkbox)</label>
+                    <textarea name="options_text" rows="3" placeholder="Satu baris = satu pilihan. Contoh:&#10;ya|Ya&#10;tidak|Tidak"
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-emerald-300 focus:border-emerald-500"></textarea>
+                    <p class="mt-1 text-xs text-gray-400">Format tiap baris: <code>value|Teks Tampilan</code>, atau cukup tulis teksnya saja. Kosongkan jika tipe input bukan pilihan.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 mb-1">Teks Bantuan (opsional)</label>
+                    <input type="text" name="helper_text" placeholder="Contoh: Isi 0 jika tidak ada"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-300 focus:border-emerald-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">Urutan (opsional)</label>
+                        <input type="number" name="sort_order" min="0" max="999" placeholder="Otomatis di akhir jika kosong"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-300 focus:border-emerald-500">
+                    </div>
+                    <div class="flex items-end gap-4 pb-2">
+                        <label class="flex items-center gap-2 text-sm text-gray-600">
+                            <input type="checkbox" name="is_active" value="1" checked
+                                   class="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-300">
+                            Aktif
+                        </label>
+                        <label class="flex items-center gap-2 text-sm text-gray-600">
+                            <input type="checkbox" name="is_required" value="1"
+                                   class="w-4 h-4 text-red-500 rounded border-gray-300 focus:ring-red-300">
+                            Wajib
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-2 border-t border-gray-100">
+                    <button type="button" @click="showAddModal = false"
+                            class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition">
+                        Batal
+                    </button>
+                    <button type="submit"
+                            class="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-sm font-semibold rounded-xl shadow-lg transition">
+                        <i class="fas fa-save mr-2"></i>Simpan Pertanyaan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div> {{-- end x-data --}}
 </div>
 
 @push('scripts')

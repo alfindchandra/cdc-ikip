@@ -328,15 +328,32 @@ class TracerStudyController extends Controller
         // Cek apakah sudah mengisi
         $tracerStudy = TracerStudy::where('mahasiswa_id', $mahasiswa->id)->first();
 
-        return view('mahasiswa.tracer-study.form', compact('tracerStudy'));
+        // Pertanyaan tambahan yang dibuat admin (di luar field baku form)
+        $additionalQuestions = TracerStudyQuestion::active()->ordered()->get()->groupBy('section');
+
+        return view('mahasiswa.tracer-study.form', compact('tracerStudy', 'additionalQuestions'));
     }
 
     public function alumniStore(Request $request)
     {
         $mahasiswa = auth()->user()->mahasiswa;
 
+        // Pertanyaan tambahan yang dibuat admin lewat menu Konfigurasi Pertanyaan
+        $additionalQuestions = TracerStudyQuestion::active()->get();
+        $additionalRules = [];
+        $additionalMessages = [];
+        foreach ($additionalQuestions as $aq) {
+            $rule = $aq->is_required ? 'required' : 'nullable';
+            $rule .= $aq->type === 'checkbox' ? '|array' : '|string|max:2000';
+            $additionalRules["pertanyaan_tambahan.{$aq->field_name}"] = $rule;
+            if ($aq->is_required) {
+                $additionalMessages["pertanyaan_tambahan.{$aq->field_name}.required"]
+                    = "Pertanyaan \"{$aq->label}\" wajib diisi.";
+            }
+        }
+
         // Validasi dasar + reCAPTCHA
-        $validated = $request->validate([
+        $validated = $request->validate(array_merge([
             // Tambahkan 'ppg' ke dalam aturan 'in'
             'status_pekerjaan' => 'required|in:bekerja,belum_memungkinkan_bekerja,wirausaha,melanjutkan_studi,belum_bekerja,ppg',
             
@@ -401,10 +418,10 @@ class TracerStudyController extends Controller
             'email_saat_ini' => 'nullable|email',
             'no_telp_saat_ini' => 'nullable|string|max:15',
             'linkedin' => 'nullable|url',
-        ], [
+        ], $additionalRules), array_merge([
             'g-recaptcha-response.required' => 'Silakan verifikasi bahwa Anda bukan robot.',
             'status_pekerjaan.required' => 'Status pekerjaan harus diisi.',
-        ]);
+        ], $additionalMessages));
 
         // Siapkan data untuk disimpan
         $data = [
@@ -472,6 +489,9 @@ class TracerStudyController extends Controller
         $data['no_telp_saat_ini'] = $validated['no_telp_saat_ini'] ?? null;
         $data['linkedin'] = $validated['linkedin'] ?? null;
 
+        // Simpan jawaban pertanyaan tambahan (dibuat admin) sebagai JSON
+        $data['additional_answers'] = $request->input('pertanyaan_tambahan', []);
+
         // Update or Create
         TracerStudy::updateOrCreate(
             ['mahasiswa_id' => $mahasiswa->id],
@@ -525,6 +545,85 @@ class TracerStudyController extends Controller
 
         return redirect()->route('admin.tracer-study.pertanyaan')
                         ->with('success', 'Konfigurasi pertanyaan berhasil disimpan.');
+    }
+
+    /**
+     * Tambah pertanyaan baru ke bank pertanyaan tracer study.
+     */
+    public function storePertanyaan(Request $request)
+    {
+        $validated = $request->validate([
+            'section'     => 'required|string|max:100',
+            'field_name'  => 'required|string|max:100|alpha_dash|unique:tracer_study_questions,field_name',
+            'label'       => 'required|string|max:255',
+            'type'        => 'required|string|in:text,textarea,number,email,url,radio,select,checkbox,date',
+            'options_text'=> 'nullable|string',
+            'is_required' => 'nullable|boolean',
+            'is_active'   => 'nullable|boolean',
+            'sort_order'  => 'nullable|integer|min:0|max:999',
+            'helper_text' => 'nullable|string|max:1000',
+        ], [
+            'section.required'    => 'Bagian/section wajib dipilih.',
+            'field_name.required' => 'Nama field wajib diisi.',
+            'field_name.alpha_dash' => 'Nama field hanya boleh berisi huruf, angka, strip, dan underscore (tanpa spasi).',
+            'field_name.unique'   => 'Nama field ini sudah digunakan, gunakan nama lain.',
+            'label.required'      => 'Label pertanyaan wajib diisi.',
+            'type.required'       => 'Tipe input wajib dipilih.',
+        ]);
+
+        // Ubah opsi (satu baris = satu pilihan, format "value|Teks Tampilan" atau cukup "Teks Tampilan")
+        $options = null;
+        if (in_array($validated['type'], ['radio', 'select', 'checkbox']) && !empty($validated['options_text'])) {
+            $options = [];
+            $lines = preg_split('/\r\n|\r|\n/', trim($validated['options_text']));
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if ($line === '') continue;
+
+                if (str_contains($line, '|')) {
+                    [$val, $text] = array_map('trim', explode('|', $line, 2));
+                } else {
+                    $val = $line;
+                    $text = $line;
+                }
+                $options[$val] = $text;
+            }
+        }
+
+        TracerStudyQuestion::create([
+            'section'     => $validated['section'],
+            'field_name'  => $validated['field_name'],
+            'label'       => $validated['label'],
+            'type'        => $validated['type'],
+            'options'     => $options,
+            'is_required' => $request->boolean('is_required'),
+            'is_active'   => $request->boolean('is_active', true),
+            'sort_order'  => $validated['sort_order'] ?? (
+                TracerStudyQuestion::where('section', $validated['section'])->max('sort_order') + 1
+            ),
+            'helper_text' => $validated['helper_text'] ?? null,
+        ]);
+
+        return redirect()->route('admin.tracer-study.pertanyaan')
+                        ->with('success', 'Pertanyaan baru berhasil ditambahkan.');
+    }
+
+    /**
+     * Hapus pertanyaan dari bank pertanyaan tracer study.
+     */
+    public function destroyPertanyaan($id)
+    {
+        $question = TracerStudyQuestion::find($id);
+
+        if (!$question) {
+            return redirect()->route('admin.tracer-study.pertanyaan')
+                            ->with('error', 'Pertanyaan tidak ditemukan.');
+        }
+
+        $question->delete();
+
+        return redirect()->route('admin.tracer-study.pertanyaan')
+                        ->with('success', 'Pertanyaan berhasil dihapus.');
     }
 
     // ─── Import Tracer Study ─────────────────────────────────────────────────

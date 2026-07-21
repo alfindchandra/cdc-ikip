@@ -821,7 +821,91 @@
                     </div>
                 </div>
 
-                
+                {{-- SECTION 11: PERTANYAAN TAMBAHAN (dikelola admin) --}}
+                @if(isset($additionalQuestions) && $additionalQuestions->flatten()->count() > 0)
+                    @php
+                        $existingAdditionalAnswers = old('pertanyaan_tambahan', $tracerStudy->additional_answers ?? []);
+                    @endphp
+                    <div class="mb-10">
+                        <h2 class="text-2xl font-bold border-b-2 border-indigo-600 pb-3 mb-6 flex items-center">
+                            <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">11</span>
+                            Pertanyaan Tambahan
+                        </h2>
+
+                        <div class="space-y-6">
+                            @foreach($additionalQuestions as $section => $items)
+                                @foreach($items as $q)
+                                    @php
+                                        $fieldName = "pertanyaan_tambahan[{$q->field_name}]";
+                                        $currentValue = $existingAdditionalAnswers[$q->field_name] ?? '';
+                                    @endphp
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                            {{ $q->label }}
+                                            @if($q->is_required)
+                                                <span class="text-red-500">*</span>
+                                            @endif
+                                        </label>
+
+                                        @if($q->type === 'textarea')
+                                            <textarea name="{{ $fieldName }}" rows="3"
+                                                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">{{ $currentValue }}</textarea>
+
+                                        @elseif($q->type === 'select')
+                                            <select name="{{ $fieldName }}"
+                                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                                <option value="">-- Pilih --</option>
+                                                @foreach(($q->options ?? []) as $val => $text)
+                                                    <option value="{{ $val }}" {{ (string) $currentValue === (string) $val ? 'selected' : '' }}>{{ $text }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        @elseif($q->type === 'radio')
+                                            <div class="space-y-2">
+                                                @foreach(($q->options ?? []) as $val => $text)
+                                                    <label class="flex items-center">
+                                                        <input type="radio" name="{{ $fieldName }}" value="{{ $val }}"
+                                                               {{ (string) $currentValue === (string) $val ? 'checked' : '' }}
+                                                               class="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                                                        <span class="ml-3 text-sm text-gray-700">{{ $text }}</span>
+                                                    </label>
+                                                @endforeach
+                                            </div>
+
+                                        @elseif($q->type === 'checkbox')
+                                            @php $currentValues = (array) $currentValue; @endphp
+                                            <div class="space-y-2">
+                                                @foreach(($q->options ?? []) as $val => $text)
+                                                    <label class="flex items-center">
+                                                        <input type="checkbox" name="pertanyaan_tambahan[{{ $q->field_name }}][]" value="{{ $val }}"
+                                                               {{ in_array((string) $val, array_map('strval', $currentValues)) ? 'checked' : '' }}
+                                                               class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                                        <span class="ml-3 text-sm text-gray-700">{{ $text }}</span>
+                                                    </label>
+                                                @endforeach
+                                            </div>
+
+                                        @else
+                                            <input type="{{ in_array($q->type, ['number','email','url','date']) ? $q->type : 'text' }}"
+                                                   name="{{ $fieldName }}"
+                                                   value="{{ $currentValue }}"
+                                                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                        @endif
+
+                                        @if($q->helper_text)
+                                            <p class="mt-1 text-xs text-gray-500">{{ $q->helper_text }}</p>
+                                        @endif
+
+                                        @error('pertanyaan_tambahan.'.$q->field_name)
+                                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                @endforeach
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 {{-- Submit Buttons --}}
                 <div class="flex flex-col sm:flex-row justify-end gap-4 pt-6 border-t-2 border-gray-200">
                     <a href="{{ route('dashboard') }}" 

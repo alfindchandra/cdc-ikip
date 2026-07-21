@@ -44,6 +44,7 @@ class TracerStudy extends Model
         'saran_fasilitas',
         'saran_umum',
         'kompetensi_yang_digunakan',
+        'additional_answers',
         
         // Kontak
         'email_saat_ini',
@@ -55,6 +56,7 @@ class TracerStudy extends Model
 
     protected $casts = [
         'kompetensi_yang_digunakan' => 'array',
+        'additional_answers' => 'array',
         'tanggal_isi' => 'datetime',
         'waktu_tunggu_kerja' => 'integer',
         'jumlah_karyawan' => 'integer',
